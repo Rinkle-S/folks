@@ -1,9 +1,15 @@
 'use client';
 // Settings sheet: language and sound. Labels are bilingual so anyone can find their language.
+import { useState } from 'react';
 import useInstall from './useInstall';
+import { speak, unlockAudio } from '@/lib/client';
+import { voiceStatus } from '@/lib/voice';
+import { T } from '@/lib/i18n';
 
 export default function Settings({ lang, setLang, muted, toggleMute, onClose, onApps, appsLabel }) {
   const [canInstall, install] = useInstall();
+  const [tested, setTested] = useState(false);
+  const t = T[lang] || T.en;
   return (
     <div className="settings-wrap" onClick={onClose}>
       <div className="settings" onClick={(e) => e.stopPropagation()} role="dialog" aria-label="Settings">
@@ -23,6 +29,25 @@ export default function Settings({ lang, setLang, muted, toggleMute, onClose, on
             {muted ? 'Off / बंद' : 'On / चालू'}
           </button>
         </div>
+        <div className="settings-row">
+          <span>{t.soundTest}</span>
+          <button
+            className="toggle"
+            onClick={() => {
+              unlockAudio();
+              speak(t.soundCheck, lang);
+              setTested(true);
+            }}
+          >
+            {t.soundTestBtn}
+          </button>
+        </div>
+        {tested && (
+          <p className="muted small" style={{ margin: '6px 0 0' }}>
+            {voiceStatus.server ? t.voiceNatural : t.voicePhone}
+            {voiceStatus.lastError ? ` (${voiceStatus.lastError})` : ''}
+          </p>
+        )}
         {onApps && (
           <div className="settings-row">
             <span>My apps / मेरे ऐप</span>

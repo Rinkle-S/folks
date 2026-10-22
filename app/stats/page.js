@@ -155,6 +155,19 @@ export default async function Stats() {
         </ul>
       )}
 
+      <h2>Voice and mic problems</h2>
+      {[...of('voice_error'), ...of('mic_error')].length === 0 ? (
+        <p className="muted">None reported.</p>
+      ) : (
+        <ul className="plain">
+          {[...of('voice_error'), ...of('mic_error')].slice(0, 20).map((e) => (
+            <li key={e.id}>
+              {e.type}: {JSON.stringify(e.meta)} <span className="muted">({fmt(e.created_at)})</span>
+            </li>
+          ))}
+        </ul>
+      )}
+
       <h2>Feedback</h2>
       <p>
         😊 Easy {fb.easy} · 😐 Okay {fb.okay} · 😟 Hard {fb.hard}

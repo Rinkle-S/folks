@@ -15,6 +15,7 @@ const ALLOWED = new Set([
   'tile_soon',
   'link_created',
   'mic_error',
+  'voice_error',
   'mode_pick',
   'read_all',
   'scam_answer',
