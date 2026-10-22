@@ -2,7 +2,7 @@
 import { LESSONS, COMING_SOON } from '@/lib/lessons';
 
 export const dynamic = 'force-dynamic';
-export const metadata = { title: 'Folks — live stats' };
+export const metadata = { title: 'Folks live stats' };
 
 async function loadEvents() {
   const url = process.env.SUPABASE_URL;
@@ -69,7 +69,7 @@ export default async function Stats() {
 
   return (
     <div className="stats">
-      <h1>Folks — live stats</h1>
+      <h1>Folks live stats</h1>
       {!connected && (
         <p className="warn">Database not connected yet. Add SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in Vercel.</p>
       )}
@@ -100,7 +100,7 @@ export default async function Stats() {
               <td>{l.title.en}</td>
               <td>{s}</td>
               <td>{c}</td>
-              <td>{s ? `${Math.round((c / s) * 100)}%` : '—'}</td>
+              <td>{s ? `${Math.round((c / s) * 100)}%` : '-'}</td>
             </tr>
           ))}
         </tbody>
@@ -136,7 +136,7 @@ export default async function Stats() {
             .sort((a, b) => b[1] - a[1])
             .map(([k, v]) => (
               <li key={k}>
-                {k} — <b>{v}</b>
+                {k}: <b>{v}</b>
               </li>
             ))}
         </ul>

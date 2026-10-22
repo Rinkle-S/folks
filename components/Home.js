@@ -1,51 +1,109 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import LangPicker from './LangPicker';
-import { LESSONS, COMING_SOON, findLesson, findSoon } from '@/lib/lessons';
+import Settings from './Settings';
+import AppIcon from './AppIcon';
+import { LESSONS, APPS, findLesson } from '@/lib/lessons';
 import { matchLesson } from '@/lib/match';
 import { T } from '@/lib/i18n';
-import { useLang, speak, track, whatsappLink } from '@/lib/client';
+import { useLang, useMute, speak, track, whatsappLink } from '@/lib/client';
 
 export default function Home() {
   const [lang, setLang] = useLang();
-  const [state, setState] = useState('idle'); // idle | listening | result
+  const [muted, toggleMute] = useMute();
+  const [state, setState] = useState('idle'); // idle | listening | processing | result
   const [query, setQuery] = useState('');
   const [result, setResult] = useState(null);
   const [typedQ, setTypedQ] = useState('');
-  const [micOk, setMicOk] = useState(true);
   const [micMsg, setMicMsg] = useState('');
   const [inApp, setInApp] = useState(false);
   const [asked, setAsked] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [serverStt, setServerStt] = useState(false);
   const recRef = useRef(null);
   const gotResult = useRef(false);
+  const mediaRef = useRef(null);
 
   useEffect(() => {
-    const SR = typeof window !== 'undefined' && (window.SpeechRecognition || window.webkitSpeechRecognition);
-    setMicOk(!!SR);
     const ua = navigator.userAgent || '';
     // WhatsApp, Instagram, Facebook etc. open links in their own browser, where the mic usually doesn't work.
     setInApp(/Android/i.test(ua) && (/; wv\)/.test(ua) || /WhatsApp|Instagram|FBAN|FBAV|FB_IAB|Line\//i.test(ua)));
+    // Is server speech-to-text switched on? (Only when the owner enables it, because it uses paid credits.)
+    fetch('/api/stt')
+      .then((r) => r.json())
+      .then((j) => setServerStt(!!j.enabled))
+      .catch(() => {});
   }, []);
 
-  if (lang === undefined) return <div className="page" />;
-  if (lang === null) return <LangPicker onPick={setLang} />;
+  if (!lang) return <div className="page" />;
   const t = T[lang];
 
   function handleQuery(q, via) {
     const m = matchLesson(q);
     setQuery(q);
-    setResult(m);
+    setResult(m && m.kind === 'lesson' ? m : null);
     setAsked(false);
+    setMicMsg('');
     setState('result');
     track('voice_search', { meta: { q: q.slice(0, 200), via, match: m ? m.id : null, lang } });
     if (m && m.kind === 'lesson') speak(`${t.confirmQ} ${LESSONS[m.id].title[lang]}`, lang);
-    else if (m) speak(t.soonMsg, lang);
     else speak(t.noMatch, lang);
   }
 
-  function startMic() {
-    // Tapping again while listening stops it.
+  // Record with the phone mic and send to the server for transcription (Sarvam), if enabled.
+  async function recordOnServer() {
+    if (state === 'listening' && mediaRef.current) {
+      try {
+        mediaRef.current.stop();
+      } catch {}
+      return;
+    }
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const types = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg'];
+      const mime = (window.MediaRecorder && types.find((m) => MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(m))) || '';
+      const rec = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined);
+      const chunks = [];
+      rec.ondataavailable = (e) => e.data && e.data.size && chunks.push(e.data);
+      rec.onstop = async () => {
+        stream.getTracks().forEach((tr) => tr.stop());
+        mediaRef.current = null;
+        setState('processing');
+        try {
+          const type = rec.mimeType || mime || 'audio/webm';
+          const blob = new Blob(chunks, { type });
+          const ext = type.includes('mp4') ? 'm4a' : type.includes('ogg') ? 'ogg' : 'webm';
+          const fd = new FormData();
+          fd.append('file', blob, `voice.${ext}`);
+          fd.append('lang', lang);
+          const r = await fetch('/api/stt', { method: 'POST', body: fd });
+          const j = await r.json();
+          if (r.ok && j.transcript && j.transcript.trim()) handleQuery(j.transcript.trim(), 'voice');
+          else {
+            setState('idle');
+            setMicMsg(t.micNoSpeech);
+          }
+        } catch {
+          setState('idle');
+          setMicMsg(t.micNetwork);
+        }
+      };
+      mediaRef.current = rec;
+      setMicMsg('');
+      setState('listening');
+      rec.start();
+      setTimeout(() => {
+        if (rec.state === 'recording') rec.stop();
+      }, 6000);
+    } catch (e) {
+      setState('idle');
+      setMicMsg(inApp ? t.micInApp : t.micDenied);
+      track('mic_error', { meta: { error: 'getUserMedia', inApp, lang } });
+    }
+  }
+
+  // Free browser speech recognition (works well in Chrome on Android).
+  function recordInBrowser() {
     if (state === 'listening' && recRef.current) {
       try {
         recRef.current.stop();
@@ -54,7 +112,6 @@ export default function Home() {
     }
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SR) {
-      setMicOk(false);
       setMicMsg(inApp ? t.micInApp : t.micUnsupported);
       track('mic_error', { meta: { error: 'unsupported', inApp, lang } });
       return;
@@ -66,38 +123,38 @@ export default function Home() {
       rec.continuous = false;
       rec.maxAlternatives = 1;
       gotResult.current = false;
+      let errored = false;
       rec.onresult = (e) => {
         gotResult.current = true;
-        const q = e.results[0][0].transcript;
-        handleQuery(q, 'voice');
+        handleQuery(e.results[0][0].transcript, 'voice');
       };
       rec.onerror = (e) => {
+        errored = true;
         setState('idle');
         track('mic_error', { meta: { error: e.error, inApp, lang } });
-        if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
-          setMicMsg(inApp ? t.micInApp : t.micDenied);
-        } else if (e.error === 'no-speech') {
-          setMicMsg(t.micNoSpeech);
-        } else if (e.error === 'network') {
-          setMicMsg(t.micNetwork);
-        } else if (e.error !== 'aborted') {
-          setMicMsg(t.micUnsupported);
-        }
+        if (e.error === 'not-allowed' || e.error === 'service-not-allowed') setMicMsg(inApp ? t.micInApp : t.micDenied);
+        else if (e.error === 'no-speech') setMicMsg(t.micNoSpeech);
+        else if (e.error === 'network') setMicMsg(t.micBrowser);
+        else if (e.error !== 'aborted') setMicMsg(t.micUnsupported);
       };
       rec.onend = () => {
         setState((s) => (s === 'listening' ? 'idle' : s));
-        if (!gotResult.current) setMicMsg((m) => m || t.micNoSpeech);
+        if (!gotResult.current && !errored) setMicMsg(t.micNoSpeech);
       };
       recRef.current = rec;
       setMicMsg('');
       setState('listening');
       rec.start();
-    } catch (err) {
-      setMicOk(false);
+    } catch {
       setState('idle');
       setMicMsg(t.micUnsupported);
       track('mic_error', { meta: { error: 'start-failed', inApp, lang } });
     }
+  }
+
+  function startMic() {
+    if (serverStt) recordOnServer();
+    else recordInBrowser();
   }
 
   function openInChrome() {
@@ -111,17 +168,8 @@ export default function Home() {
     window.open(whatsappLink(t.askChildMsg(text)), '_blank', 'noopener');
   }
 
-  function tapSoon(s) {
-    track('tile_soon', { meta: { id: s.id, lang } });
-    setQuery(s.title[lang]);
-    setResult({ id: s.id, kind: 'soon' });
-    setAsked(false);
-    setState('result');
-    speak(t.soonMsg, lang);
-  }
-
-  const matched = result && result.kind === 'lesson' ? findLesson(result.id) : null;
-  const soon = result && result.kind === 'soon' ? findSoon(result.id) : null;
+  const matched = result ? findLesson(result.id) : null;
+  const lessons = Object.values(LESSONS);
 
   return (
     <div className="page home">
@@ -130,18 +178,25 @@ export default function Home() {
           <div className="brand">Folks</div>
           <div className="tagline">{t.appTagline}</div>
         </div>
-        <button className="chip" onClick={() => setLang(lang === 'hi' ? 'en' : 'hi')}>
-          {lang === 'hi' ? 'English' : 'हिंदी'}
+        <button className="gear" onClick={() => setShowSettings(true)} aria-label="Settings">
+          ⚙️
         </button>
       </header>
 
       {state !== 'result' && (
         <section className="ask">
           <h1>{t.askTitle}</h1>
-          <button className={`mic ${state === 'listening' ? 'on' : ''}`} onClick={startMic} aria-label={t.askTitle}>
+          <button
+            className={`mic ${state === 'listening' ? 'on' : ''}`}
+            onClick={startMic}
+            aria-label={t.askTitle}
+            disabled={state === 'processing'}
+          >
             🎤
           </button>
-          <p className="ask-sub">{state === 'listening' ? t.listening : micMsg || (micOk ? t.askSub : t.micUnsupported)}</p>
+          <p className="ask-sub">
+            {state === 'listening' ? t.listening : state === 'processing' ? t.processing : micMsg || t.askSub}
+          </p>
           {inApp && (
             <button className="btn ghost chrome-btn" onClick={openInChrome}>
               🌐 {t.openChrome}
@@ -167,7 +222,7 @@ export default function Home() {
           <p className="said">
             {t.youSaid}: <b>"{query}"</b>
           </p>
-          {matched && (
+          {matched ? (
             <div className="card confirm">
               <p>{t.confirmQ}</p>
               <div className="confirm-lesson">
@@ -181,11 +236,10 @@ export default function Home() {
                 {t.noOther}
               </button>
             </div>
-          )}
-          {!matched && (
+          ) : (
             <div className="card">
-              <p>{soon ? `${soon.emoji} ${soon.title[lang]} — ${t.soonMsg}` : t.noMatch}</p>
-              <button className="btn wa-btn" onClick={() => askChild(soon ? soon.title[lang] : query)}>
+              <p>{t.noMatch}</p>
+              <button className="btn wa-btn" onClick={() => askChild(query)}>
                 💬 {t.askChild}
               </button>
               {asked && <p className="thanks">{t.thanks}</p>}
@@ -199,25 +253,34 @@ export default function Home() {
 
       <section className="tiles">
         <h2>{t.orPick}</h2>
-        {Object.values(LESSONS).map((l) => (
-          <Link key={l.id} href={`/lesson/${l.id}`} className="tile">
-            <span className="tile-emoji">{l.emoji}</span>
-            <span className="tile-title">{l.title[lang]}</span>
-            <span className="tile-go">›</span>
-          </Link>
-        ))}
-        {COMING_SOON.map((s) => (
-          <button key={s.id} className="tile soon" onClick={() => tapSoon(s)}>
-            <span className="tile-emoji">{s.emoji}</span>
-            <span className="tile-title">{s.title[lang]}</span>
-            <span className="tag">{t.soonTag}</span>
-          </button>
-        ))}
+        {APPS.map((app) => {
+          const list = lessons.filter((l) => l.app === app.id);
+          if (!list.length) return null;
+          return (
+            <div key={app.id} className="app-group">
+              <div className="app-group-h">
+                <AppIcon app={app.id} />
+                {app.name}
+              </div>
+              {list.map((l) => (
+                <Link key={l.id} href={`/lesson/${l.id}`} className="tile">
+                  <span className="tile-emoji">{l.emoji}</span>
+                  <span className="tile-title">{l.title[lang]}</span>
+                  <span className="tile-go">›</span>
+                </Link>
+              ))}
+            </div>
+          );
+        })}
       </section>
 
       <footer className="home-foot">
         <Link href="/send">{t.childLink}</Link>
       </footer>
+
+      {showSettings && (
+        <Settings lang={lang} setLang={setLang} muted={muted} toggleMute={toggleMute} onClose={() => setShowSettings(false)} />
+      )}
     </div>
   );
 }

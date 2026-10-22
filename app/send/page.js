@@ -18,11 +18,11 @@ export default function Send() {
   const params = new URLSearchParams({ lang });
   if (name.trim()) params.set('from', name.trim());
   const link = `${origin}/lesson/${lesson}?${params.toString()}`;
-  const sign = name.trim() ? ` — ${name.trim()}` : '';
+  const sign = name.trim() ? `\n${name.trim()}` : '';
   const message =
     lang === 'hi'
       ? `🙏 आपके लिए एक छोटा सा अभ्यास: "${l.title.hi}"। यह सिर्फ़ प्रैक्टिस है, असली पैसे नहीं कटेंगे। आराम से सीखिए, यह लिंक दबाइए:\n${link}${sign}`
-      : `🙏 A short practice lesson for you: "${l.title.en}". It's only practice — no real money. Take your time, just tap this link:\n${link}${sign}`;
+      : `🙏 A short practice lesson for you: "${l.title.en}". It's only practice, no real money is used. Take your time, just tap this link:\n${link}${sign}`;
 
   return (
     <div className="page send">

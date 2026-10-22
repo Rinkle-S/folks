@@ -38,6 +38,10 @@ npm run dev   # http://localhost:3000
 
 Without the env vars the app still works; events just aren't stored.
 
+Optional: better voice search with Sarvam AI (good with Hindi and Hinglish). It costs about ₹0.04 per search.
+- Set `SARVAM_API_KEY`, and set `SARVAM_STT=on` to switch it on.
+- Without it, the mic uses the browser's own free speech recognition.
+
 ## Notes
 
 - **Practice screens are generic look-alikes.** They have no real brand logos, carry a permanent "Practice — no real money" banner, and nothing is sent. The PIN is always the practice PIN 1234, and lessons teach never to type a real PIN anywhere else.

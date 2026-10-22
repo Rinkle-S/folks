@@ -76,7 +76,7 @@ export function GpHome({ request }) {
               </div>
             </div>
             <div className="gp-req-amt">₹5,000</div>
-            <div className="gp-req-note">"Prize money — enter PIN to receive"</div>
+            <div className="gp-req-note">"Prize money! Enter PIN to receive"</div>
             <div className="gp-req-btns">
               <div className="gp-btn outline" data-t="decline">
                 Decline
@@ -299,7 +299,7 @@ export function GpPin({ payee, amount, typed, full }) {
           <span key={i} className={i < filled ? 'on' : ''} />
         ))}
       </div>
-      <div className="pin-warn">Practice PIN: 1 2 3 4 — never your real PIN</div>
+      <div className="pin-warn">Practice PIN: 1 2 3 4. Never your real PIN.</div>
       <Keypad tick />
     </div>
   );
@@ -401,7 +401,125 @@ export function GpPlans() {
           </div>
         ))}
       </div>
-      <div className="gp-foot-note">Practice prices — not real plans</div>
+      <div className="gp-foot-note">Practice prices, not real plans</div>
+    </div>
+  );
+}
+
+const BILL_CATS = [
+  { t: 'cat-electricity', icon: '💡', label: 'Electricity' },
+  { icon: '📱', label: 'Mobile postpaid' },
+  { icon: '📺', label: 'DTH / Cable TV' },
+  { icon: '🔥', label: 'LPG cylinder' },
+  { icon: '🌐', label: 'Broadband' },
+  { icon: '🚰', label: 'Water' },
+  { icon: '🚗', label: 'FASTag' },
+  { icon: '💳', label: 'Credit card' },
+];
+
+export function GpBills() {
+  return (
+    <div className="app gp">
+      <div className="gp-bar">
+        <Icon name="back" size={22} />
+        <span>Pay bills</span>
+      </div>
+      <div className="gp-list-h">Choose a bill type</div>
+      <div className="gp-cats">
+        {BILL_CATS.map((c, i) => (
+          <div key={i} className="gp-cat" data-t={c.t}>
+            <span>{c.icon}</span>
+            {c.label}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+const BOARDS = [
+  { t: 'board-1', name: 'Bijli Vitaran Nigam (Practice)', area: 'Your state' },
+  { name: 'City Power Supply Ltd (Practice)', area: 'Metro cities' },
+  { name: 'Gramin Vidyut Board (Practice)', area: 'Rural areas' },
+  { name: 'Northern Power Co. (Practice)', area: 'North zone' },
+];
+
+export function GpBoards() {
+  return (
+    <div className="app gp">
+      <div className="gp-bar">
+        <Icon name="back" size={22} />
+        <span>Electricity</span>
+      </div>
+      <div className="gp-search in">
+        <Icon name="search" size={18} />
+        <span>Search for your electricity board</span>
+      </div>
+      <div className="gp-list-h">All billers</div>
+      {BOARDS.map((b, i) => (
+        <div key={i} className="gp-row" data-t={b.t}>
+          <span className="gp-av" style={{ background: '#b06000' }}>
+            ⚡
+          </span>
+          <div>
+            <b>{b.name}</b>
+            <small>{b.area}</small>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export function GpConsumer({ typed, keypad }) {
+  return (
+    <div className={`app gp ${keypad ? 'compact' : ''}`}>
+      <div className="gp-bar">
+        <Icon name="back" size={22} />
+        <span>Bijli Vitaran Nigam</span>
+      </div>
+      <div className="gp-field">
+        <label>Consumer number</label>
+        <div className="gp-input">{typed || <span className="ph">Enter consumer number</span>}</div>
+        <small>Printed on your paper bill, near your name</small>
+      </div>
+      <div className={`gp-btn wide ${typed && typed.length >= 6 ? '' : 'dis'}`} data-t="fetch">
+        Confirm
+      </div>
+      {keypad && <Keypad />}
+    </div>
+  );
+}
+
+export function GpBill() {
+  return (
+    <div className="app gp">
+      <div className="gp-bar">
+        <Icon name="back" size={22} />
+        <span>Bijli Vitaran Nigam</span>
+      </div>
+      <div className="gp-billcard">
+        <div className="gp-bill-row">
+          <span>Name</span>
+          <b>KAMLA DEVI</b>
+        </div>
+        <div className="gp-bill-row">
+          <span>Consumer no.</span>
+          <b>452187</b>
+        </div>
+        <div className="gp-bill-row">
+          <span>Bill date</span>
+          <b>5 Oct</b>
+        </div>
+        <div className="gp-bill-row">
+          <span>Due date</span>
+          <b>20 Oct</b>
+        </div>
+        <div className="gp-bill-amt">₹1,240</div>
+      </div>
+      <div className="gp-btn wide" data-t="pay-bill">
+        Pay ₹1,240
+      </div>
     </div>
   );
 }

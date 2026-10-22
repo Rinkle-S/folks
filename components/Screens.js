@@ -12,8 +12,23 @@ import {
   GpSuccess,
   GpRechargeNumbers,
   GpPlans,
+  GpBills,
+  GpBoards,
+  GpConsumer,
+  GpBill,
 } from './screens/GPay';
-import { WaChats, WaChat, WaInfo, WaMedia, WaPdf, WaUpdates, WaTextStatus } from './screens/WhatsApp';
+import {
+  WaChats,
+  WaChat,
+  WaInfo,
+  WaMedia,
+  WaPdf,
+  WaUpdates,
+  WaTextStatus,
+  WaCalling,
+  WaVideo,
+} from './screens/WhatsApp';
+import { DriveHome, DriveNew, DriveScanner, DriveReview, DriveSave } from './screens/Drive';
 
 function Intro({ lesson, lang, t }) {
   return (
@@ -63,12 +78,24 @@ export default function Screen({ step, lesson, lang, t, values, typed }) {
       return <GpRechargeNumbers />;
     case 'gp-plans':
       return <GpPlans />;
+    case 'gp-bills':
+      return <GpBills />;
+    case 'gp-boards':
+      return <GpBoards />;
+    case 'gp-consumer':
+      return <GpConsumer typed={inputHere ? typed : values.consumer} keypad={inputHere} />;
+    case 'gp-bill':
+      return <GpBill />;
 
     // WhatsApp
     case 'wa-chats':
       return <WaChats />;
     case 'wa-chat':
-      return <WaChat />;
+      return <WaChat contact={lesson.contact} />;
+    case 'wa-calling':
+      return <WaCalling contact={lesson.contact} />;
+    case 'wa-video':
+      return <WaVideo contact={lesson.contact} flipped={step.flipped} />;
     case 'wa-info':
       return <WaInfo />;
     case 'wa-media':
@@ -79,6 +106,18 @@ export default function Screen({ step, lesson, lang, t, values, typed }) {
       return <WaUpdates posted={step.posted} />;
     case 'wa-text-status':
       return <WaTextStatus typed={step.typed} color={step.color || 0} />;
+
+    // Google Drive
+    case 'drive-home':
+      return <DriveHome saved={step.saved} />;
+    case 'drive-new':
+      return <DriveNew />;
+    case 'drive-scanner':
+      return <DriveScanner />;
+    case 'drive-review':
+      return <DriveReview />;
+    case 'drive-save':
+      return <DriveSave />;
 
     default:
       return null;

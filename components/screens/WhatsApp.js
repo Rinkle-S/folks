@@ -2,6 +2,7 @@
 import Icon from '../Icons';
 
 const CHATS = [
+  { t: 'chat-rahul', name: 'Rahul (Beta)', msg: 'Ok Mummy, call you in the evening', time: '9:30 am', color: '#2563eb', ini: 'R' },
   { name: 'Family Group', msg: 'Sunita: 🙏 सुप्रभात', time: '9:12 am', color: '#7c3aed', ini: 'F', unread: 3 },
   { t: 'chat-ramesh', name: 'Ramesh Bhaiya', msg: '✓✓ ठीक है, शाम को मिलते हैं', time: '8:40 am', color: '#ea580c', ini: 'R' },
   { name: 'Pinky', msg: '📷 Photo', time: 'Yesterday', color: '#db2777', ini: 'P' },
@@ -76,35 +77,53 @@ export function WaChats() {
   );
 }
 
-export function WaChat() {
-  const msgs = [
+const RAMESH = {
+  name: 'Ramesh Bhaiya',
+  ini: 'R',
+  color: '#ea580c',
+  msgs: [
     { me: false, text: 'नमस्ते! कैसे हो?', time: '7:58 am' },
     { me: true, text: 'सब ठीक है 🙏', time: '8:05 am' },
     { me: false, text: 'कल बाज़ार चलेंगे?', time: '8:21 am' },
     { me: true, text: 'हाँ, 10 बजे', time: '8:30 am' },
     { me: false, text: 'ठीक है, शाम को मिलते हैं', time: '8:40 am' },
-  ];
+  ],
+  older: true,
+};
+
+const RAHUL_MSGS = [
+  { me: true, text: 'Beta, khana khaya?', time: '9:10 am' },
+  { me: false, text: 'Haan Mummy 😊', time: '9:22 am' },
+  { me: false, text: 'Ok Mummy, call you in the evening', time: '9:30 am' },
+];
+
+export function WaChat({ contact }) {
+  const c = contact ? { ...contact, msgs: RAHUL_MSGS } : RAMESH;
   return (
     <div className="app wa">
       <div className="wa-chead">
         <Icon name="back" size={22} />
-        <div className="wa-av sm" style={{ background: '#ea580c' }}>
-          R
+        <div className="wa-av sm" style={{ background: c.color }}>
+          {c.ini}
         </div>
         <div className="wa-cname" data-t="contact-name">
-          Ramesh Bhaiya
+          {c.name}
           <small>tap here for contact info</small>
         </div>
         <span className="wa-head-ic">
-          <Icon name="video" size={22} />
-          <Icon name="phone" size={20} />
+          <span data-t="video-call" className="wa-ic-hit">
+            <Icon name="video" size={22} />
+          </span>
+          <span data-t="voice-call" className="wa-ic-hit">
+            <Icon name="phone" size={20} />
+          </span>
           <Icon name="more" size={22} />
         </span>
       </div>
       <div className="wa-msgs">
-        <div className="wa-chip">⬆ 2 weeks of older messages</div>
+        {c.older && <div className="wa-chip">⬆ 2 weeks of older messages</div>}
         <div className="wa-chip">Today</div>
-        {msgs.map((m, i) => (
+        {c.msgs.map((m, i) => (
           <div key={i} className={`bub ${m.me ? 'me' : ''}`}>
             {m.text}
             <span>
@@ -124,6 +143,53 @@ export function WaChat() {
           <Icon name="mic" size={20} color="#fff" />
         </div>
       </div>
+    </div>
+  );
+}
+
+export function WaCalling({ contact }) {
+  return (
+    <div className="app wa-call">
+      <div className="wa-call-self">🙂</div>
+      <div className="wa-call-top">
+        <div className="wa-call-lock">🔒 End-to-end encrypted</div>
+        <div className="wa-call-name">{contact.name}</div>
+        <div className="wa-call-status">Ringing…</div>
+      </div>
+      <CallControls />
+    </div>
+  );
+}
+
+function CallControls() {
+  return (
+    <div className="wa-call-ctrls">
+      <span data-t="flip" className="wa-cc">
+        <Icon name="self" size={22} color="#fff" />
+      </span>
+      <span data-t="camera-off" className="wa-cc">
+        <Icon name="video" size={22} color="#fff" />
+      </span>
+      <span data-t="mute" className="wa-cc">
+        <Icon name="mic" size={22} color="#fff" />
+      </span>
+      <span data-t="end" className="wa-cc end">
+        <Icon name="phone" size={22} color="#fff" />
+      </span>
+    </div>
+  );
+}
+
+export function WaVideo({ contact, flipped }) {
+  return (
+    <div className="app wa-call live">
+      <div className="wa-call-remote">🧑🏽</div>
+      <div className="wa-call-top">
+        <div className="wa-call-name">{contact.name}</div>
+        <div className="wa-call-status">0:12</div>
+      </div>
+      <div className="wa-call-pip">{flipped ? '🪴' : '🙂'}</div>
+      <CallControls />
     </div>
   );
 }
@@ -228,7 +294,7 @@ export function WaPdf() {
       </div>
       <div className="pdf-page">
         <div className="pdf-h">BIJLI VITARAN (PRACTICE)</div>
-        <div className="pdf-sub">Electricity Bill — September</div>
+        <div className="pdf-sub">Electricity Bill, September</div>
         <div className="pdf-line" />
         <div className="pdf-row">
           <span>Units used</span>

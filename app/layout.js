@@ -2,7 +2,7 @@ import './globals.css';
 import './screens.css';
 
 export const metadata = {
-  title: 'Folks — phone help for your folks',
+  title: 'Folks | Phone help for your folks',
   description: 'Safe, voice-guided practice for everyday phone tasks. No real money, in Hindi and English.',
 };
 

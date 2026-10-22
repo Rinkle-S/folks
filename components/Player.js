@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import Screen from './Screens';
-import LangPicker from './LangPicker';
+import Settings from './Settings';
 import { LESSONS } from '@/lib/lessons';
 import { T } from '@/lib/i18n';
 import { useLang, useMute, speak, stopSpeaking, track, getFrom, whatsappLink } from '@/lib/client';
@@ -21,6 +21,8 @@ export default function Player({ id }) {
   const [feedback, setFeedback] = useState(null);
   const [realTry, setRealTry] = useState(false);
   const [from, setFrom] = useState('');
+  const [bubble, setBubble] = useState(null);
+  const [showSettings, setShowSettings] = useState(false);
   const screenRef = useRef(null);
   const coachRef = useRef(null);
   const startedRef = useRef(false);
@@ -54,20 +56,56 @@ export default function Player({ id }) {
     if (c && quiz) c.scrollTop = c.scrollHeight;
   }, [quiz]);
 
-  // Glow the right element when the parent needs help.
+  // Always glow the element to tap, with a small "Tap here" label next to it.
   useEffect(() => {
     const root = screenRef.current;
-    if (!root) return;
+    if (!root || !lang) return;
     root.querySelectorAll('.hl').forEach((el) => el.classList.remove('hl'));
-    if (!showHint) return;
+    setBubble(null);
+    if (done) return;
+    const tt = T[lang];
     let sel = null;
-    if (step.kind === 'tap') sel = `[data-t="${step.target}"]`;
-    if (step.kind === 'input') sel = `[data-key="${step.expected[typed.length]}"]`;
-    if (sel) root.querySelectorAll(sel).forEach((el) => el.classList.add('hl'));
-  }, [showHint, idx, typed, step]);
+    let label = null;
+    if (step.kind === 'tap') {
+      sel = `[data-t="${step.target}"]`;
+      label = tt.tapHere;
+    }
+    if (step.kind === 'input') {
+      const k = step.expected[typed.length];
+      if (k) {
+        sel = `[data-key="${k}"]`;
+        label = tt.press(k);
+      }
+    }
+    if (!sel) return;
+    const els = Array.from(root.querySelectorAll(sel));
+    els.forEach((el) => el.classList.add('hl'));
+    const el = els[0];
+    if (!el) return;
+    try {
+      el.scrollIntoView({ block: 'nearest' });
+    } catch {}
+    const place = () => {
+      const r = el.getBoundingClientRect();
+      const R = root.getBoundingClientRect();
+      if (!r.width) return;
+      const x = Math.min(Math.max(r.left - R.left + r.width / 2, 64), R.width - 64);
+      const above = r.top - R.top > 52;
+      setBubble({ x, y: above ? r.top - R.top - 10 : r.bottom - R.top + 10, below: !above, label });
+    };
+    const raf = requestAnimationFrame(place);
+    const tm = setTimeout(place, 400);
+    window.addEventListener('resize', place);
+    root.addEventListener('scroll', place, true);
+    return () => {
+      cancelAnimationFrame(raf);
+      clearTimeout(tm);
+      window.removeEventListener('resize', place);
+      root.removeEventListener('scroll', place, true);
+    };
+  }, [idx, typed, lang, done]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  if (lang === undefined) return <div className="page" />;
-  if (lang === null) return <LangPicker onPick={setLang} />;
+  if (!lang) return <div className="page" />;
 
   function next() {
     lockRef.current = false;
@@ -242,13 +280,18 @@ export default function Player({ id }) {
           </div>
           <small>{t.step(idx + 1, total)}</small>
         </div>
-        <button className="ptop-btn" onClick={toggleMute} aria-label="sound">
-          {muted ? '🔇' : '🔊'}
+        <button className="gear" onClick={() => setShowSettings(true)} aria-label="Settings">
+          ⚙️
         </button>
       </div>
 
       <div className={`screen ${flash ? 'flash' : ''}`} ref={screenRef} onClick={onScreenClick}>
         <Screen step={step} lesson={lesson} lang={lang} t={t} values={values} typed={typed} />
+        {bubble && (
+          <div className={`tap-bubble ${bubble.below ? 'below' : ''}`} style={{ left: bubble.x, top: bubble.y }}>
+            👆 {bubble.label}
+          </div>
+        )}
       </div>
 
       <div className={`coach ${showHint ? 'hinting' : ''}`} ref={coachRef}>
@@ -291,11 +334,17 @@ export default function Player({ id }) {
               💡 {t.help}
             </button>
           )}
-          <button className="chip" onClick={() => setLang(lang === 'hi' ? 'en' : 'hi')}>
-            {lang === 'hi' ? 'English' : 'हिंदी'}
-          </button>
         </div>
       </div>
+      {showSettings && (
+        <Settings
+          lang={lang}
+          setLang={setLang}
+          muted={muted}
+          toggleMute={toggleMute}
+          onClose={() => setShowSettings(false)}
+        />
+      )}
     </div>
   );
 }
