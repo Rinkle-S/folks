@@ -27,6 +27,7 @@ export default function Send() {
   return (
     <div className="page send">
       <Link href="/" className="brand">
+        <span className="brand-mark">F</span>
         Folks
       </Link>
       <h1>Send your parent a practice lesson</h1>
@@ -85,7 +86,7 @@ export default function Send() {
         rel="noopener noreferrer"
         onClick={() => track('link_created', { lesson, meta: { lang, via: 'whatsapp' } })}
       >
-        💬 Send on WhatsApp
+        Send on WhatsApp
       </a>
       <button
         className="btn ghost"
@@ -97,7 +98,7 @@ export default function Send() {
           } catch {}
         }}
       >
-        {copied ? '✓ Link copied' : '🔗 Copy link'}
+        {copied ? 'Link copied' : 'Copy link'}
       </button>
     </div>
   );

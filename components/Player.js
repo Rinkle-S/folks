@@ -8,9 +8,10 @@ import Link from 'next/link';
 import Screen from './Screens';
 import Settings from './Settings';
 import FollowView from './FollowView';
+import Icon from './Icons';
 import { LESSONS } from '@/lib/lessons';
 import { T } from '@/lib/i18n';
-import { useLang, useMute, speak, stopSpeaking, track, getFrom, whatsappLink } from '@/lib/client';
+import { useLang, useMute, speak, stopSpeaking, track, getFrom, whatsappLink, markDone, vibrate } from '@/lib/client';
 
 export default function Player({ id }) {
   const lesson = LESSONS[id];
@@ -24,6 +25,7 @@ export default function Player({ id }) {
   const [quiz, setQuiz] = useState(null); // { correct, why }
   const [done, setDone] = useState(false);
   const [flash, setFlash] = useState(false);
+  const [shake, setShake] = useState(false);
   const [tapFx, setTapFx] = useState(false);
   const [paused, setPaused] = useState(false);
   const [feedback, setFeedback] = useState(null);
@@ -186,11 +188,13 @@ export default function Player({ id }) {
     stopSpeaking();
     clearTimers();
     track('lesson_complete', { lesson: id, meta: { mode } });
+    markDone(id);
   }
 
   function correct() {
     track('step_done', { lesson: id, step: idx, meta: { id: step.id } });
     lockRef.current = true;
+    vibrate(25);
     setFlash(true);
     setTimeout(() => {
       setFlash(false);
@@ -200,6 +204,9 @@ export default function Player({ id }) {
 
   function wrong(meta = {}) {
     track('wrong_tap', { lesson: id, step: idx, meta: { id: step.id, ...meta } });
+    vibrate([40, 60, 40]);
+    setShake(true);
+    setTimeout(() => setShake(false), 400);
     setShowHint(true);
     if (step.hint) speak(step.hint[lang], lang);
   }
@@ -288,19 +295,21 @@ export default function Player({ id }) {
     const shareText = `${lesson.share[lang]}\n${typeof window !== 'undefined' ? window.location.origin : ''}`;
     return (
       <div className="page done">
-        <div className="done-burst">🎉</div>
+        <div className="done-medal">
+          <Icon name="check" size={56} stroke={3} />
+        </div>
         <h1 className="done-title">{t.doneTitle}</h1>
         <p className="done-sub">{t.doneSub}</p>
         <p className="done-lesson">{lesson.title[lang]}</p>
         <ul className="takeaways">
           {lesson.takeaways[lang].map((k, i) => (
-            <li key={i}>✓ {k}</li>
+            <li key={i}>{k}</li>
           ))}
         </ul>
 
         {mode !== 'practice' && (
           <button className="btn primary" onClick={() => restart('practice')}>
-            👆 {t.nowPractise}
+            <Icon name="hand" size={22} /> {t.nowPractise}
           </button>
         )}
         {mode === 'practice' && (
@@ -311,14 +320,14 @@ export default function Player({ id }) {
               track('real_try', { lesson: id });
             }}
           >
-            📱 {t.tryReal}
+            <Icon name="recharge" size={22} /> {t.tryReal}
           </button>
         )}
         {realTry && (
           <>
             <p className="note">{lesson.realTry[lang]}</p>
             <button className="btn ghost" onClick={() => restart('follow')}>
-              📋 {t.modeFollow}
+              <Icon name="list" size={22} /> {t.modeFollow}
             </button>
           </>
         )}
@@ -330,7 +339,7 @@ export default function Player({ id }) {
           rel="noopener noreferrer"
           onClick={() => track('share', { lesson: id })}
         >
-          💬 {t.tellChild(from)}
+          <Icon name="share" size={22} /> {t.tellChild(from)}
         </a>
 
         <div className="feedback">
@@ -362,10 +371,10 @@ export default function Player({ id }) {
 
         <div className="done-links">
           <button className="btn ghost" onClick={() => restart(mode || 'practice')}>
-            🔁 {t.practiceAgain}
+            {t.practiceAgain}
           </button>
           <Link className="btn ghost" href="/">
-            🏠 {t.otherLessons}
+            {t.otherLessons}
           </Link>
         </div>
       </div>
@@ -376,14 +385,12 @@ export default function Player({ id }) {
     return (
       <div className="player">
         <div className="ptop">
-          <Link href="/" className="ptop-btn" onClick={() => stopSpeaking()}>
-            ✕ {t.exit}
+          <Link href="/" className="ptop-btn" onClick={() => stopSpeaking()} aria-label={t.exit}>
+            <Icon name="close" size={24} />
           </Link>
-          <div className="progress">
-            <small>{lesson.title[lang]}</small>
-          </div>
-          <button className="gear" onClick={() => setShowSettings(true)} aria-label="Settings">
-            ⚙️
+          <div className="progress" />
+          <button className="ptop-btn" onClick={() => setShowSettings(true)} aria-label="Settings">
+            <Icon name="gear" size={24} />
           </button>
         </div>
         <FollowView lesson={lesson} lang={lang} t={t} onDone={finish} onPractice={() => restart('practice')} />
@@ -397,27 +404,25 @@ export default function Player({ id }) {
 
   return (
     <div className="player">
-      <div className="practice-banner">🛡️ {t.practiceBanner}</div>
       <div className="ptop">
-        <Link href="/" className="ptop-btn" onClick={() => stopSpeaking()}>
-          ✕ {t.exit}
+        <Link href="/" className="ptop-btn" onClick={() => stopSpeaking()} aria-label={t.exit}>
+          <Icon name="close" size={24} />
         </Link>
         <div className="progress">
           <div className="bar">
             <span style={{ width: `${(idx / total) * 100}%` }} />
           </div>
-          <small>
-            {watching ? `▶️ ${t.watching} · ` : ''}
-            {t.step(idx + 1, total)}
-          </small>
+          <small>{watching ? `${t.watching}: ${t.step(idx + 1, total)}` : t.step(idx + 1, total)}</small>
         </div>
-        <button className="gear" onClick={() => setShowSettings(true)} aria-label="Settings">
-          ⚙️
+        <button className="ptop-btn" onClick={() => setShowSettings(true)} aria-label="Settings">
+          <Icon name="gear" size={24} />
         </button>
       </div>
 
+      <div className="screen-wrap">
+      {idx > 0 && <div className="practice-tag">{t.practiceTag}</div>}
       <div
-        className={`screen ${flash ? 'flash' : ''} ${tapFx ? 'tapfx' : ''} ${watching ? 'watching' : ''}`}
+        className={`screen ${flash ? 'flash' : ''} ${tapFx ? 'tapfx' : ''} ${shake ? 'shake' : ''} ${watching ? 'watching' : ''}`}
         ref={screenRef}
         onClick={onScreenClick}
       >
@@ -428,6 +433,7 @@ export default function Player({ id }) {
           </div>
         )}
       </div>
+      </div>
 
       <div className={`coach ${showHint ? 'hinting' : ''}`} ref={coachRef}>
         <p className="coach-text">{coachText}</p>
@@ -435,14 +441,14 @@ export default function Player({ id }) {
         {choosing && (
           <div className="modes">
             <button className="btn primary" onClick={() => chooseMode('practice')}>
-              👆 {t.modePractice}
+              <Icon name="hand" size={24} /> {t.modePractice}
             </button>
             <div className="mode-row">
               <button className="btn ghost" onClick={() => chooseMode('watch')}>
-                ▶️ {t.modeWatch}
+                <Icon name="play" size={18} /> {t.modeWatch}
               </button>
               <button className="btn ghost" onClick={() => chooseMode('follow')}>
-                📋 {t.modeFollow}
+                <Icon name="list" size={20} /> {t.modeFollow}
               </button>
             </div>
           </div>
@@ -464,7 +470,7 @@ export default function Player({ id }) {
             {quiz && <p className={`why ${quiz.correct ? 'good' : 'bad'}`}>{quiz.why}</p>}
             {quiz && quiz.correct && !watching && (
               <button className="btn primary" onClick={advance}>
-                {t.next} →
+                {t.next}
               </button>
             )}
           </div>
@@ -472,33 +478,33 @@ export default function Player({ id }) {
 
         {mode === 'practice' && step.kind === 'info' && idx > 0 && (
           <button className="btn primary" onClick={advance}>
-            {(step.button && step.button[lang]) || t.next} →
+            {(step.button && step.button[lang]) || t.next}
           </button>
         )}
 
         {watching ? (
           <div className="coach-actions">
             <button className="chip" onClick={watchBack} aria-label={t.back}>
-              ⏮
+              <Icon name="prev" size={18} />
             </button>
             <button className="chip big" onClick={() => setPaused((p) => !p)}>
-              {paused ? `▶️ ${t.play}` : `⏸ ${t.pause}`}
+              <Icon name={paused ? 'play' : 'pause'} size={18} /> {paused ? t.play : t.pause}
             </button>
             <button className="chip" onClick={watchNext} aria-label={t.next}>
-              ⏭
+              <Icon name="next" size={18} />
             </button>
             <button className="chip" onClick={tryMyself}>
-              👆 {t.tryMyself}
+              <Icon name="hand" size={18} /> {t.tryMyself}
             </button>
           </div>
         ) : (
           <div className="coach-actions">
             <button className="chip" onClick={() => speak(coachText, lang)}>
-              🔊 {t.listen}
+              <Icon name="volume" size={20} /> {t.listen}
             </button>
             {mode === 'practice' && (step.kind === 'tap' || step.kind === 'input') && (
               <button className="chip" onClick={askHelp}>
-                💡 {t.help}
+                <Icon name="bulb" size={20} /> {t.help}
               </button>
             )}
           </div>

@@ -29,15 +29,24 @@ import {
   WaVideo,
 } from './screens/WhatsApp';
 import { DriveHome, DriveNew, DriveScanner, DriveReview, DriveSave } from './screens/Drive';
+import Icon from './Icons';
+import AppIcon from './AppIcon';
 
 function Intro({ lesson, lang, t }) {
   return (
     <div className="intro">
-      <div className="intro-emoji">{lesson.emoji}</div>
+      {lesson.appName && (
+        <span className="intro-app">
+          <AppIcon app={lesson.app} size={28} /> {lesson.appName}
+        </span>
+      )}
+      <span className="medal lg">
+        <Icon name={lesson.icon} size={44} />
+      </span>
       <div className="intro-title">{lesson.title[lang]}</div>
-      <div className="intro-badge">🛡️ {t.practiceOnly}</div>
-      <div className="intro-time">
-        {lesson.appName ? `${lesson.appName} · ` : ''}⏱ {t.minutes(lesson.minutes)}
+      <div className="intro-chips">
+        <span>{t.minutes(lesson.minutes)}</span>
+        <span className="safe">{t.practiceOnly}</span>
       </div>
     </div>
   );

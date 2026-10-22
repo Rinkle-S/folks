@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import AppIcon from '@/components/AppIcon';
+import Icon from '@/components/Icons';
 import { T } from '@/lib/i18n';
 import { ALL_APPS } from '@/lib/apps';
 import { useLang, speak, stopSpeaking, track, addRequest, whatsappLink } from '@/lib/client';
@@ -42,7 +43,7 @@ export default function MyLesson({ params }) {
           {t.noMatch}
         </p>
         <Link className="btn ghost" href="/">
-          🏠 {t.home}
+          {t.home}
         </Link>
       </div>
     );
@@ -56,9 +57,9 @@ export default function MyLesson({ params }) {
 
   return (
     <div className="page my">
-      <div className="scams-top">
-        <Link href="/" className="ptop-btn">
-          ✕ {t.exit}
+      <div className="scam-top">
+        <Link href="/for-you" className="ptop-btn" aria-label={t.exit} onClick={() => stopSpeaking()}>
+          <Icon name="close" size={24} />
         </Link>
       </div>
       <div className="read-head">
@@ -68,7 +69,7 @@ export default function MyLesson({ params }) {
           </span>
         )}
         <h1>{lesson.question}</h1>
-        <p className="muted">💛 {t.customBy(lesson.author)}</p>
+        <p className="muted">{t.customBy(lesson.author)}</p>
       </div>
 
       {!ready && (
@@ -80,7 +81,7 @@ export default function MyLesson({ params }) {
             target="_blank"
             rel="noopener noreferrer"
           >
-            💬 {t.nudge}
+            <Icon name="share" size={22} /> {t.nudge}
           </a>
         </div>
       )}
@@ -89,7 +90,7 @@ export default function MyLesson({ params }) {
         .filter((m) => m.type === 'audio')
         .map((m, i) => (
           <div key={`a${i}`} className="media-card">
-            <b>🎙️ {t.voiceFrom(lesson.author)}</b>
+            <b>{t.voiceFrom(lesson.author)}</b>
             <audio controls src={m.url} preload="metadata" />
           </div>
         ))}
@@ -98,7 +99,7 @@ export default function MyLesson({ params }) {
         .filter((m) => m.type === 'video')
         .map((m, i) => (
           <div key={`v${i}`} className="media-card">
-            <b>▶️ {t.videoFrom}</b>
+            <b>{t.videoFrom}</b>
             <video controls playsInline src={m.url} preload="metadata" />
           </div>
         ))}
@@ -116,7 +117,7 @@ export default function MyLesson({ params }) {
           <div className="read-head">
             <h2>{t.stepsTitle}</h2>
             <button className="chip" onClick={() => speak(steps.map((s, i) => `${i + 1}. ${s}`).join(' '), voiceLang)}>
-              🔊 {t.readAll}
+              <Icon name="volume" size={20} /> {t.readAll}
             </button>
           </div>
           <ol className="read-list">
@@ -127,7 +128,7 @@ export default function MyLesson({ params }) {
                   <p>{s}</p>
                   <div className="read-actions">
                     <button className="chip" onClick={() => speak(s, voiceLang)}>
-                      🔊 {t.listen}
+                      <Icon name="volume" size={20} /> {t.listen}
                     </button>
                   </div>
                 </div>
@@ -138,7 +139,7 @@ export default function MyLesson({ params }) {
       )}
 
       <Link className="btn ghost" href="/">
-        🏠 {t.home}
+        {t.home}
       </Link>
     </div>
   );

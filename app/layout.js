@@ -1,5 +1,14 @@
+import '@fontsource/mukta/400.css';
+import '@fontsource/mukta/500.css';
+import '@fontsource/mukta/600.css';
+import '@fontsource/mukta/700.css';
+import '@fontsource/mukta/800.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
 import './globals.css';
 import './screens.css';
+import PwaBoot from '@/components/PwaBoot';
 
 export const metadata = {
   title: 'Folks | Phone help for your folks',
@@ -9,21 +18,16 @@ export const metadata = {
 export const viewport = {
   width: 'device-width',
   initialScale: 1,
-  themeColor: '#c2410c',
+  themeColor: '#0e6b5c',
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Roboto:wght@400;500;700&family=Noto+Sans+Devanagari:wght@400;600;700&family=Noto+Sans:wght@400;600;700&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body>{children}</body>
+      <body>
+        <PwaBoot />
+        {children}
+      </body>
     </html>
   );
 }

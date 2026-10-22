@@ -1,14 +1,14 @@
 'use client';
 // Settings sheet: language and sound. Labels are bilingual so anyone can find their language.
+import useInstall from './useInstall';
+
 export default function Settings({ lang, setLang, muted, toggleMute, onClose, onApps, appsLabel }) {
+  const [canInstall, install] = useInstall();
   return (
     <div className="settings-wrap" onClick={onClose}>
       <div className="settings" onClick={(e) => e.stopPropagation()} role="dialog" aria-label="Settings">
         <div className="settings-h">
-          <b>⚙️ Settings / सेटिंग</b>
-          <button className="chip" onClick={onClose} aria-label="Close">
-            ✕
-          </button>
+          <b>Settings / सेटिंग</b>
         </div>
         <label className="settings-row">
           <span>Language / भाषा</span>
@@ -28,6 +28,14 @@ export default function Settings({ lang, setLang, muted, toggleMute, onClose, on
             <span>My apps / मेरे ऐप</span>
             <button className="toggle" onClick={onApps}>
               {appsLabel || 'Choose'}
+            </button>
+          </div>
+        )}
+        {canInstall && (
+          <div className="settings-row">
+            <span>{lang === 'hi' ? 'फ़ोन पर ऐप की तरह जोड़ें' : 'Add Folks to home screen'}</span>
+            <button className="toggle on" onClick={install}>
+              {lang === 'hi' ? 'जोड़ें' : 'Add'}
             </button>
           </div>
         )}

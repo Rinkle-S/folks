@@ -123,13 +123,14 @@ export default function AddLesson({ params }) {
     return (
       <div className="page send">
         <Link href="/" className="brand">
+          <span className="brand-mark">F</span>
           Folks
         </Link>
-        <div className="done-burst">🎉</div>
+        
         <h1>Lesson ready!</h1>
         <p className="muted">It now shows on their Folks home screen under "Made for you". Let them know:</p>
         <a className="btn wa-btn" href={whatsappLink(notify)} target="_blank" rel="noopener noreferrer">
-          💬 Send them the link
+          Send them the link
         </a>
       </div>
     );
@@ -138,6 +139,7 @@ export default function AddLesson({ params }) {
   return (
     <div className="page send">
       <Link href="/" className="brand">
+        <span className="brand-mark">F</span>
         Folks
       </Link>
       <h1>Make a lesson for them</h1>

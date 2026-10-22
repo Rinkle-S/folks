@@ -6,6 +6,7 @@ import Screen from './Screens';
 import AppIcon from './AppIcon';
 import { REAL, FOLLOW_SKIP } from '@/lib/lessons';
 import { speak, track } from '@/lib/client';
+import Icon from './Icons';
 
 function Picture({ card, lesson, lang, t }) {
   const ref = useRef(null);
@@ -68,7 +69,7 @@ export default function FollowView({ lesson, lang, t, onDone, onPractice }) {
         <h1>{lesson.title[lang]}</h1>
         <p className="muted">{t.followOpen(lesson.appName)}</p>
         <button className="chip" onClick={readAll}>
-          🔊 {t.readAll}
+          <Icon name="volume" size={20} /> {t.readAll}
         </button>
       </div>
 
@@ -80,10 +81,10 @@ export default function FollowView({ lesson, lang, t, onDone, onPractice }) {
               <p>{c.text}</p>
               <div className="read-actions">
                 <button className="chip" onClick={() => speak(c.text, lang)}>
-                  🔊 {t.listen}
+                  <Icon name="volume" size={20} /> {t.listen}
                 </button>
                 <button className="chip" onClick={() => setOpen({ ...open, [i]: !open[i] })}>
-                  🖼️ {open[i] ? t.hidePicture : t.showPicture}
+                  <Icon name="image" size={20} /> {open[i] ? t.hidePicture : t.showPicture}
                 </button>
               </div>
               {open[i] && <Picture card={c} lesson={lesson} lang={lang} t={t} />}
@@ -94,7 +95,7 @@ export default function FollowView({ lesson, lang, t, onDone, onPractice }) {
 
       {tips.length > 0 && (
         <div className="read-tips">
-          <div className="follow-tip">💡 {t.remember}</div>
+          <div className="follow-tip">{t.remember}</div>
           <ul>
             {tips.map((c) => (
               <li key={c.step.id}>{c.text}</li>
@@ -104,10 +105,10 @@ export default function FollowView({ lesson, lang, t, onDone, onPractice }) {
       )}
 
       <button className="btn primary" onClick={onDone}>
-        ✓ {t.followFinish}
+        <Icon name="check" size={22} stroke={3} /> {t.followFinish}
       </button>
       <button className="btn ghost" onClick={onPractice}>
-        👆 {t.practiceInstead}
+        <Icon name="hand" size={22} /> {t.practiceInstead}
       </button>
     </div>
   );
