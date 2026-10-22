@@ -14,12 +14,18 @@ export default function Home() {
   const [result, setResult] = useState(null);
   const [typedQ, setTypedQ] = useState('');
   const [micOk, setMicOk] = useState(true);
+  const [micMsg, setMicMsg] = useState('');
+  const [inApp, setInApp] = useState(false);
   const [asked, setAsked] = useState(false);
   const recRef = useRef(null);
+  const gotResult = useRef(false);
 
   useEffect(() => {
     const SR = typeof window !== 'undefined' && (window.SpeechRecognition || window.webkitSpeechRecognition);
     setMicOk(!!SR);
+    const ua = navigator.userAgent || '';
+    // WhatsApp, Instagram, Facebook etc. open links in their own browser, where the mic usually doesn't work.
+    setInApp(/Android/i.test(ua) && (/; wv\)/.test(ua) || /WhatsApp|Instagram|FBAN|FBAV|FB_IAB|Line\//i.test(ua)));
   }, []);
 
   if (lang === undefined) return <div className="page" />;
@@ -39,32 +45,64 @@ export default function Home() {
   }
 
   function startMic() {
+    // Tapping again while listening stops it.
+    if (state === 'listening' && recRef.current) {
+      try {
+        recRef.current.stop();
+      } catch {}
+      return;
+    }
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SR) {
       setMicOk(false);
+      setMicMsg(inApp ? t.micInApp : t.micUnsupported);
+      track('mic_error', { meta: { error: 'unsupported', inApp, lang } });
       return;
     }
     try {
       const rec = new SR();
       rec.lang = lang === 'hi' ? 'hi-IN' : 'en-IN';
       rec.interimResults = false;
+      rec.continuous = false;
       rec.maxAlternatives = 1;
+      gotResult.current = false;
       rec.onresult = (e) => {
+        gotResult.current = true;
         const q = e.results[0][0].transcript;
         handleQuery(q, 'voice');
       };
       rec.onerror = (e) => {
         setState('idle');
-        if (e.error === 'not-allowed' || e.error === 'service-not-allowed') setMicOk(false);
+        track('mic_error', { meta: { error: e.error, inApp, lang } });
+        if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+          setMicMsg(inApp ? t.micInApp : t.micDenied);
+        } else if (e.error === 'no-speech') {
+          setMicMsg(t.micNoSpeech);
+        } else if (e.error === 'network') {
+          setMicMsg(t.micNetwork);
+        } else if (e.error !== 'aborted') {
+          setMicMsg(t.micUnsupported);
+        }
       };
-      rec.onend = () => setState((s) => (s === 'listening' ? 'idle' : s));
+      rec.onend = () => {
+        setState((s) => (s === 'listening' ? 'idle' : s));
+        if (!gotResult.current) setMicMsg((m) => m || t.micNoSpeech);
+      };
       recRef.current = rec;
+      setMicMsg('');
       setState('listening');
       rec.start();
-    } catch {
+    } catch (err) {
       setMicOk(false);
       setState('idle');
+      setMicMsg(t.micUnsupported);
+      track('mic_error', { meta: { error: 'start-failed', inApp, lang } });
     }
+  }
+
+  function openInChrome() {
+    const { host, pathname, search } = window.location;
+    window.location.href = `intent://${host}${pathname}${search}#Intent;scheme=https;package=com.android.chrome;end`;
   }
 
   function askChild(text) {
@@ -100,15 +138,15 @@ export default function Home() {
       {state !== 'result' && (
         <section className="ask">
           <h1>{t.askTitle}</h1>
-          <button
-            className={`mic ${state === 'listening' ? 'on' : ''}`}
-            onClick={startMic}
-            aria-label={t.askTitle}
-            disabled={state === 'listening'}
-          >
+          <button className={`mic ${state === 'listening' ? 'on' : ''}`} onClick={startMic} aria-label={t.askTitle}>
             🎤
           </button>
-          <p className="ask-sub">{state === 'listening' ? t.listening : micOk ? t.askSub : t.micUnsupported}</p>
+          <p className="ask-sub">{state === 'listening' ? t.listening : micMsg || (micOk ? t.askSub : t.micUnsupported)}</p>
+          {inApp && (
+            <button className="btn ghost chrome-btn" onClick={openInChrome}>
+              🌐 {t.openChrome}
+            </button>
+          )}
           <form
             className="type-row"
             onSubmit={(e) => {

@@ -62,6 +62,20 @@ export default function Send() {
         </div>
       </div>
 
+      <div className="field">
+        <span>Their payment app</span>
+        <div className="seg">
+          <button className="on">Google Pay</button>
+          <button disabled title="Coming soon">
+            PhonePe <small>soon</small>
+          </button>
+          <button disabled title="Coming soon">
+            Paytm <small>soon</small>
+          </button>
+        </div>
+        <p className="muted small">Lessons copy the layout of the app your parent uses. More apps are coming.</p>
+      </div>
+
       <div className="preview">{message}</div>
 
       <a
