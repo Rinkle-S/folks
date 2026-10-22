@@ -3,10 +3,11 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import Settings from './Settings';
 import AppIcon from './AppIcon';
+import AppsPicker from './AppsPicker';
 import { LESSONS, APPS, findLesson } from '@/lib/lessons';
 import { matchLesson } from '@/lib/match';
 import { T } from '@/lib/i18n';
-import { useLang, useMute, speak, track, whatsappLink } from '@/lib/client';
+import { useLang, useMute, speak, track, whatsappLink, getApps, saveApps, getRequests, addRequest, newId } from '@/lib/client';
 
 export default function Home() {
   const [lang, setLang] = useLang();
@@ -20,6 +21,9 @@ export default function Home() {
   const [asked, setAsked] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [serverStt, setServerStt] = useState(false);
+  const [myApps, setMyApps] = useState(undefined); // undefined loading, null never chosen
+  const [showApps, setShowApps] = useState(false);
+  const [made, setMade] = useState([]);
   const recRef = useRef(null);
   const gotResult = useRef(false);
   const mediaRef = useRef(null);
@@ -29,6 +33,19 @@ export default function Home() {
     // WhatsApp, Instagram, Facebook etc. open links in their own browser, where the mic usually doesn't work.
     setInApp(/Android/i.test(ua) && (/; wv\)/.test(ua) || /WhatsApp|Instagram|FBAN|FBAV|FB_IAB|Line\//i.test(ua)));
     // Is server speech-to-text switched on? (Only when the owner enables it, because it uses paid credits.)
+    setMyApps(getApps());
+    // Lessons made for this parent by someone close.
+    const reqs = getRequests();
+    if (reqs.length) {
+      setMade(reqs.map((r) => ({ id: r.id, question: r.q, status: 'asked' })));
+      fetch(`/api/custom?ids=${reqs.map((r) => r.id).join(',')}`)
+        .then((r) => r.json())
+        .then((j) => {
+          const byId = Object.fromEntries((j.lessons || []).map((l) => [l.id, l]));
+          setMade(reqs.map((r) => byId[r.id] || { id: r.id, question: r.q, status: 'asked' }));
+        })
+        .catch(() => {});
+    }
     fetch('/api/stt')
       .then((r) => r.json())
       .then((j) => setServerStt(!!j.enabled))
@@ -162,10 +179,27 @@ export default function Home() {
     window.location.href = `intent://${host}${pathname}${search}#Intent;scheme=https;package=com.android.chrome;end`;
   }
 
+  // Ask someone close to make a lesson: they get a link to type steps, record a voice note or add a video.
   function askChild(text) {
+    const id = newId();
+    const link = `${window.location.origin}/add/${id}?q=${encodeURIComponent(text)}`;
+    addRequest({ id, q: text });
+    setMade([{ id, question: text, status: 'asked' }, ...made]);
     setAsked(true);
-    track('ask_child', { meta: { q: text.slice(0, 200), lang } });
-    window.open(whatsappLink(t.askChildMsg(text)), '_blank', 'noopener');
+    track('ask_child', { meta: { q: text.slice(0, 200), lang, id } });
+    fetch('/api/custom', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, question: text, lang, status: 'asked' }),
+    }).catch(() => {});
+    window.open(whatsappLink(t.askChildMsgLink(text, link)), '_blank', 'noopener');
+  }
+
+  function saveMyApps(list) {
+    saveApps(list);
+    setMyApps(list);
+    setShowApps(false);
+    track('apps_set', { meta: { apps: list.join(',') } });
   }
 
   const matched = result ? findLesson(result.id) : null;
@@ -251,27 +285,79 @@ export default function Home() {
         </section>
       )}
 
+      {made.length > 0 && (
+        <section className="tiles">
+          <h2>💛 {t.fromFamily}</h2>
+          {made.map((m) => {
+            const ready = (m.steps && m.steps.length) || (m.media && m.media.length);
+            return ready ? (
+              <Link key={m.id} href={`/my/${m.id}`} className="tile">
+                <span className="tile-emoji">💛</span>
+                <span className="tile-title">
+                  {m.question}
+                  <small className="tile-sub">{t.customBy(m.author)}</small>
+                </span>
+                <span className="tile-go">›</span>
+              </Link>
+            ) : (
+              <Link key={m.id} href={`/my/${m.id}`} className="tile soon">
+                <span className="tile-emoji">⏳</span>
+                <span className="tile-title">{t.waiting(m.question)}</span>
+              </Link>
+            );
+          })}
+        </section>
+      )}
+
+      <section className="tiles">
+        <Link href="/scams" className="tile scam-tile">
+          <span className="tile-emoji">🚩</span>
+          <span className="tile-title">
+            {t.scamTile}
+            <small className="tile-sub">{t.scamTileSub}</small>
+          </span>
+          <span className="tile-go">›</span>
+        </Link>
+      </section>
+
+      {myApps === null && (
+        <button className="card apps-prompt" onClick={() => setShowApps(true)}>
+          📱 <b>{t.appsQ}</b>
+          <small>{t.appsSub}</small>
+        </button>
+      )}
+
       <section className="tiles">
         <h2>{t.orPick}</h2>
-        {APPS.map((app) => {
-          const list = lessons.filter((l) => l.app === app.id);
-          if (!list.length) return null;
-          return (
-            <div key={app.id} className="app-group">
-              <div className="app-group-h">
-                <AppIcon app={app.id} />
-                {app.name}
+        {(() => {
+          const mine = myApps || [];
+          const ordered = [...APPS.filter((a) => mine.includes(a.id)), ...APPS.filter((a) => !mine.includes(a.id))];
+          let shownOther = false;
+          return ordered.map((app) => {
+            const list = lessons.filter((l) => l.app === app.id);
+            if (!list.length) return null;
+            const isMine = mine.includes(app.id);
+            const header = mine.length > 0 && !isMine && !shownOther;
+            if (header) shownOther = true;
+            return (
+              <div key={app.id} className="app-group">
+                {header && <h2 className="other-h">{t.otherApps}</h2>}
+                <div className="app-group-h">
+                  <AppIcon app={app.id} />
+                  {app.name}
+                  {isMine && <span className="tag">{t.yourApps}</span>}
+                </div>
+                {list.map((l) => (
+                  <Link key={l.id} href={`/lesson/${l.id}`} className="tile">
+                    <span className="tile-emoji">{l.emoji}</span>
+                    <span className="tile-title">{l.title[lang]}</span>
+                    <span className="tile-go">›</span>
+                  </Link>
+                ))}
               </div>
-              {list.map((l) => (
-                <Link key={l.id} href={`/lesson/${l.id}`} className="tile">
-                  <span className="tile-emoji">{l.emoji}</span>
-                  <span className="tile-title">{l.title[lang]}</span>
-                  <span className="tile-go">›</span>
-                </Link>
-              ))}
-            </div>
-          );
-        })}
+            );
+          });
+        })()}
       </section>
 
       <footer className="home-foot">
@@ -279,8 +365,20 @@ export default function Home() {
       </footer>
 
       {showSettings && (
-        <Settings lang={lang} setLang={setLang} muted={muted} toggleMute={toggleMute} onClose={() => setShowSettings(false)} />
+        <Settings
+          lang={lang}
+          setLang={setLang}
+          muted={muted}
+          toggleMute={toggleMute}
+          onClose={() => setShowSettings(false)}
+          onApps={() => {
+            setShowSettings(false);
+            setShowApps(true);
+          }}
+          appsLabel={myApps && myApps.length ? `${myApps.length} ✓` : t.myApps}
+        />
       )}
+      {showApps && <AppsPicker t={t} initial={myApps || []} onSave={saveMyApps} onClose={() => setShowApps(false)} />}
     </div>
   );
 }

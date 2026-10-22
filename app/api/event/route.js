@@ -15,6 +15,14 @@ const ALLOWED = new Set([
   'tile_soon',
   'link_created',
   'mic_error',
+  'mode_pick',
+  'read_all',
+  'scam_answer',
+  'scam_done',
+  'apps_set',
+  'custom_created',
+  'custom_view',
+  'recording_uploaded',
 ]);
 
 const clip = (v, n) => (typeof v === 'string' ? v.slice(0, n) : null);

@@ -341,3 +341,80 @@ button { font: inherit; cursor: pointer; }
 .tap-bubble.below { transform: translate(-50%, 0); }
 .tap-bubble.below::after { bottom: auto; top: -6px; border-top: 0; border-bottom: 6px solid #1c1917; }
 @keyframes bob { 0%, 100% { margin-top: -2px; } 50% { margin-top: 3px; } }
+
+/* Lesson modes */
+.modes { margin-top: 6px; }
+.mode-row { display: flex; gap: 8px; }
+.mode-row .btn { margin-top: 10px; font-size: 16px; min-height: 52px; padding: 8px 10px; }
+.chip.big { padding: 8px 18px; font-size: 17px; }
+.screen.watching { cursor: default; }
+.screen.tapfx .hl { animation: press 0.6s ease-out; background-color: rgba(245, 158, 11, 0.35) !important; }
+@keyframes press { 0% { transform: scale(1); } 40% { transform: scale(0.9); } 100% { transform: scale(1); } }
+
+/* Read the steps */
+.read { flex: 1; min-height: 0; overflow-y: auto; padding: 4px 16px 24px; }
+.read-head { margin: 6px 0 10px; }
+.read-head h1 { font-size: 25px; line-height: 1.3; margin: 8px 0 4px; }
+.read-head h2 { font-size: 21px; margin: 18px 0 6px; }
+.follow-app { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; }
+.follow-tip { display: inline-block; background: var(--practice); color: #713f12; font-weight: 700; padding: 4px 12px; border-radius: 999px; margin-bottom: 8px; }
+.read-list { list-style: none; padding: 0; margin: 0 0 12px; }
+.read-step { display: flex; gap: 12px; background: var(--card); border: 1.5px solid var(--line); border-radius: var(--radius); padding: 14px; margin-bottom: 10px; }
+.read-num { flex: none; width: 36px; height: 36px; border-radius: 50%; background: var(--brand); color: #fff; font-weight: 800; display: grid; place-items: center; font-size: 18px; }
+.read-body { flex: 1; min-width: 0; }
+.read-body p { margin: 2px 0 8px; font-size: 20px; line-height: 1.45; font-weight: 500; }
+.read-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.read-tips { background: #fffbeb; border: 1.5px solid #fde68a; border-radius: var(--radius); padding: 12px 14px; margin-bottom: 8px; }
+.read-tips ul { margin: 0; padding-left: 20px; }
+.read-tips li { font-size: 18px; margin: 6px 0; }
+.follow-preview { width: 216px; height: 360px; margin-top: 10px; overflow: hidden; border: 3px solid #292524; border-radius: 18px; position: relative; pointer-events: none; }
+.follow-scale { width: 360px; height: 600px; transform: scale(0.6); transform-origin: top left; }
+.chip:disabled { opacity: 0.4; }
+
+/* Spot the scam */
+.scams-top { display: flex; justify-content: space-between; align-items: center; }
+.scams-h { font-size: 26px; margin: 8px 0 12px; }
+.scam-context { background: var(--brand-soft); border-radius: 12px; padding: 8px 12px; margin: 0 0 10px; font-size: 17px; }
+.scam-msg { background: #fff; border: 1.5px solid var(--line); border-radius: 18px; padding: 14px; box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06); }
+.scam-msg.whatsapp { background: #f0fdf4; border-color: #bbf7d0; }
+.scam-msg.call { background: #eff6ff; border-color: #bfdbfe; }
+.scam-msg-top { display: flex; justify-content: space-between; color: var(--muted); font-size: 14px; }
+.scam-kind { display: inline-flex; gap: 6px; align-items: center; font-weight: 700; }
+.scam-from { font-weight: 800; font-size: 18px; margin: 6px 0; }
+.scam-text { font-size: 19px; line-height: 1.45; }
+.scam-q { font-size: 21px; font-weight: 700; text-align: center; margin: 18px 0 4px; }
+.scam-btns { display: flex; gap: 10px; }
+.btn.safe { background: var(--good); color: #fff; }
+.btn.danger { background: var(--bad); color: #fff; }
+.scam-result { margin-top: 14px; border-radius: var(--radius); padding: 14px; }
+.scam-result.good { background: var(--good-soft); }
+.scam-result.bad { background: var(--bad-soft); }
+.scam-result b { font-size: 20px; }
+.scam-result p { font-size: 18px; margin: 8px 0; }
+.scam-todo { font-weight: 600; }
+.scam-tile { border-color: #fecaca; background: #fff7f7; }
+.tile-sub { display: block; font-size: 14px; color: var(--muted); font-weight: 500; }
+
+/* My apps */
+.apps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 10px 0; }
+.apps-grid.small { grid-template-columns: repeat(4, 1fr); }
+.app-pick { position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px 4px; border-radius: 14px; border: 2px solid var(--line); background: #fff; font-size: 14px; font-weight: 600; }
+.apps-grid.small .app-pick { font-size: 11.5px; padding: 8px 2px; }
+.app-pick.on { border-color: var(--brand); background: var(--brand-soft); }
+.app-pick i { position: absolute; top: 4px; right: 8px; color: var(--brand); font-style: normal; font-weight: 800; }
+.apps-prompt { display: block; width: 100%; text-align: left; margin-top: 16px; font-size: 18px; cursor: pointer; }
+.apps-prompt small { display: block; color: var(--muted); font-size: 15px; margin-top: 4px; }
+.other-h { margin-top: 18px; }
+
+/* Lessons made for you */
+.ask-q { background: var(--brand-soft); border-radius: 14px; padding: 12px 14px; margin: 10px 0; }
+.ask-q small { display: block; color: var(--muted); }
+.ask-q b { font-size: 20px; }
+.step-input { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+.step-input b { width: 26px; text-align: center; color: var(--brand); }
+.step-input input { flex: 1; min-height: 48px; border-radius: 12px; border: 1.5px solid var(--line); padding: 0 12px; font-size: 16px; }
+.voice-row { display: flex; gap: 8px; align-items: center; }
+.voice-row audio { flex: 1; min-width: 0; }
+.media-card { background: var(--card); border: 1.5px solid var(--line); border-radius: var(--radius); padding: 14px; margin-bottom: 12px; }
+.media-card b { display: block; font-size: 18px; margin-bottom: 8px; }
+.media-card audio, .media-card video, .media-card img { width: 100%; border-radius: 12px; }

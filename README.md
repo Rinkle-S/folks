@@ -4,22 +4,24 @@ Safe, voice-guided practice for everyday phone tasks for parents aged 55+. They 
 
 HelloPM Buildathon, Oct 2026 · built by Rinkle Sebastian · spec in [SPEC.md](SPEC.md)
 
-## What's in v1
+## What's in it
 
 | Page | For | What it does |
 |---|---|---|
-| `/` | Parent | Choose a language → say or type what you want to learn → matching lesson. Also lesson tiles. A "coming soon" tile or a request with no match → "Ask my son/daughter" on WhatsApp, logged as demand. |
-| `/lesson/qr-pay` | Parent | Pay at a shop by scanning a QR code. Covers the scan icon, checking the shop's name, typing the amount, practice PIN 1234, and refusing a "PIN to receive money" scam request. |
-| `/lesson/whatsapp-docs` | Parent | Find an old PDF or photo on WhatsApp (contact name → Media, links and docs → Docs). |
-| `/send` | Son/daughter | Pick a lesson and language, then send the link on WhatsApp. No login. |
-| `/stats` | Team/judges | Live numbers from the database: starts, completions, where people get stuck, requests, feedback. |
+| `/` | Parent | Say or type what you want to learn → the matching lesson. Lessons are grouped by app ("Your apps" first), plus a "Spot the scam" card. With no match, "Ask someone to make this lesson" sends a WhatsApp link. |
+| `/lesson/<id>` | Parent | 8 lessons (Google Pay: QR payment, send money, recharge, electricity bill · WhatsApp: find an old file, status, video call · Google Drive: scan to PDF). Each lesson can be learned three ways (see below). |
+| `/scams` | Parent | 10 real-looking messages and calls (KYC link, fake bank call, "new number" child, customs, job offer, lottery, wrong-number refund) plus genuine ones. Pick Real or Scam and hear why. |
+| `/add/<id>` | Helper | Make a lesson for what the parent asked: type the steps, record a voice note, and/or upload a screen recording or screenshots. |
+| `/my/<id>` | Parent | The lesson made for them: the helper's voice note, video, screenshots and written steps (read aloud). |
+| `/send` | Helper | Send a parent a lesson link on WhatsApp. |
+| `/stats` | Team/judges | Live numbers: starts, completions, where people get stuck, requests, feedback. |
 
-How a lesson works:
-- Each step shows a practice look-alike screen plus a spoken instruction.
-- A wrong tap or 💡 Help makes the right button glow and speaks a simpler hint.
-- Every step is logged (no names or phone numbers).
+The three ways to learn each lesson:
+- **Practise it myself:** tap through practice screens. The button to press always glows with a "Tap here" label, and a wrong tap gets a simpler hint.
+- **Watch first:** plays by itself, with voice and glowing taps. You can pause or go back, or tap "Let me try".
+- **Read the steps:** a written guide worded for the real app, with each step read aloud and an optional picture.
 
-All lesson content lives in `lib/lessons.js`, so adding a lesson or a language means adding data.
+All lesson content lives in `lib/lessons.js` (and scam cards in `lib/scams.js`), so a new lesson gets all three ways automatically.
 
 ## Run locally
 
@@ -30,7 +32,7 @@ npm run dev   # http://localhost:3000
 
 ## Deploy (Vercel + Supabase)
 
-1. **Supabase:** create a free project, then go to SQL Editor → paste `supabase/schema.sql` → Run.
+1. **Supabase:** create a free project, then go to SQL Editor → paste `supabase/schema.sql` → Run. Also create a **private** Storage bucket called `recordings` (for helpers' voice notes and videos).
 2. **Vercel:** import this repo, then add these environment variables:
    - `SUPABASE_URL` (Project Settings → API → Project URL)
    - `SUPABASE_SERVICE_ROLE_KEY` (Project Settings → API → `service_role` key; it's only used on the server)
@@ -44,5 +46,5 @@ Optional: better voice search with Sarvam AI (good with Hindi and Hinglish). It 
 
 ## Notes
 
-- **Practice screens are generic look-alikes.** They have no real brand logos, carry a permanent "Practice — no real money" banner, and nothing is sent. The PIN is always the practice PIN 1234, and lessons teach never to type a real PIN anywhere else.
+- **Practice screens are generic look-alikes.** They have no real brand logos, carry a permanent "Practice only: no real money" banner, and nothing is sent. The PIN is always the practice PIN 1234, and lessons teach never to type a real PIN anywhere else.
 - **Voice** uses the browser's own speech features (Chrome on Android works best). If voice isn't available, typing and the tiles still work.

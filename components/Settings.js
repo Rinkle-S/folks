@@ -1,6 +1,6 @@
 'use client';
 // Settings sheet: language and sound. Labels are bilingual so anyone can find their language.
-export default function Settings({ lang, setLang, muted, toggleMute, onClose }) {
+export default function Settings({ lang, setLang, muted, toggleMute, onClose, onApps, appsLabel }) {
   return (
     <div className="settings-wrap" onClick={onClose}>
       <div className="settings" onClick={(e) => e.stopPropagation()} role="dialog" aria-label="Settings">
@@ -23,6 +23,14 @@ export default function Settings({ lang, setLang, muted, toggleMute, onClose }) 
             {muted ? 'Off / बंद' : 'On / चालू'}
           </button>
         </div>
+        {onApps && (
+          <div className="settings-row">
+            <span>My apps / मेरे ऐप</span>
+            <button className="toggle" onClick={onApps}>
+              {appsLabel || 'Choose'}
+            </button>
+          </div>
+        )}
         <button className="btn primary" onClick={onClose}>
           {lang === 'hi' ? 'ठीक है' : 'Done'}
         </button>
