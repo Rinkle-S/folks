@@ -1,8 +1,15 @@
-import '@fontsource/mukta/400.css';
-import '@fontsource/mukta/500.css';
-import '@fontsource/mukta/600.css';
-import '@fontsource/mukta/700.css';
-import '@fontsource/mukta/800.css';
+// Noto Sans + Noto Sans Devanagari: the same type family Android uses for Hindi, designed as a matched pair,
+// with a large x-height for older eyes and sister fonts for other Indian scripts when more languages are added.
+import '@fontsource/noto-sans/latin-400.css';
+import '@fontsource/noto-sans/latin-500.css';
+import '@fontsource/noto-sans/latin-600.css';
+import '@fontsource/noto-sans/latin-700.css';
+import '@fontsource/noto-sans/latin-800.css';
+import '@fontsource/noto-sans-devanagari/devanagari-400.css';
+import '@fontsource/noto-sans-devanagari/devanagari-500.css';
+import '@fontsource/noto-sans-devanagari/devanagari-600.css';
+import '@fontsource/noto-sans-devanagari/devanagari-700.css';
+import '@fontsource/noto-sans-devanagari/devanagari-800.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';

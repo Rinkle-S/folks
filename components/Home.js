@@ -32,7 +32,7 @@ function Ring({ done, total }) {
         strokeDasharray={`${c * p} ${c}`}
         transform="rotate(-90 28 28)"
       />
-      <text x="28" y="33" textAnchor="middle" fontSize="15" fontWeight="800" fill="var(--ink)" fontFamily="Mukta, sans-serif">
+      <text x="28" y="33" textAnchor="middle" fontSize="15" fontWeight="800" fill="var(--ink)" fontFamily="Noto Sans, sans-serif">
         {done}
       </text>
     </svg>
@@ -112,7 +112,8 @@ export default function Home() {
     else speak(t.noMatch, lang);
   }
 
-  // Record with the phone mic and send to the server for transcription (Sarvam), if enabled.
+  // Record with the phone mic and send to the server for transcription (Sarvam). Works in any browser
+  // that allows the microphone, including WhatsApp's own browser on most phones.
   async function recordOnServer() {
     if (state === 'listening' && mediaRef.current) {
       try {
@@ -120,30 +121,52 @@ export default function Home() {
       } catch {}
       return;
     }
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder) {
+      recordInBrowser();
+      return;
+    }
+    let stream;
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } });
+    } catch (e) {
+      setState('idle');
+      setMicMsg(inApp ? t.micInApp : t.micDenied);
+      track('mic_error', { meta: { error: 'getUserMedia', name: e && e.name, inApp, lang } });
+      return;
+    }
+    try {
       const types = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg'];
-      const mime = (window.MediaRecorder && types.find((m) => MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(m))) || '';
+      const mime = types.find((m) => MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(m)) || '';
       const rec = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined);
       const chunks = [];
       rec.ondataavailable = (e) => e.data && e.data.size && chunks.push(e.data);
       rec.onstop = async () => {
         stream.getTracks().forEach((tr) => tr.stop());
         mediaRef.current = null;
+        const type = rec.mimeType || mime || 'audio/webm';
+        const blob = new Blob(chunks, { type });
+        if (blob.size < 1500) {
+          setState('idle');
+          setMicMsg(t.micNoSpeech);
+          return;
+        }
         setState('processing');
         try {
-          const type = rec.mimeType || mime || 'audio/webm';
-          const blob = new Blob(chunks, { type });
           const ext = type.includes('mp4') ? 'm4a' : type.includes('ogg') ? 'ogg' : 'webm';
           const fd = new FormData();
           fd.append('file', blob, `voice.${ext}`);
           fd.append('lang', lang);
           const r = await fetch('/api/stt', { method: 'POST', body: fd });
-          const j = await r.json();
-          if (r.ok && j.transcript && j.transcript.trim()) handleQuery(j.transcript.trim(), 'voice');
-          else {
+          const j = await r.json().catch(() => ({}));
+          if (r.ok && j.transcript && j.transcript.trim()) {
+            handleQuery(j.transcript.trim(), 'voice');
+          } else if (r.ok) {
             setState('idle');
             setMicMsg(t.micNoSpeech);
+          } else {
+            setState('idle');
+            setMicMsg(t.micServer);
+            track('mic_error', { meta: { error: 'server', status: j.status || r.status, detail: j.detail || j.error, lang } });
           }
         } catch {
           setState('idle');
@@ -158,9 +181,9 @@ export default function Home() {
         if (rec.state === 'recording') rec.stop();
       }, 6000);
     } catch (e) {
+      stream && stream.getTracks().forEach((tr) => tr.stop());
       setState('idle');
-      setMicMsg(inApp ? t.micInApp : t.micDenied);
-      track('mic_error', { meta: { error: 'getUserMedia', inApp, lang } });
+      recordInBrowser();
     }
   }
 

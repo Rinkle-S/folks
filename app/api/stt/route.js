@@ -1,12 +1,12 @@
 // Speech-to-text for the home-screen mic, using Sarvam (good with Hindi, Hinglish and Indian English).
-// Off by default because it uses paid credits (about ₹0.04 per 5-second search).
-// To switch on: in Vercel, set SARVAM_STT=on (SARVAM_API_KEY must also be set), then redeploy.
+// On whenever SARVAM_API_KEY is set (about ₹0.04 per 5-second search). To switch it off, set SARVAM_STT=off.
+// The browser's own free speech recognition is used only when this is off.
 import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
 function enabled() {
-  return !!process.env.SARVAM_API_KEY && process.env.SARVAM_STT === 'on';
+  return !!process.env.SARVAM_API_KEY && process.env.SARVAM_STT !== 'off';
 }
 
 export async function GET() {
@@ -26,8 +26,12 @@ export async function POST(req) {
   if (!file || typeof file === 'string') return NextResponse.json({ error: 'no audio' }, { status: 400 });
   if (file.size > 2_000_000) return NextResponse.json({ error: 'too long' }, { status: 413 });
 
+  // Strip codec details from the type (e.g. "audio/webm;codecs=opus" → "audio/webm").
+  const type = (file.type || 'audio/webm').split(';')[0];
+  const ext = type.includes('mp4') ? 'm4a' : type.includes('ogg') ? 'ogg' : type.includes('wav') ? 'wav' : 'webm';
+  const audio = new Blob([await file.arrayBuffer()], { type });
   const out = new FormData();
-  out.append('file', file, file.name || 'voice.webm');
+  out.append('file', audio, `voice.${ext}`);
   out.append('language_code', lang);
   if (process.env.SARVAM_STT_MODEL) out.append('model', process.env.SARVAM_STT_MODEL);
 
@@ -40,7 +44,7 @@ export async function POST(req) {
     const j = await r.json().catch(() => ({}));
     if (!r.ok) {
       console.error('sarvam stt failed', r.status, j);
-      return NextResponse.json({ error: 'stt failed' }, { status: 502 });
+      return NextResponse.json({ error: 'stt failed', status: r.status, detail: (j && (j.error?.message || j.message)) || null }, { status: 502 });
     }
     return NextResponse.json({ transcript: j.transcript || '' });
   } catch (e) {
