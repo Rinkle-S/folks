@@ -35,7 +35,7 @@ export default function Settings({ lang, setLang, muted, toggleMute, onClose, on
             className="toggle"
             onClick={() => {
               unlockAudio();
-              speak(t.soundCheck, lang);
+              speak(t.soundCheck, lang, { force: true });
               setTested(true);
             }}
           >

@@ -526,3 +526,7 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; }
   .device-screen .player { height: 100%; }
   .device-screen .shell, .device-screen .onboard, .device-screen .page, .device-screen .done { min-height: 100%; }
 }
+
+.chip.talking { box-shadow: 0 0 0 2px var(--peacock) inset; color: var(--peacock-deep); background: var(--peacock-soft); }
+.chip.talking svg { animation: talk 0.9s ease-in-out infinite; }
+@keyframes talk { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.18); } }

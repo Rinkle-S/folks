@@ -56,7 +56,7 @@ export default function FollowView({ lesson, lang, t, onDone, onPractice }) {
   const tips = cards.filter((c) => c.tip);
 
   function readAll() {
-    speak([t.followOpen(lesson.appName), ...steps.map((c) => c.text)], lang);
+    speak([t.followOpen(lesson.appName), ...steps.map((c) => c.text)], lang, { force: true });
     track('read_all', { lesson: lesson.id });
   }
 
@@ -80,7 +80,7 @@ export default function FollowView({ lesson, lang, t, onDone, onPractice }) {
             <div className="read-body">
               <p>{c.text}</p>
               <div className="read-actions">
-                <button className="chip" onClick={() => speak(c.text, lang)}>
+                <button className="chip" onClick={() => speak(c.text, lang, { force: true })}>
                   <Icon name="volume" size={20} /> {t.listen}
                 </button>
                 <button className="chip" onClick={() => setOpen({ ...open, [i]: !open[i] })}>

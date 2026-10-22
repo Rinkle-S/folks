@@ -11,7 +11,7 @@ import FollowView from './FollowView';
 import Icon from './Icons';
 import { LESSONS } from '@/lib/lessons';
 import { T } from '@/lib/i18n';
-import { useLang, useMute, speak, stopSpeaking, prefetchSpeech, track, getFrom, whatsappLink, markDone, vibrate } from '@/lib/client';
+import { useLang, useMute, speak, stopSpeaking, prefetchSpeech, onSpeaking, track, getFrom, whatsappLink, markDone, vibrate } from '@/lib/client';
 
 export default function Player({ id }) {
   const lesson = LESSONS[id];
@@ -33,6 +33,7 @@ export default function Player({ id }) {
   const [from, setFrom] = useState('');
   const [bubble, setBubble] = useState(null);
   const [showSettings, setShowSettings] = useState(false);
+  const [talking, setTalking] = useState(false);
   const screenRef = useRef(null);
   const coachRef = useRef(null);
   const startedRef = useRef(false);
@@ -70,6 +71,7 @@ export default function Player({ id }) {
   }, [idx, lang, done, mode]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => () => stopSpeaking(), []);
+  useEffect(() => onSpeaking(setTalking), []);
 
   useEffect(() => {
     const c = coachRef.current;
@@ -522,8 +524,8 @@ export default function Player({ id }) {
           </div>
         ) : (
           <div className="coach-actions">
-            <button className="chip" onClick={() => speak(coachText, lang)}>
-              <Icon name="volume" size={20} /> {t.listen}
+            <button className={`chip ${talking ? 'talking' : ''}`} onClick={() => speak(coachText, lang, { force: true })}>
+              <Icon name="volume" size={20} /> {talking ? t.speakingNow : t.listen}
             </button>
             {mode === 'practice' && (step.kind === 'tap' || step.kind === 'input') && (
               <button className="chip" onClick={askHelp}>

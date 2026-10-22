@@ -28,7 +28,7 @@ export async function GET(req) {
   const path = `${MODEL().replace(/[^a-z0-9]/gi, '')}-${SPEAKER(lang)}/${lang}/${id}.mp3`;
 
   // 1. Already generated? Serve the saved copy (no credits used).
-  if (db) {
+  if (db && !u.searchParams.get('debug')) {
     try {
       const r = await fetch(`${db.url}/storage/v1/object/tts/${path}`, { headers: db.headers });
       if (r.ok) {
@@ -57,9 +57,15 @@ export async function GET(req) {
     const j = await r.json().catch(() => ({}));
     if (!r.ok || !j.audios || !j.audios[0]) {
       console.error('sarvam tts failed', r.status, j);
-      return NextResponse.json({ error: 'tts failed', status: r.status }, { status: 502 });
+      return NextResponse.json({ error: 'tts failed', status: r.status, detail: j }, { status: 502, headers: { 'Cache-Control': 'no-store' } });
     }
     audio = Buffer.from(j.audios.join(''), 'base64');
+    if (u.searchParams.get('debug')) {
+      return NextResponse.json(
+        { ok: true, bytes: audio.length, head: audio.subarray(0, 12).toString('hex'), model: MODEL(), speaker: SPEAKER(lang), text },
+        { headers: { 'Cache-Control': 'no-store' } }
+      );
+    }
   } catch (e) {
     console.error('sarvam tts error', e);
     return NextResponse.json({ error: 'tts error' }, { status: 502 });
