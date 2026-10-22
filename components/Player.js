@@ -27,7 +27,7 @@ export default function Player({ id }) {
   const lockRef = useRef(false);
 
   const step = lesson.steps[idx];
-  const t = T[lang || 'hi'];
+  const t = T[lang || 'en'];
   const total = lesson.steps.length;
 
   useEffect(() => setFrom(getFrom()), []);

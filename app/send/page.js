@@ -8,7 +8,7 @@ import { track, whatsappLink } from '@/lib/client';
 export default function Send() {
   const [name, setName] = useState('');
   const [lesson, setLesson] = useState('qr-pay');
-  const [lang, setLang] = useState('hi');
+  const [lang, setLang] = useState('en');
   const [origin, setOrigin] = useState('');
   const [copied, setCopied] = useState(false);
 
@@ -53,11 +53,11 @@ export default function Send() {
       <div className="field">
         <span>Their language</span>
         <div className="seg">
-          <button className={lang === 'hi' ? 'on' : ''} onClick={() => setLang('hi')}>
-            हिंदी
-          </button>
           <button className={lang === 'en' ? 'on' : ''} onClick={() => setLang('en')}>
             English
+          </button>
+          <button className={lang === 'hi' ? 'on' : ''} onClick={() => setLang('hi')}>
+            हिंदी
           </button>
         </div>
       </div>
