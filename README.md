@@ -36,7 +36,7 @@ npm run dev   # http://localhost:3000
 
 ## Deploy (Vercel + Supabase)
 
-1. **Supabase:** create a free project, then go to SQL Editor → paste `supabase/schema.sql` → Run. Also create a **private** Storage bucket called `recordings` (for helpers' voice notes and videos).
+1. **Supabase:** create a free project, then go to SQL Editor → paste `supabase/schema.sql` → Run. Also create two **private** Storage buckets: `recordings` (for helpers' voice notes and videos) and `tts` (saved lesson voice clips).
 2. **Vercel:** import this repo, then add these environment variables:
    - `SUPABASE_URL` (Project Settings → API → Project URL)
    - `SUPABASE_SERVICE_ROLE_KEY` (Project Settings → API → `service_role` key; it's only used on the server)
@@ -44,11 +44,13 @@ npm run dev   # http://localhost:3000
 
 Without the env vars the app still works; events just aren't stored.
 
-Optional: better voice search with Sarvam AI (good with Hindi and Hinglish). It costs about ₹0.04 per search.
-- Set `SARVAM_API_KEY`, and set `SARVAM_STT=on` to switch it on.
-- Without it, the mic uses the browser's own free speech recognition.
+**Voice (Sarvam AI, optional):** set `SARVAM_API_KEY` in Vercel and both of these switch on:
+- **Lesson voice:** a natural Indian voice (Bulbul v3; `priya` for Hindi, `ishita` for English). Each sentence is generated once and saved in a private Supabase bucket called `tts`, so replays cost nothing. Only sentences that exist in the app can be voiced. Turn it off with `SARVAM_TTS=off`.
+- **Voice search:** speech-to-text, at about ₹0.04 per search. Turn it off with `SARVAM_STT=off`.
+
+Without a key, the phone's own voice and speech recognition are used.
 
 ## Notes
 
 - **Practice screens are generic look-alikes.** They have no real brand logos, carry a permanent "Practice only: no real money" banner, and nothing is sent. The PIN is always the practice PIN 1234, and lessons teach never to type a real PIN anywhere else.
-- **Voice** uses the browser's own speech features (Chrome on Android works best). If voice isn't available, typing and the tiles still work.
+- **If voice isn't available,** typing, the tiles and the written steps still work.

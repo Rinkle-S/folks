@@ -11,7 +11,7 @@ import FollowView from './FollowView';
 import Icon from './Icons';
 import { LESSONS } from '@/lib/lessons';
 import { T } from '@/lib/i18n';
-import { useLang, useMute, speak, stopSpeaking, track, getFrom, whatsappLink, markDone, vibrate } from '@/lib/client';
+import { useLang, useMute, speak, stopSpeaking, prefetchSpeech, track, getFrom, whatsappLink, markDone, vibrate } from '@/lib/client';
 
 export default function Player({ id }) {
   const lesson = LESSONS[id];
@@ -61,10 +61,12 @@ export default function Player({ id }) {
     }
   }, [lang, id]);
 
-  // Speak each step when it appears (practice and watch).
+  // Practice: read each step aloud when it appears, and get the next one ready.
   useEffect(() => {
-    if (!lang || done || mode === 'follow') return;
+    if (!lang || done || mode === 'follow' || mode === 'watch') return;
     speak(step.say[lang], lang);
+    const nxt = lesson.steps[idx + 1];
+    if (nxt) prefetchSpeech(nxt.say[lang], lang);
   }, [idx, lang, done, mode]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => () => stopSpeaking(), []);
@@ -123,38 +125,59 @@ export default function Player({ id }) {
     };
   }, [idx, typed, lang, done, mode]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Watch mode: play each step by itself.
+  // Watch mode: play each step by itself. Each step waits for its voice to finish before the next one.
   useEffect(() => {
     clearTimers();
-    if (!watching || paused || done || !lang) return;
-    const later = (fn, ms) => timers.current.push(setTimeout(fn, ms));
+    if (!watching || done || !lang) return;
+    if (paused) {
+      stopSpeaking();
+      return;
+    }
+    let cancelled = false;
+    const wait = (ms) => new Promise((r) => timers.current.push(setTimeout(r, ms)));
     const s = step;
-    const text = s.say[lang] || '';
-    const readMs = Math.min(Math.max(text.length * 62, 3200), 9500);
-    if (s.kind === 'info') {
-      later(() => advance(), 1500);
-    } else if (s.kind === 'tap') {
-      later(() => setTapFx(true), readMs);
-      later(() => {
+    const nxt = lesson.steps[idx + 1];
+    if (nxt) prefetchSpeech(nxt.say[lang], lang);
+    (async () => {
+      if (s.kind === 'info') {
+        await wait(1200);
+        if (!cancelled) advance();
+        return;
+      }
+      await speak(s.say[lang], lang);
+      if (cancelled) return;
+      if (s.kind === 'tap') {
+        await wait(400);
+        if (cancelled) return;
+        setTapFx(true);
+        await wait(700);
+        if (cancelled) return;
         setTapFx(false);
         advance();
-      }, readMs + 700);
-    } else if (s.kind === 'input') {
-      const chars = s.expected.split('');
-      chars.forEach((_, k) => later(() => setTyped(s.expected.slice(0, k + 1)), Math.min(readMs, 4500) + k * 550));
-      later(() => {
+      } else if (s.kind === 'input') {
+        for (let k = 0; k < s.expected.length; k++) {
+          await wait(550);
+          if (cancelled) return;
+          setTyped(s.expected.slice(0, k + 1));
+        }
+        await wait(700);
+        if (cancelled) return;
         setValues((v) => ({ ...v, [s.field]: s.expected }));
         advance();
-      }, Math.min(readMs, 4500) + chars.length * 550 + 700);
-    } else if (s.kind === 'quiz') {
-      const right = s.options.find((o) => o.correct);
-      later(() => {
+      } else if (s.kind === 'quiz') {
+        const right = s.options.find((o) => o.correct);
+        await wait(500);
+        if (cancelled) return;
         setQuiz({ correct: true, why: right.why[lang] });
-        speak(right.why[lang], lang);
-      }, readMs);
-      later(() => advance(), readMs + Math.min(Math.max(right.why[lang].length * 62, 3000), 8000));
-    }
-    return clearTimers;
+        await speak(right.why[lang], lang);
+        await wait(800);
+        if (!cancelled) advance();
+      }
+    })();
+    return () => {
+      cancelled = true;
+      clearTimers();
+    };
   }, [watching, paused, idx, done, lang]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!lang) return <div className="page" />;

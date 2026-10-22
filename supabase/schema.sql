@@ -33,3 +33,5 @@ alter table public.custom_lessons enable row level security;
 
 -- Voice notes, videos and screenshots: create a PRIVATE storage bucket named "recordings"
 -- (Supabase → Storage → New bucket → name: recordings → leave "Public" off).
+
+-- Lesson voice clips (generated once by Sarvam, then reused): create a PRIVATE storage bucket named "tts".

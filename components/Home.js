@@ -108,7 +108,7 @@ export default function Home() {
     setMicMsg('');
     setState('result');
     track('voice_search', { meta: { q: q.slice(0, 200), via, match: m ? m.id : null, lang } });
-    if (m && m.kind === 'lesson') speak(`${t.confirmQ} ${LESSONS[m.id].title[lang]}`, lang);
+    if (m && m.kind === 'lesson') speak([t.confirmQ, LESSONS[m.id].title[lang]], lang);
     else speak(t.noMatch, lang);
   }
 

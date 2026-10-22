@@ -39,7 +39,7 @@ export default function Scams() {
 
   useEffect(() => {
     if (!lang || finished || !started) return;
-    speak(`${c.context ? c.context[lang] + ' ' : ''}${c.msg[lang]} ${T[lang].scamQ}`, lang);
+    speak([c.context ? c.context[lang] : '', c.msg[lang], T[lang].scamQ], lang);
   }, [i, lang, finished, started]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => () => stopSpeaking(), []);
@@ -81,7 +81,7 @@ export default function Scams() {
     vibrate(right ? 25 : [40, 60, 40]);
     if (right) setScore(score + 1);
     track('scam_answer', { meta: { id: c.id, picked: a, right } });
-    speak(`${right ? t.scamRight : t.scamWrong} ${c.why[lang]} ${c.todo[lang]}`, lang);
+    speak([right ? t.scamRight : t.scamWrong, c.why[lang], c.todo[lang]], lang);
   }
 
   function next() {
@@ -178,7 +178,7 @@ export default function Scams() {
           <button className="btn primary" onClick={next}>
             {t.next}
           </button>
-          <button className="chip" style={{ marginTop: 10 }} onClick={() => speak(`${c.why[lang]} ${c.todo[lang]}`, lang)}>
+          <button className="chip" style={{ marginTop: 10 }} onClick={() => speak([c.why[lang], c.todo[lang]], lang)}>
             <Icon name="volume" size={20} /> {t.listen}
           </button>
         </div>

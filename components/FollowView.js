@@ -56,7 +56,7 @@ export default function FollowView({ lesson, lang, t, onDone, onPractice }) {
   const tips = cards.filter((c) => c.tip);
 
   function readAll() {
-    speak(`${t.followOpen(lesson.appName)} ${steps.map((c, i) => `${i + 1}. ${c.text}`).join(' ')}`, lang);
+    speak([t.followOpen(lesson.appName), ...steps.map((c) => c.text)], lang);
     track('read_all', { lesson: lesson.id });
   }
 
