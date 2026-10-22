@@ -16,6 +16,7 @@ import '@fontsource/roboto/700.css';
 import './globals.css';
 import './screens.css';
 import PwaBoot from '@/components/PwaBoot';
+import DeviceFrame from '@/components/DeviceFrame';
 
 export const metadata = {
   title: 'Folks | Phone help for your folks',
@@ -33,7 +34,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body>
         <PwaBoot />
-        {children}
+        <DeviceFrame>{children}</DeviceFrame>
       </body>
     </html>
   );
