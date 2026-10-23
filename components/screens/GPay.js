@@ -1,6 +1,8 @@
 // Practice look-alike of Google Pay (India). Same layout, labels and flow; no Google logos.
 import Icon from '../Icons';
 import Keypad from './Keypad';
+import { useScreenLang } from '../LangCtx';
+import { PIN_NOTE } from '@/lib/screenText';
 
 const QUICK = [
   { t: 'scan', icon: 'scan', label: 'Scan any QR code' },
@@ -279,6 +281,7 @@ export function GpAmount({ payee, amount, keypad, sheet }) {
 }
 
 export function GpPin({ payee, amount, typed, full }) {
+  const lang = useScreenLang();
   const filled = full ? 4 : (typed || '').length;
   return (
     <div className="app pin">
@@ -299,7 +302,7 @@ export function GpPin({ payee, amount, typed, full }) {
           <span key={i} className={i < filled ? 'on' : ''} />
         ))}
       </div>
-      <div className="pin-warn">Practice PIN: 1 2 3 4. Never your real PIN.</div>
+      <div className="pin-warn">{PIN_NOTE[lang] || PIN_NOTE.en}</div>
       <Keypad tick />
     </div>
   );
