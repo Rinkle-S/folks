@@ -235,7 +235,7 @@ export function BlProfile({ tap }) {
         <b>Profile</b>
       </div>
       <div className="k-bl-card">
-        <b>Kamla Devi</b>
+        <b>Kamala Nair</b>
         <small>+91 98450 12345</small>
       </div>
       {[
@@ -370,7 +370,7 @@ export function FkAccount({ tap }) {
   return (
     <div className="app k-fk light">
       <div className="k-fk-acc">
-        <b>Hey! Kamla</b>
+        <b>Hey! Kamala</b>
         <span className="k-fk-plus">Plus Silver</span>
       </div>
       <div className="k-fk-quick">
@@ -482,7 +482,7 @@ export function FkAddresses({ add }) {
         <Icon name="plus" size={20} color="#2874f0" /> Add a new address
       </div>
       <div className="k-fk-addr">
-        <b>Kamla Devi</b>
+        <b>Kamala Nair</b>
         <small>12B, MG Road, Ernakulam, Kochi 682016</small>
         <small>98450 12345</small>
       </div>
@@ -499,7 +499,7 @@ export function FkAddressForm({ save }) {
       </div>
       <div className="k-fk-form">
         {[
-          ['Full Name (Required)', 'Kamla Devi'],
+          ['Full Name (Required)', 'Kamala Nair'],
           ['Phone number (Required)', '98450 12345'],
           ['Pincode (Required)', '682016'],
           ['House No., Building Name (Required)', '12B, Lakshmi Apartments'],

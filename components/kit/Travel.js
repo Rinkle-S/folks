@@ -18,7 +18,7 @@ export function IrHome({ tap }) {
       </div>
       <div className="k-ir-hero">
         <Icon name="train" size={40} color="#fff" />
-        <small>{tx('Namaste, Kamla')}</small>
+        <small>{tx('Namaste, Kamala')}</small>
       </div>
       <div className="k-ir-grid">
         {[
@@ -126,7 +126,7 @@ export function IrTicket({ cancel }) {
           </span>
         </div>
         <div className="k-ir-pax">
-          <span>Kamla Devi, F, 62</span>
+          <span>Kamala Nair, F, 63</span>
           <b>S5 / 32 / LB</b>
         </div>
         <small>PNR 4521878899 · Fare ₹520</small>
@@ -150,7 +150,7 @@ export function IrCancel({ confirm }) {
       <div className="k-ir-form">
         <small>Select passenger(s) to cancel</small>
         <div className="k-ir-chk">
-          <span>✓</span> Kamla Devi, F, 62 · S5/32/LB
+          <span>✓</span> Kamala Nair, F, 63 · S5/32/LB
         </div>
         <div className="k-ir-refund">
           <span>

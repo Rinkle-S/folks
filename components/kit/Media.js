@@ -175,9 +175,9 @@ export function YtYou({ tap }) {
         </span>
       </div>
       <div className="k-yt-me">
-        <Av name="Kamla Devi" size={64} color="#0b57d0" />
+        <Av name="Kamala Nair" size={64} color="#0b57d0" />
         <span>
-          <b>Kamla Devi</b>
+          <b>Kamala Nair</b>
           <small>@kamladevi · View channel ›</small>
         </span>
       </div>
@@ -251,7 +251,7 @@ function IgNav({ tap }) {
         ['profile', 'user'],
       ].map(([k, ic]) => (
         <span key={k} data-t={tap === k ? `nav-${k}` : undefined}>
-          {k === 'profile' ? <Av name="Kamla" size={26} color="#c13584" /> : <Icon name={ic} size={25} />}
+          {k === 'profile' ? <Av name="Kamala" size={26} color="#c13584" /> : <Icon name={ic} size={25} />}
         </span>
       ))}
     </div>
@@ -279,7 +279,7 @@ export function IgHome({ nav }) {
       <div className="k-ig-post">
         <div className="k-ig-ph">
           <Av name="rahul" size={32} />
-          <b>rahul_sharma</b>
+          <b>rahul_nair</b>
           <Icon name="more" size={20} />
         </div>
         <div className="k-ig-img">🎂</div>
@@ -303,7 +303,7 @@ export function IgSearch({ typed, tap }) {
       </div>
       {typed ? (
         [
-          ['ramesh_kumar', 'Ramesh Kumar · Followed by rahul_sharma'],
+          ['ramesh_kumar', 'Ramesh Kumar · Followed by rahul_nair'],
           ['ramesh.official', 'Ramesh · 12K followers'],
           ['ramesh_photography', 'Ramesh Photos'],
         ].map(([u, s], i) => (
@@ -361,7 +361,7 @@ export function IgProfile({ me, follow, menu, followed }) {
         </span>
       </div>
       <div className="k-ig-bio">
-        <b>{me ? 'Kamla Devi' : 'Ramesh Kumar'}</b>
+        <b>{me ? 'Kamala Nair' : 'Ramesh Kumar'}</b>
         <small>{me ? 'Kochi 🌴' : 'Family · Travel · Food'}</small>
       </div>
       <div className="k-ig-btns">
@@ -452,7 +452,7 @@ export function SpHome({ nav }) {
           </span>
         ))}
       </div>
-      <div className="k-sp-h">Made for Kamla</div>
+      <div className="k-sp-h">Made for Kamala</div>
       <div className="k-sp-row">
         {['#b45309', '#0e7490', '#be123c'].map((c) => (
           <i key={c} style={{ background: c }} />
@@ -536,7 +536,7 @@ export function SpPlaylist({ add, search, plusTap }) {
             <Icon name="music" size={50} />
           </span>
           <b>Morning songs</b>
-          <small>Kamla Devi · 0 songs</small>
+          <small>Kamala Nair · 0 songs</small>
           <span className="k-sp-btn" data-t={add ? 'add-songs' : undefined}>
             Add to this playlist
           </span>

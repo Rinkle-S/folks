@@ -341,7 +341,7 @@ export function GpRechargeNumbers() {
           K
         </span>
         <div>
-          <b>Kamla Devi (You)</b>
+          <b>Kamala Nair (You)</b>
           <small>+91 98765 43210 · Prepaid</small>
         </div>
       </div>
@@ -374,7 +374,7 @@ export function GpPlans() {
       <div className="gp-bar">
         <Icon name="back" size={22} />
         <div className="gp-bar-name">
-          <b>Kamla Devi</b>
+          <b>Kamala Nair</b>
           <small>+91 98765 43210 · Prepaid</small>
         </div>
       </div>

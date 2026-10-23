@@ -661,3 +661,8 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; }
 .pi-ic { display: inline-grid; place-items: center; width: 76px; height: 76px; border-radius: 50%; background: var(--marigold-soft); color: var(--marigold-deep); margin-bottom: 10px; }
 .pi-card h2 { margin: 6px 0 10px; font-size: 26px; line-height: 1.25; }
 .pi-card p { font-size: 20px; line-height: 1.5; margin: 0 0 18px; color: var(--ink-2); }
+
+.trusted { padding: 6px 0 10px; display: grid; gap: 10px; border-bottom: 1px solid var(--line); }
+.trusted input { font: inherit; font-size: 18px; min-height: 50px; padding: 0 14px; border-radius: 14px; border: none; box-shadow: 0 0 0 1.5px var(--line) inset; background: #fff; }
+.trusted-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 18px; }
+.trusted-row .chip { margin-left: auto; }

@@ -16,6 +16,7 @@ import { GUIDES, GUIDE_LIST } from '@/lib/guides';
 import { T } from '@/lib/i18n';
 import { langCode } from '@/lib/langs';
 import { askSomeone, loadMade, isReady } from '@/lib/ask';
+import AskWho from './AskWho';
 import {
   useLang,
   useMute,
@@ -302,8 +303,8 @@ export default function Home() {
     window.location.href = `intent://${host}${pathname}${search}#Intent;scheme=https;package=com.android.chrome;end`;
   }
 
-  function askChild(text) {
-    askSomeone(text, lang, t);
+  function askChild(text, contact) {
+    askSomeone(text, lang, t, contact);
     setAsked(true);
   }
 
@@ -408,9 +409,7 @@ export default function Home() {
               <div className="card">
                 <p>{t.noMatch}</p>
                 {ai.why && <p className="muted small">({ai.why}{ai.detail ? `: ${ai.detail}` : ""})</p>}
-                <button className="btn wa-btn" onClick={() => askChild(query)}>
-                  <Icon name="share" size={22} /> {t.askChild}
-                </button>
+                <AskWho t={t} label={t.askChild} onAsk={(c) => askChild(query, c)} />
                 {asked && <p className="thanks">{t.thanks}</p>}
                 <button className="btn ghost" onClick={() => setState('idle')}>
                   {t.tryAgain}
