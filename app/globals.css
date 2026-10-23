@@ -684,3 +684,19 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; }
 .fl-opt.tick.on .tick-box { background: var(--peacock); border-color: var(--peacock); }
 
 .coach-text .say-now { background: #ffe08a; border-radius: 6px; padding: 1px 3px; margin: 0 -3px; }
+
+/* Practice screen layout: slim yellow strip, a smaller coach panel, and a full-size picture on quiz steps */
+.practice-tag { font-size: 13px; padding: 3px 8px; line-height: 1.2; border-radius: 10px 10px 0 0; }
+.screen-wrap { padding: 4px 10px 4px; }
+.coach { padding: 6px 14px calc(10px + env(safe-area-inset-bottom)); margin-top: 6px; }
+.coach::before { height: 4px; margin: 0 auto 6px; }
+.coach-text { font-size: 19px; line-height: 1.35; }
+.coach-actions { margin-top: 8px; }
+.coach .chip { min-height: 40px; font-size: 16px; padding: 4px 12px; }
+.coach .opt { font-size: 17px; min-height: 0; margin-top: 0; padding: 9px 14px; }
+.opt-wrap { display: grid; gap: 6px; }
+.why { margin: 0; font-size: 16px; }
+.ev-mark { outline: 3px solid #f2a33a; outline-offset: 3px; border-radius: 8px; }
+.is-quiz .screen-wrap { flex: 0 0 clamp(236px, 40dvh, 320px); }
+.is-quiz .coach { flex: 1 1 auto; max-height: none; min-height: 0; overflow-y: auto; }
+.is-quiz .options .btn.primary { position: sticky; bottom: 0; }

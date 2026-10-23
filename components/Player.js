@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import Screen from './Screens';
 import PracticeIntro from './PracticeIntro';
-import { watchPersona } from '@/lib/persona';
+import { watchPersona, personalise } from '@/lib/persona';
 import { recordPerf } from '@/lib/adapt';
 import { levelOf } from '@/lib/levels';
 import { sentences } from '@/lib/sentences';
@@ -71,6 +71,27 @@ function PlayerInner({ id }) {
 
   useEffect(() => setFrom(getFrom()), []);
   useEffect(() => onSpeechProgress(setSpoken), []);
+  // Quiz steps that compare something on the screen: outline it and scroll it into view, at full size.
+  useEffect(() => {
+    const root = screenRef.current;
+    if (!root || !lang) return;
+    root.querySelectorAll('.ev-mark').forEach((e) => e.classList.remove('ev-mark'));
+    const need = lesson.steps[idx] && lesson.steps[idx].kind === 'quiz' && lesson.steps[idx].focusText;
+    if (!need) return;
+    const tm = setTimeout(() => {
+      const key = personalise(need);
+      const el = [...root.querySelectorAll('*')].find((e) => e.children.length === 0 && e.textContent.trim().startsWith(key));
+      if (!el) return;
+      el.classList.add('ev-mark');
+      const app = el.closest('.app');
+      if (app) app.scrollTop = Math.max(0, el.getBoundingClientRect().top - app.getBoundingClientRect().top + app.scrollTop - 24);
+    }, 120);
+    return () => clearTimeout(tm);
+  }, [idx, lang]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    const w = document.querySelector('.options .why');
+    if (w) w.scrollIntoView({ block: 'nearest' }); // the explanation under the tapped answer stays in view
+  }, [quiz]);
   useEffect(() => {
     const el = document.querySelector('.coach-text .say-now');
     if (el) el.scrollIntoView({ block: 'nearest' }); // keep the sentence being spoken in view
@@ -332,7 +353,7 @@ function PlayerInner({ id }) {
       wrongRef.current++;
       track('wrong_tap', { lesson: id, step: idx, meta: { id: step.id, quiz: true } });
     }
-    setQuiz({ correct: o.correct, why: o.why[lang] });
+    setQuiz({ correct: o.correct, why: o.why[lang], pick: o });
     speak(o.why[lang], lang);
   }
 
@@ -540,7 +561,7 @@ function PlayerInner({ id }) {
   const choosing = !mode && idx === 0;
 
   return (
-    <div className="player stage">
+    <div className={`player stage ${step.kind === 'quiz' ? 'is-quiz' : ''}`}>
       <div className="ptop">
         <Link href="/" className="ptop-btn" onClick={() => stopSpeaking()} aria-label={t.exit}>
           <Icon name="close" size={24} />
@@ -610,15 +631,14 @@ function PlayerInner({ id }) {
             {step.options
               .filter((o) => !(quiz && quiz.correct) || o.correct)
               .map((o, i) => (
-                <button
-                  key={i}
-                  className={`opt ${quiz && quiz.correct && o.correct ? 'right' : ''}`}
-                  onClick={() => !watching && pickOption(o)}
-                >
-                  {o.text[lang]}
-                </button>
+                <div key={i} className="opt-wrap">
+                  <button className={`opt ${quiz && quiz.correct && o.correct ? 'right' : ''}`} onClick={() => !watching && pickOption(o)}>
+                    {o.text[lang]}
+                  </button>
+                  {quiz && quiz.pick === o && <p className={`why ${quiz.correct ? 'good' : 'bad'}`}>{quiz.why}</p>}
+                </div>
               ))}
-            {quiz && <p className={`why ${quiz.correct ? 'good' : 'bad'}`}>{quiz.why}</p>}
+            {quiz && !quiz.pick && <p className={`why ${quiz.correct ? 'good' : 'bad'}`}>{quiz.why}</p>}
             {quiz && quiz.correct && !watching && (
               <button className="btn primary" onClick={advance}>
                 {t.next}
