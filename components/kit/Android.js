@@ -99,7 +99,7 @@ const QS = [
   { k: 'rotate', icon: 'rotate', label: 'Auto-rotate', sub: 'On' },
   { k: 'hotspot', icon: 'wifi', label: 'Hotspot', sub: 'Off' },
 ];
-export function QuickSettings({ on = ['wifi', 'rotate'], note }) {
+export function QuickSettings({ on = ['wifi', 'rotate'], note, sound }) {
   return (
     <div className="app k-qs">
       <Status dark />
@@ -108,7 +108,16 @@ export function QuickSettings({ on = ['wifi', 'rotate'], note }) {
         <i />
       </div>
       <div className="k-qs-grid">
-        {QS.map((q) => {
+        {sound && (
+          <div className={`k-qs-tile ${sound === 'Sound' ? 'on' : ''}`} data-t="qs-sound">
+            <Icon name={sound === 'Mute' ? 'mute' : 'volume'} size={20} />
+            <span>
+              <b>{sound}</b>
+              <small>{sound === 'Sound' ? 'Ringer on' : sound === 'Vibrate' ? 'Vibrate only' : 'Silent'}</small>
+            </span>
+          </div>
+        )}
+        {QS.filter((q) => !(sound && q.k === 'hotspot')).map((q) => {
           const isOn = on.includes(q.k);
           return (
             <div key={q.k} className={`k-qs-tile ${isOn ? 'on' : ''}`} data-t={`qs-${q.k}`}>
@@ -544,7 +553,7 @@ export function Play({ view = 'home', query = '', installing, installed }) {
 
 // ---------- Gallery ----------
 const PHOTOS = ['🌅', '🌸', '👨‍👩‍👧', '🏞️', '🎂', '🪔', '🌺', '🐕', '🏠'];
-export function Gallery({ view = 'grid', share }) {
+export function Gallery({ view = 'grid', share, shot }) {
   if (view === 'photo')
     return (
       <div className="app k-gal dark">
@@ -611,8 +620,8 @@ export function Gallery({ view = 'grid', share }) {
       </div>
       <div className="k-gal-h">Today</div>
       <div className="k-gal-grid">
-        {PHOTOS.map((p, i) => (
-          <span key={i} data-t={i === 2 ? 'photo' : undefined}>
+        {(shot ? ['🎫', ...PHOTOS.slice(0, 8)] : PHOTOS).map((p, i) => (
+          <span key={i} data-t={shot ? (i === 0 ? 'shot' : undefined) : i === 2 ? 'photo' : undefined}>
             {p}
           </span>
         ))}
@@ -676,8 +685,8 @@ export function Gmail({ view = 'inbox', to = '', subject = '', body = '' }) {
         <div className="k-gm-f">
           <small>To</small> <b>{to}</b>
         </div>
-        <div className="k-gm-f subj">{subject || <span className="ph">Subject</span>}</div>
-        <div className="k-gm-body">{body || <span className="ph">Compose email</span>}</div>
+        <div className="k-gm-f subj">{subject || <span className="k-ph">Subject</span>}</div>
+        <div className="k-gm-body">{body || <span className="k-ph">Compose email</span>}</div>
       </div>
     );
   const mails = [
@@ -721,7 +730,7 @@ export function Gmail({ view = 'inbox', to = '', subject = '', body = '' }) {
 }
 
 // In-call screen.
-export function ACall({ name = '1930', sub = 'Cyber Crime Helpline', time = '00:18' }) {
+export function ACall({ name = '1930', sub = 'Cyber Crime Helpline', time = '00:18', tap, speakerOn }) {
   return (
     <div className="app k-call">
       <Status dark />
@@ -740,15 +749,15 @@ export function ACall({ name = '1930', sub = 'Cyber Crime Helpline', time = '00:
           ['pause', 'Hold'],
           ['more', 'More'],
         ].map(([ic, l]) => (
-          <span key={l}>
-            <i>
+          <span key={l} data-t={tap === 'speaker' && l === 'Speaker' ? 'speaker' : undefined}>
+            <i className={speakerOn && l === 'Speaker' ? 'on' : ''}>
               <Icon name={ic} size={22} />
             </i>
             {l}
           </span>
         ))}
       </div>
-      <div className="k-call-end">
+      <div className="k-call-end" data-t={tap === 'end' ? 'end' : undefined}>
         <Icon name="phone" size={28} color="#fff" />
       </div>
     </div>
@@ -779,6 +788,178 @@ export function AWeb({ url = 'cybercrime.gov.in', title, lines = [], button }) {
             {button[1]}
           </span>
         )}
+      </div>
+    </div>
+  );
+}
+
+// Camera. flip / shutter / thumb are targets; front shows the selfie view.
+export function Camera({ tap, front }) {
+  return (
+    <div className="app k-cam">
+      <div className="k-cam-top">
+        <Icon name="gear" size={22} color="#fff" />
+        <Icon name="sparkle" size={22} color="#fff" />
+        <Icon name="timer" size={22} color="#fff" />
+      </div>
+      <div className={`k-cam-view ${front ? 'front' : ''}`}>{front ? '🙂' : '🪴'}</div>
+      <div className="k-cam-modes">
+        <span>Video</span>
+        <span className="on">Photo</span>
+        <span>Portrait</span>
+      </div>
+      <div className="k-cam-bar">
+        <span className="k-cam-thumb" data-t={tap === 'thumb' ? 'thumb' : undefined}>
+          {front ? '🙂' : ''}
+        </span>
+        <span className="k-cam-shutter" data-t={tap === 'shutter' ? 'shutter' : undefined} />
+        <span className="k-cam-flip" data-t={tap === 'flip' ? 'flip' : undefined}>
+          <Icon name="refresh" size={24} color="#fff" />
+        </span>
+      </div>
+    </div>
+  );
+}
+
+export function PhotoView({ e = '🙂', title = 'Today, 10:31' }) {
+  return (
+    <div className="app k-gal dark">
+      <div className="k-gal-top">
+        <Icon name="back" size={22} color="#fff" />
+        <span>{title}</span>
+        <Icon name="more" size={22} color="#fff" />
+      </div>
+      <div className="k-gal-photo">{e}</div>
+      <div className="k-gal-actions">
+        {[
+          ['share', 'Share'],
+          ['edit', 'Edit'],
+          ['eye', 'Lens'],
+          ['trash', 'Delete'],
+        ].map(([ic, l]) => (
+          <span key={l}>
+            <Icon name={ic} size={22} color="#fff" />
+            {l}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// Font size page with a 4-stop slider. value: 0..3; tap: the stop to tap.
+export function FontSize({ value = 0, tap }) {
+  const sizes = [14, 17, 21, 26];
+  return (
+    <div className="app k-set">
+      <Status />
+      <div className="k-set-bar">
+        <span data-t="back">
+          <Icon name="back" size={22} />
+        </span>
+      </div>
+      <div className="k-set-title">Font size</div>
+      <div className="k-set-card k-font-prev" style={{ fontSize: sizes[value] }}>
+        <b>Preview</b>
+        <p>Namaste! This is how the words will look in your apps and messages.</p>
+      </div>
+      <div className="k-font-slider">
+        <small>A</small>
+        <div>
+          <i />
+          {sizes.map((_, i) => (
+            <span key={i} className={i === value ? 'on' : ''} style={{ left: `${(i / 3) * 100}%` }} data-t={tap === i ? `s${i + 1}` : undefined} />
+          ))}
+        </div>
+        <b>A</b>
+      </div>
+    </div>
+  );
+}
+
+// A caller's page in the Phone app, with Block.
+export function CallerPage({ block }) {
+  return (
+    <div className="app k-phone">
+      <Status />
+      <div className="k-form-bar">
+        <Icon name="back" size={22} />
+        <b />
+        <Icon name="more" size={22} />
+      </div>
+      <div className="k-caller">
+        <Av name="?" size={96} color="#9aa0a6" />
+        <b>+91 98xxx xx210</b>
+        <small>Possible spam · 6 missed calls today</small>
+      </div>
+      <div className="k-caller-acts">
+        <span>
+          <Icon name="phone" size={22} />
+          Call
+        </span>
+        <span>
+          <Icon name="chats" size={22} />
+          Message
+        </span>
+        <span>
+          <Icon name="info" size={22} />
+          Details
+        </span>
+      </div>
+      <div className="k-row" data-t={block ? 'block' : undefined}>
+        <span className="k-row-ic" style={{ background: '#fce8e6', color: '#b3261e' }}>
+          <Icon name="block" size={20} />
+        </span>
+        <span className="k-row-tx">
+          <b style={{ color: '#b3261e' }}>Block number</b>
+          <small>Calls and messages will be blocked</small>
+        </span>
+      </div>
+      <Row icon="flag" title="Report as spam" />
+    </div>
+  );
+}
+
+// Phone app recents with a spam number on top.
+export function Recents({ tap }) {
+  const rows = [
+    ['spam', '+91 98xxx xx210', 'Missed · 6 times today', '#9aa0a6'],
+    ['didi', 'Sunita Didi', 'Outgoing · 10:05 am'],
+    ['rahul', 'Rahul (Beta)', 'Incoming · Yesterday'],
+    ['clinic', 'Dr. Mehta Clinic', 'Incoming · Mon'],
+  ];
+  return (
+    <div className="app k-phone">
+      <Status />
+      <div className="k-dial-search">
+        <Icon name="search" size={20} /> Search contacts & places
+        <Av name="K" size={30} color="#1a73e8" />
+      </div>
+      <div className="k-gm-h">Today</div>
+      {rows.map(([k, n, s, c]) => (
+        <div key={k} className="k-row" data-t={tap && k === 'spam' ? 'num-spam' : undefined}>
+          <Av name={n === '+91 98xxx xx210' ? '?' : n} size={44} color={c} />
+          <span className="k-row-tx">
+            <b style={k === 'spam' ? { color: '#b3261e' } : undefined}>{n}</b>
+            <small>{s}</small>
+          </span>
+          <Icon name="phone" size={20} />
+        </div>
+      ))}
+      <div className="k-dial-nav">
+        {[
+          ['favourites', 'star', 'Favourites'],
+          ['recents', 'history', 'Recents'],
+          ['contacts', 'user', 'Contacts'],
+          ['keypad', 'grid', 'Keypad'],
+        ].map(([k, ic, l]) => (
+          <div key={k} className={k === 'recents' ? 'on' : ''}>
+            <span>
+              <Icon name={ic} size={20} />
+            </span>
+            {l}
+          </div>
+        ))}
       </div>
     </div>
   );

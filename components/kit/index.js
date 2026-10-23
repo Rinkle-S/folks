@@ -6,6 +6,8 @@ import * as M from './Money';
 import * as MD from './Media';
 import * as S from './Shop';
 import * as TR from './Travel';
+import * as L from './Lessons';
+import { GpScan } from '../screens/GPay';
 
 export const KIT = {
   'and-home': A.AHome,
@@ -109,18 +111,56 @@ export const KIT = {
   'mp-saved': TR.MpSaved,
   'mp-navigate': TR.MpNavigate,
   'mp-offline': TR.MpOffline,
+  'and-camera': A.Camera,
+  'and-photo': A.PhotoView,
+  'and-font': A.FontSize,
+  'and-caller': A.CallerPage,
+  'and-recents': A.Recents,
+  'gp-scan': GpScan,
+  'fk-search': L.FkSearch,
+  'fk-results': L.FkResults,
+  'fk-product': L.FkProduct,
+  'fk-address-pick': L.FkAddressPick,
+  'fk-summary': L.FkSummary,
+  'fk-payment': L.FkPayment,
+  'fk-placed': L.FkPlaced,
+  'ig-post': L.IgPost,
+  'ig-comments': L.IgComments,
+  'ig-picker': L.IgPicker,
+  'ig-caption': L.IgCaption,
+  'sp-search': L.SpSearch,
+  'sp-player': L.SpPlayer,
+  'bk-account': L.BkAccount,
+  'bk-login-typed': L.BkLoginTyped,
+  'gro-search': L.GroSearch,
+  'gro-cart': L.GroCart,
+  'gro-done': L.GroDone,
+  'ir-login-btn': L.IrLoginBtn,
+  'ir-search': L.IrSearch,
+  'ir-stations': L.IrStations,
+  'ir-trains': L.IrTrains,
+  'ir-book': L.IrBook,
+  'ir-passenger': L.IrPassenger,
+  'ir-pay': L.IrPay,
+  'ir-pnr': L.IrPnr,
+  'pt-pay': L.PtPay,
+  'pt-done': L.PtDone,
+  'mp-search': L.MpSearch,
+  'mp-place-h': L.MpPlaceH,
+  'mp-route': L.MpRoute,
+  'mp-share': L.MpShare,
 };
 
 export function registerKit(more) {
   Object.assign(KIT, more);
 }
 
-export default function KitScreen({ step }) {
+export default function KitScreen({ step, typed }) {
   const C = KIT[step.kit];
   if (!C) return <div className="app" />;
   return (
     <div className="app k-wrap">
-      <C {...(step.p || {})} />
+      <C {...(step.p || {})} typed={step.kind === 'input' ? typed : step.p && step.p.typed} />
       <Overlay ov={step.ov} />
       {step.ov && step.ov.custom === 'bank-pp' && <M.PayBankSheet brand="#5f259f" label="PAY ₹500" />}
       {step.ov && step.ov.custom === 'bank-pt' && <M.PayBankSheet brand="#00b9f1" label="Pay ₹500" />}

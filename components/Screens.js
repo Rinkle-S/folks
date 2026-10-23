@@ -65,7 +65,7 @@ export default function Screen({ step, lesson, lang, t, values, typed }) {
     case 'gen':
       return <GenScreen ui={step.ui} typed={typed} inputHere={inputHere} />;
     case 'kit':
-      return <KitScreen step={step} />;
+      return <KitScreen step={step} typed={typed} />;
 
     // Google Pay
     case 'gp-home':
