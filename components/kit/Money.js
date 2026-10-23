@@ -121,11 +121,11 @@ export function GpBalance() {
 }
 
 const TXNS = [
-  { k: 'sharma', n: 'Sharma General Store', d: '23 Oct', a: '₹50', c: '#5f6368' },
+  { k: 'sharma', n: 'Sunrise General Store', d: '23 Oct', a: '₹50', c: '#5f6368' },
   { k: 'ramesh', n: 'Ramesh Bhaiya', d: '21 Oct', a: '₹500', c: '#ea580c' },
   { k: 'failed', n: 'Gupta Medical', d: '20 Oct', a: '₹320', c: '#16a34a', failed: true },
   { k: 'sunita', n: 'Sunita', d: '19 Oct', a: '+ ₹200', c: '#e8710a', inn: true },
-  { k: 'bill', n: 'Bijli Vitaran Nigam', d: '15 Oct', a: '₹1,240', c: '#b06000' },
+  { k: 'bill', n: 'State Electricity Board', d: '15 Oct', a: '₹1,240', c: '#b06000' },
 ];
 export function GpHistory({ tap }) {
   return (
@@ -155,8 +155,8 @@ export function GpTxn({ failed, help }) {
     <div className="app gp">
       <GpBar title="" more={false} />
       <div className="k-gp-prof">
-        <Av name={failed ? 'Gupta Medical' : 'Sharma General Store'} size={56} color={failed ? '#16a34a' : '#5f6368'} />
-        <small>To {failed ? 'Gupta Medical' : 'Sharma General Store'}</small>
+        <Av name={failed ? 'Gupta Medical' : 'Sunrise General Store'} size={56} color={failed ? '#16a34a' : '#5f6368'} />
+        <small>To {failed ? 'Gupta Medical' : 'Sunrise General Store'}</small>
         <b className="k-gp-big">{failed ? '₹320' : '₹50'}</b>
         <span className={failed ? 'k-gp-fail' : 'k-gp-ok'}>{failed ? '⚠ Failed' : '✓ Completed'}</span>
         <small>{failed ? '20 Oct, 11:42 am' : '23 Oct, 4:12 pm'}</small>
@@ -701,7 +701,7 @@ export function BkStatement({ bank = 'sbi', download, toast }) {
         <span>Custom</span>
       </div>
       {[
-        ['22 Oct', 'UPI/Sharma General Store', '- ₹50'],
+        ['22 Oct', 'UPI/Sunrise General Store', '- ₹50'],
         ['21 Oct', 'UPI/Ramesh Kumar', '- ₹500'],
         ['20 Oct', 'Pension credit', '+ ₹18,500'],
         ['15 Oct', 'Electricity bill', '- ₹1,240'],

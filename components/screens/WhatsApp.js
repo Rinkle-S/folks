@@ -244,7 +244,7 @@ export function WaInfo() {
 export function WaMedia({ tab }) {
   const photos = ['🌸', '🎂', '🏞️', '👨‍👩‍👧', '🪔', '🍛', '🐄', '🌅', '🎉'];
   const docs = [
-    { t: 'bill', name: 'Bijli_bill_Sept.pdf', meta: '2 pages · 180 kB · PDF · 6 Oct' },
+    { t: 'bill', name: 'Electricity_bill_Sept.pdf', meta: '2 pages · 180 kB · PDF · 6 Oct' },
     { name: 'Gas_booking_receipt.pdf', meta: '1 page · 90 kB · PDF · 28 Sep' },
     { name: 'Sunita_shaadi_card.pdf', meta: '4 pages · 2.1 MB · PDF · 2 Sep' },
   ];
@@ -293,10 +293,10 @@ export function WaPdf() {
   return (
     <div className="app pdf">
       <div className="pdf-top">
-        <Icon name="back" size={20} color="#fff" /> Bijli_bill_Sept.pdf
+        <Icon name="back" size={20} color="#fff" /> Electricity_bill_Sept.pdf
       </div>
       <div className="pdf-page">
-        <div className="pdf-h">BIJLI VITARAN (PRACTICE)</div>
+        <div className="pdf-h">ELECTRICITY BOARD (PRACTICE)</div>
         <div className="pdf-sub">Electricity Bill, September</div>
         <div className="pdf-line" />
         <div className="pdf-row">
@@ -392,7 +392,7 @@ export function WaTextStatus({ typed, color = 0 }) {
         </span>
       </div>
       <div className="wa-ts-text" data-t="text-area">
-        {typed ? tx('शुभ दीपावली 🪔 Happy Diwali!') : <span className="ph">Type a status</span>}
+        {typed ? tx('Good Morning ☀️') : <span className="ph">Type a status</span>}
       </div>
       <div className="wa-ts-foot">
         <span className="wa-ts-priv">Status (Contacts)</span>

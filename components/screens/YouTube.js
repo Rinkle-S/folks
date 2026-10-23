@@ -43,7 +43,7 @@ export function YtHome() {
       <div className="yt-chips">
         <span className="on">All</span>
         <span>Music</span>
-        <span>Bhakti</span>
+        <span>Relaxing</span>
         <span>News</span>
         <span>Cooking</span>
       </div>
@@ -85,13 +85,13 @@ export function YtHome() {
 }
 
 export function YtSearch() {
-  const sugg = ['hanuman chalisa', 'hanuman chalisa fast', 'hanuman chalisa with lyrics', 'hanuman aarti'];
+  const sugg = ['old songs', 'old songs playlist', 'old songs with lyrics', 'old songs for morning'];
   return (
     <div className="app yt">
       <div className="yt-sbar">
         <Icon name="back" size={22} />
         <div className="yt-sfield">
-          hanuman chalisa<span className="caret" />
+          old songs<span className="caret" />
         </div>
         <span className="yt-mic">
           <Icon name="mic" size={20} />
@@ -112,14 +112,14 @@ export function YtSearch() {
 
 export function YtResults() {
   const res = [
-    { title: 'Shree Hanuman Chalisa, full', ch: 'Bhakti Sagar · 3.4B views', time: '9:41' },
-    { title: 'Hanuman Chalisa with lyrics', ch: 'Mandir Live · 120M views', time: '10:02' },
+    { title: 'Evergreen Old Songs, full', ch: 'Music Garden · 3.4B views', time: '9:41' },
+    { title: 'Old Songs with lyrics', ch: 'Melody Live · 120M views', time: '10:02' },
   ];
   return (
     <div className="app yt">
       <div className="yt-sbar">
         <Icon name="back" size={22} />
-        <div className="yt-sfield small">hanuman chalisa</div>
+        <div className="yt-sfield small">old songs</div>
         <span className="yt-mic">
           <Icon name="mic" size={20} />
         </span>
@@ -160,7 +160,7 @@ export function YtPlayer({ ad, full }) {
           <>
             <div className="yt-now">
               <span>🙏</span>
-              Shree Hanuman Chalisa
+              Evergreen Old Songs
             </div>
             <div className="yt-controls">
               <span className="yt-progress">
@@ -178,8 +178,8 @@ export function YtPlayer({ ad, full }) {
       </div>
       {!full && (
         <div className="yt-below">
-          <b>Shree Hanuman Chalisa, full</b>
-          <small>Bhakti Sagar · 3.4B views</small>
+          <b>Evergreen Old Songs, full</b>
+          <small>Music Garden · 3.4B views</small>
           <div className="yt-acts">
             <span>👍 2.1M</span>
             <span>Share</span>
@@ -188,7 +188,7 @@ export function YtPlayer({ ad, full }) {
           </div>
           <div className="yt-upnext">Up next</div>
           <div className="yt-mini">
-            <Thumb i={1} label="Hanuman Aarti" time="5:12" />
+            <Thumb i={1} label="Morning Melodies" time="5:12" />
           </div>
         </div>
       )}

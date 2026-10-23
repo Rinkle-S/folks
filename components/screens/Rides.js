@@ -85,7 +85,7 @@ export function UbHome() {
             <Icon name="history" size={18} />
           </span>
           <p>
-            <b>Sharma General Store</b>
+            <b>Sunrise General Store</b>
             <small>Main Road, Green Park</small>
           </p>
         </div>
@@ -119,7 +119,7 @@ export function UbSearch() {
   const places = [
     { t: 'place', name: 'City Hospital', sub: 'Sector 12, Main Road · 4.2 km' },
     { name: 'Railway Station', sub: 'Station Road · 6.8 km' },
-    { name: 'Sharma General Store', sub: 'Main Road, Green Park · 0.9 km' },
+    { name: 'Sunrise General Store', sub: 'Main Road, Green Park · 0.9 km' },
     { name: 'Gurudwara Sahib', sub: 'Ring Road · 3.1 km' },
   ];
   return (
