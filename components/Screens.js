@@ -29,20 +29,17 @@ import {
   WaVideo,
 } from './screens/WhatsApp';
 import { DriveHome, DriveNew, DriveScanner, DriveReview, DriveSave } from './screens/Drive';
+import { UbHome, UbSearch, UbRides, UbPickup, UbDriver, UbShare, RpHome, RpSearch, RpRides, RpCaptain, RpEnd } from './screens/Rides';
+import { YtHome, YtSearch, YtResults, YtPlayer } from './screens/YouTube';
+import { SwHome, SwSearch, SwResults, SwMenu, SwCart, SwPlaced } from './screens/Swiggy';
 import Icon from './Icons';
 import AppIcon from './AppIcon';
 
 function Intro({ lesson, lang, t }) {
   return (
     <div className="intro">
-      {lesson.appName && (
-        <span className="intro-app">
-          <AppIcon app={lesson.app} size={28} /> {lesson.appName}
-        </span>
-      )}
-      <span className="medal lg">
-        <Icon name={lesson.icon} size={44} />
-      </span>
+      <AppIcon app={lesson.app} size={84} />
+      {lesson.appName && <span className="intro-app">{lesson.appName}</span>}
       <div className="intro-title">{lesson.title[lang]}</div>
       <div className="intro-chips">
         <span>{t.minutes(lesson.minutes)}</span>
@@ -127,6 +124,56 @@ export default function Screen({ step, lesson, lang, t, values, typed }) {
       return <DriveReview />;
     case 'drive-save':
       return <DriveSave />;
+
+    // Uber
+    case 'ub-home':
+      return <UbHome />;
+    case 'ub-search':
+      return <UbSearch />;
+    case 'ub-rides':
+      return <UbRides selected={step.selected} />;
+    case 'ub-pickup':
+      return <UbPickup />;
+    case 'ub-driver':
+      return <UbDriver shared={step.shared} />;
+    case 'ub-share':
+      return <UbShare />;
+
+    // Rapido
+    case 'rp-home':
+      return <RpHome />;
+    case 'rp-search':
+      return <RpSearch />;
+    case 'rp-rides':
+      return <RpRides selected={step.selected} />;
+    case 'rp-captain':
+      return <RpCaptain />;
+    case 'rp-end':
+      return <RpEnd rated={step.rated} />;
+
+    // YouTube
+    case 'yt-home':
+      return <YtHome />;
+    case 'yt-search':
+      return <YtSearch />;
+    case 'yt-results':
+      return <YtResults />;
+    case 'yt-player':
+      return <YtPlayer ad={step.ad} full={step.full} />;
+
+    // Swiggy
+    case 'sw-home':
+      return <SwHome />;
+    case 'sw-search':
+      return <SwSearch />;
+    case 'sw-results':
+      return <SwResults />;
+    case 'sw-menu':
+      return <SwMenu added={step.added} />;
+    case 'sw-cart':
+      return <SwCart />;
+    case 'sw-placed':
+      return <SwPlaced />;
 
     default:
       return null;

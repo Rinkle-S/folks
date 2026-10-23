@@ -11,30 +11,23 @@ function navItems(t) {
   ];
 }
 
-// On a computer the same three sections sit in the top bar instead of the bottom bar.
-export function AppBar({ onSettings, t, active }) {
+export function AppBar({ onSettings, back }) {
   return (
     <header className="appbar">
-      <Link href="/" className="brand" aria-label="Folks home">
-        <span className="brand-mark">F</span>
-        Folks
-      </Link>
-      {t && (
-        <nav className="topnav" aria-label="Main">
-          {navItems(t).map((it) => (
-            <Link key={it.k} href={it.href} className={`topnav-i ${active === it.k ? 'on' : ''}`} aria-current={active === it.k ? 'page' : undefined}>
-              <Icon name={it.icon} size={22} stroke={active === it.k ? 2.4 : 2} />
-              {it.label}
-            </Link>
-          ))}
-        </nav>
+      {back ? (
+        <Link href={back} className="icon-btn" aria-label="Back">
+          <Icon name="back" size={24} />
+        </Link>
+      ) : (
+        <Link href="/" className="brand" aria-label="Folks home">
+          <span className="brand-mark">F</span>
+          Folks
+        </Link>
       )}
-      {onSettings ? (
+      {onSettings && (
         <button className="icon-btn" onClick={onSettings} aria-label="Settings">
           <Icon name="gear" size={24} />
         </button>
-      ) : (
-        <span className="appbar-gap" />
       )}
     </header>
   );

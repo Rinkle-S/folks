@@ -35,7 +35,7 @@ export default function ForYou() {
 
   return (
     <div className="shell">
-      <AppBar t={t} active="foryou" />
+      <AppBar />
       <main className="shell-main">
         <h1 className="page-h">{t.forYouTitle}</h1>
         <p className="muted">{t.forYouLead}</p>

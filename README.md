@@ -8,8 +8,9 @@ HelloPM Buildathon, Oct 2026 · built by Rinkle Sebastian · spec in [SPEC.md](S
 
 | Page | For | What it does |
 |---|---|---|
-| `/` | Parent | Say or type what you want to learn → the matching lesson. Lessons are grouped by app ("Your apps" first), plus a "Spot the scam" card. With no match, "Ask someone to make this lesson" sends a WhatsApp link. |
-| `/lesson/<id>` | Parent | 8 lessons (Google Pay: QR payment, send money, recharge, electricity bill · WhatsApp: find an old file, status, video call · Google Drive: scan to PDF). Each lesson can be learned three ways (see below). |
+| `/` | Parent | Say or type what you want to learn → the matching lesson. An "up next" lesson card, a grid of apps ("Your apps" first), plus a "Spot the scam" card. With no match, "Ask someone to make this lesson" sends a WhatsApp link. |
+| `/app/<id>` | Parent | One app's lessons, with what's already learned. |
+| `/lesson/<id>` | Parent | 12 lessons (Google Pay: QR payment, send money, recharge, electricity bill · WhatsApp: find an old file, status, video call · YouTube: find and play a bhajan, skip ads · Uber: book a cab, check the car, share the trip · Rapido: book an auto, OTP, fair fare · Swiggy: order food, check the bill, refund scam · Google Drive: scan to PDF). Each lesson can be learned three ways (see below). |
 | `/scams` | Parent | 10 real-looking messages and calls (KYC link, fake bank call, "new number" child, customs, job offer, lottery, wrong-number refund) plus genuine ones. Pick Real or Scam and hear why. |
 | `/add/<id>` | Helper | Make a lesson for what the parent asked: type the steps, record a voice note, and/or upload a screen recording or screenshots. |
 | `/my/<id>` | Parent | The lesson made for them: the helper's voice note, video, screenshots and written steps (read aloud). |
@@ -21,11 +22,11 @@ The three ways to learn each lesson:
 - **Watch first:** plays by itself, with voice and glowing taps. You can pause or go back, or tap "Let me try".
 - **Read the steps:** a written guide worded for the real app, with each step read aloud and an optional picture.
 
-All lesson content lives in `lib/lessons.js` (and scam cards in `lib/scams.js`), so a new lesson gets all three ways automatically.
+All lesson content lives in `lib/lessons.js` and `lib/lessonsMore.js` (and scam cards in `lib/scams.js`), so a new lesson gets all three ways automatically.
 
-## One web app, two layouts
+## On a computer
 
-On a computer (960px and wider) Folks is a full-page web app: sections in the top bar, home in two columns, and in a lesson the practice phone sits in the middle with the coach card beside it. Home also shows a QR code to open Folks on a phone. On a phone it is the mobile app layout with the bottom bar.
+Folks is a phone app. On a wide screen it shows the same phone layout, centred, with a QR code beside it to open it on a phone.
 
 ## Installs like an app
 

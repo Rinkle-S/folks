@@ -1,42 +1,32 @@
 'use client';
-// Desktop only: a QR code to open Folks on a phone and add it to the home screen,
-// plus an install button when the browser offers one.
+// Wide screens only: a small card beside the app with a QR code to open Folks on a phone.
 import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import QRCode from 'qrcode';
-import Icon from './Icons';
-import useInstall from './useInstall';
+import { T } from '@/lib/i18n';
+import { useLang } from '@/lib/client';
 
-export default function PhoneApp({ t }) {
+export default function PhoneApp() {
+  const [lang] = useLang();
+  const path = usePathname() || '/';
   const [qr, setQr] = useState('');
   const [host, setHost] = useState('');
-  const [canInstall, install] = useInstall();
 
   useEffect(() => {
     setHost(window.location.host);
-    QRCode.toString(window.location.origin + '/', {
-      type: 'svg',
-      margin: 0,
-      color: { dark: '#142420', light: '#ffffff' },
-    })
+    QRCode.toString(window.location.origin + path, { type: 'svg', margin: 0, color: { dark: '#142420', light: '#ffffff' } })
       .then(setQr)
       .catch(() => {});
-  }, []);
+  }, [path]);
 
+  if (!lang || path.startsWith('/stats')) return null;
+  const t = T[lang];
   return (
-    <div className="phone-app">
-      <div className="phone-app-row">
-        <div className="phone-qr" dangerouslySetInnerHTML={{ __html: qr }} />
-        <div>
-          <b>{t.phoneTitle}</b>
-          <span>{t.phoneSub}</span>
-          <small>{host}</small>
-        </div>
-      </div>
-      {canInstall && (
-        <button className="btn ghost" onClick={install}>
-          <Icon name="download" size={22} /> {t.installHere}
-        </button>
-      )}
-    </div>
+    <aside className="phone-app" aria-label={t.scanPhone}>
+      <div className="phone-qr" dangerouslySetInnerHTML={{ __html: qr }} />
+      <b>{t.scanPhone}</b>
+      <span>{t.scanPhoneSub}</span>
+      <small>{host}</small>
+    </aside>
   );
 }

@@ -7,7 +7,6 @@ import AppIcon from './AppIcon';
 import AppsPicker from './AppsPicker';
 import Icon from './Icons';
 import Onboarding from './Onboarding';
-import PhoneApp from './PhoneApp';
 import { AppBar, BottomNav } from './AppShell';
 import { LESSONS, APPS, findLesson } from '@/lib/lessons';
 import { matchLesson } from '@/lib/match';
@@ -25,39 +24,6 @@ import {
   isOnboarded,
   setOnboarded,
 } from '@/lib/client';
-
-function Ring({ done, total }) {
-  const r = 22;
-  const c = 2 * Math.PI * r;
-  const p = total ? done / total : 0;
-  return (
-    <svg className="ring" width="56" height="56" viewBox="0 0 56 56" aria-hidden="true">
-      <circle cx="28" cy="28" r={r} fill="none" stroke="var(--line)" strokeWidth="6" />
-      <circle
-        cx="28"
-        cy="28"
-        r={r}
-        fill="none"
-        stroke="var(--peacock)"
-        strokeWidth="6"
-        strokeLinecap="round"
-        strokeDasharray={`${c * p} ${c}`}
-        transform="rotate(-90 28 28)"
-      />
-      <text
-        x="28"
-        y="33"
-        textAnchor="middle"
-        fontSize="15"
-        fontWeight="800"
-        fill="var(--ink)"
-        fontFamily="Noto Sans, sans-serif"
-      >
-        {done}
-      </text>
-    </svg>
-  );
-}
 
 export default function Home() {
   const [lang, setLang] = useLang();
@@ -282,11 +248,6 @@ export default function Home() {
     window.location.href = `intent://${host}${pathname}${search}#Intent;scheme=https;package=com.android.chrome;end`;
   }
 
-  function openInChrome() {
-    const { host, pathname, search } = window.location;
-    window.location.href = `intent://${host}${pathname}${search}#Intent;scheme=https;package=com.android.chrome;end`;
-  }
-
   function askChild(text) {
     askSomeone(text, lang, t);
     setAsked(true);
@@ -305,186 +266,157 @@ export default function Home() {
   const readyMade = made.filter(isReady);
   const mine = myApps || [];
   const orderedApps = [...APPS.filter((a) => mine.includes(a.id)), ...APPS.filter((a) => !mine.includes(a.id))];
+  const orderedLessons = orderedApps.flatMap((a) => lessons.filter((l) => l.app === a.id));
+  const next = orderedLessons.find((l) => !done.includes(l.id));
+  const pct = Math.round((doneCount / lessons.length) * 100);
 
   return (
     <div className="shell">
-      <AppBar onSettings={() => setShowSettings(true)} t={t} active="learn" />
-      <main className="shell-main home">
-        <div className="home-top">
-          <p className="greet">{t[greet]}</p>
+      <AppBar onSettings={() => setShowSettings(true)} />
+      <main className="shell-main">
+        <p className="greet">{t[greet]}</p>
+        <h1 className="home-h">{t.askCardTitle}</h1>
 
-          <section className="ask-card" aria-label={t.askCardTitle}>
-            <div className="ask-row">
-              <h1>{t.askCardTitle}</h1>
-              <button
-                className={`mic ${state === 'listening' ? 'on' : ''}`}
-                onClick={startMic}
-                aria-label={state === 'listening' ? t.listening : t.askCardTitle}
-                disabled={state === 'processing'}
-              >
-                <Icon name="mic" size={40} stroke={2.2} />
-              </button>
-            </div>
-            <p className="ask-sub" aria-live="polite">
-              {state === 'listening' ? t.listening : state === 'processing' ? t.processing : micMsg || t.askCardSub}
+        <form
+          className={`askbar ${state === 'listening' ? 'listening' : ''}`}
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (typedQ.trim()) handleQuery(typedQ.trim(), 'typed');
+          }}
+        >
+          <Icon name="search" size={24} />
+          <input value={typedQ} onChange={(e) => setTypedQ(e.target.value)} placeholder={t.typePlaceholder} aria-label={t.typePlaceholder} enterKeyHint="search" />
+          <button
+            type="button"
+            className={`mic ${state === 'listening' ? 'on' : ''}`}
+            onClick={startMic}
+            aria-label={state === 'listening' ? t.listening : t.askCardTitle}
+            disabled={state === 'processing'}
+          >
+            <Icon name="mic" size={28} stroke={2.2} />
+          </button>
+        </form>
+        <p className={`ask-sub ${micMsg ? 'warn-text' : ''}`} aria-live="polite">
+          {state === 'listening' ? t.listening : state === 'processing' ? t.processing : micMsg || t.askCardSub}
+        </p>
+        {inApp && (
+          <button className="btn ghost" onClick={openInChrome}>
+            {t.openChrome}
+          </button>
+        )}
+
+        {state === 'result' && (
+          <section aria-live="polite" className="result">
+            <p className="said">
+              {t.youSaid}: <b>"{query}"</b>
             </p>
-            <form
-              className="type-row"
-              onSubmit={(e) => {
-                e.preventDefault();
-                if (typedQ.trim()) handleQuery(typedQ.trim(), 'typed');
-              }}
-            >
-              <input
-                value={typedQ}
-                onChange={(e) => setTypedQ(e.target.value)}
-                placeholder={t.typePlaceholder}
-                aria-label={t.typePlaceholder}
-              />
-              <button className="btn small" type="submit">
-                {t.search}
-              </button>
-            </form>
-            {inApp && (
-              <button className="btn chrome-btn" onClick={openInChrome}>
-                {t.openChrome}
-              </button>
+            {matched ? (
+              <div className="card">
+                <p>{t.confirmQ}</p>
+                <div className="confirm-lesson">
+                  <AppIcon app={matched.app} size={52} />
+                  {matched.title[lang]}
+                </div>
+                <Link className="btn primary" href={`/lesson/${matched.id}`}>
+                  {t.yesStart}
+                </Link>
+                <button className="btn ghost" onClick={() => setState('idle')}>
+                  {t.noOther}
+                </button>
+              </div>
+            ) : (
+              <div className="card">
+                <p>{t.noMatch}</p>
+                <button className="btn wa-btn" onClick={() => askChild(query)}>
+                  <Icon name="share" size={22} /> {t.askChild}
+                </button>
+                {asked && <p className="thanks">{t.thanks}</p>}
+                <button className="btn ghost" onClick={() => setState('idle')}>
+                  {t.tryAgain}
+                </button>
+              </div>
             )}
           </section>
+        )}
 
-          {state === 'result' && (
-            <section aria-live="polite">
-              <p className="said">
-                {t.youSaid}: <b>"{query}"</b>
-              </p>
-              {matched ? (
-                <div className="card">
-                  <p>{t.confirmQ}</p>
-                  <div className="confirm-lesson">
-                    <span className="medal">
-                      <Icon name={matched.icon} size={26} />
-                    </span>
-                    {matched.title[lang]}
-                  </div>
-                  <Link className="btn primary" href={`/lesson/${matched.id}`}>
-                    {t.yesStart}
-                  </Link>
-                  <button className="btn ghost" onClick={() => setState('idle')}>
-                    {t.noOther}
-                  </button>
-                </div>
-              ) : (
-                <div className="card">
-                  <p>{t.noMatch}</p>
-                  <button className="btn wa-btn" onClick={() => askChild(query)}>
-                    <Icon name="share" size={22} /> {t.askChild}
-                  </button>
-                  {asked && <p className="thanks">{t.thanks}</p>}
-                  <button className="btn ghost" onClick={() => setState('idle')}>
-                    {t.tryAgain}
-                  </button>
-                </div>
-              )}
-            </section>
-          )}
-        </div>
-
-        <aside className="home-side">
-          <div className="progress-strip">
-            <Ring done={doneCount} total={lessons.length} />
-            <div>
-              <b>{doneCount ? t.progressOf(doneCount, lessons.length) : t.progressNone}</b>
-              <span>{t.progressSub}</span>
+        {next ? (
+          <section className="next-card">
+            <div className="next-top">
+              <span className="eyebrow">{doneCount ? t.upNextMore : t.upNext}</span>
+              <span className="next-progress">{t.learnedOf(doneCount, lessons.length)}</span>
             </div>
-          </div>
-
-          <Link href="/scams" className="safety-card">
-            <span className="medal">
-              <Icon name="shieldCheck" size={26} />
-            </span>
-            <div style={{ flex: 1 }}>
-              <b>{t.safetyTitle}</b>
-              <span>{t.safetySub}</span>
+            <div className="meter" aria-hidden="true">
+              <span style={{ width: `${Math.max(pct, 2)}%` }} />
             </div>
-            <Icon name="chevron" size={24} />
-          </Link>
-
-          {readyMade.length > 0 && (
-            <Link href="/for-you" className="safety-card" style={{ background: 'var(--peacock-soft)' }}>
-              <span className="medal" style={{ background: 'var(--peacock)', color: '#fff' }}>
-                <Icon name="heart" size={24} />
-              </span>
-              <div style={{ flex: 1 }}>
-                <b>{t.forYouTitle}</b>
-                <span>{readyMade.map((m) => m.question).join(', ')}</span>
+            <div className="next-body">
+              <AppIcon app={next.app} size={60} />
+              <div>
+                <b>{next.title[lang]}</b>
+                <small>
+                  {next.appName} · {t.minutesShort(next.minutes)}
+                </small>
               </div>
-              <Icon name="chevron" size={24} />
+            </div>
+            <Link className="btn primary" href={`/lesson/${next.id}`}>
+              <Icon name="play" size={18} /> {t.startNow}
             </Link>
-          )}
+          </section>
+        ) : (
+          <section className="next-card">
+            <b className="all-done">{t.allDoneTitle}</b>
+            <small className="muted">{t.allDoneSub}</small>
+          </section>
+        )}
 
-          {myApps === null && (
-            <button className="card row" style={{ marginTop: 16 }} onClick={() => setShowApps(true)}>
-              <span className="medal">
-                <Icon name="recharge" size={24} />
-              </span>
-              <span className="row-title">
-                {t.appsQ}
-                <small>{t.appsSub}</small>
-              </span>
-              <span className="row-end">
-                <Icon name="chevron" size={22} />
-              </span>
-            </button>
-          )}
-
-          <PhoneApp t={t} />
-        </aside>
-
-        <div className="home-lessons">
+        <div className="section-h">
+          <span>{t.pickApp}</span>
+          <button className="link-btn" onClick={() => setShowApps(true)}>
+            {myApps && myApps.length ? t.myApps : t.appsFirst}
+          </button>
+        </div>
+        <div className="app-grid">
           {orderedApps.map((app) => {
             const list = lessons.filter((l) => l.app === app.id);
             if (!list.length) return null;
-            const isMine = mine.includes(app.id);
+            const d = list.filter((l) => done.includes(l.id)).length;
             return (
-              <section key={app.id}>
-                <h2 className="section-h">
-                  <AppIcon app={app.id} size={32} />
-                  {app.name}
-                  {isMine && <span className="tag">{t.yourApps}</span>}
-                </h2>
-                <div className="group">
-                  {list.map((l) => {
-                    const isDone = done.includes(l.id);
-                    return (
-                      <Link key={l.id} href={`/lesson/${l.id}`} className="row">
-                        <span className="medal">
-                          <Icon name={l.icon} size={24} />
-                        </span>
-                        <span className="row-title">
-                          {l.title[lang]}
-                          <small>{isDone ? t.learned : t.minutesShort(l.minutes)}</small>
-                        </span>
-                        <span className="row-end">
-                          {isDone ? (
-                            <span className="done-check">
-                              <Icon name="check" size={18} stroke={3} />
-                            </span>
-                          ) : (
-                            <Icon name="chevron" size={22} />
-                          )}
-                        </span>
-                      </Link>
-                    );
-                  })}
-                </div>
-              </section>
+              <Link key={app.id} href={`/app/${app.id}`} className="app-tile">
+                {mine.includes(app.id) && <span className="mine-dot" aria-label={t.yourApps} />}
+                <AppIcon app={app.id} size={56} />
+                <b>{app.name}</b>
+                <small>{d === list.length ? `✓ ${t.learned}` : t.lessonsN(list.length)}</small>
+              </Link>
             );
           })}
-
-          <footer className="home-foot">
-            <Link href="/send">{t.childLink}</Link>
-          </footer>
         </div>
+
+        <Link href="/scams" className="feature-card dark">
+          <span className="feature-ic">
+            <Icon name="shieldCheck" size={28} />
+          </span>
+          <div>
+            <b>{t.scamCardTitle}</b>
+            <span>{t.safetySub}</span>
+          </div>
+          <Icon name="chevron" size={24} />
+        </Link>
+
+        {readyMade.length > 0 && (
+          <Link href="/for-you" className="feature-card">
+            <span className="feature-ic soft">
+              <Icon name="heart" size={26} />
+            </span>
+            <div>
+              <b>{t.forYouTitle}</b>
+              <span>{readyMade.map((m) => m.question).join(', ')}</span>
+            </div>
+            <Icon name="chevron" size={24} />
+          </Link>
+        )}
+
+        <footer className="home-foot">
+          <Link href="/send">{t.childLink}</Link>
+        </footer>
       </main>
 
       <BottomNav active="learn" t={t} dot={readyMade.length ? 'foryou' : null} />

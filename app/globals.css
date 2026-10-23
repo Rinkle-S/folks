@@ -4,7 +4,7 @@
    Built for 55+: 19px base text, 56px+ touch targets, labels on every icon, strong contrast. */
 
 :root {
-  --paper: #f5f7f4;
+  --paper: #f3f5f2;
   --surface: #ffffff;
   --ink: #142420;
   --ink-2: #4b5c56;
@@ -24,6 +24,8 @@
   --r-group: 22px;
   --r-btn: 16px;
   --shadow-lift: 0 1px 2px rgba(20, 36, 32, 0.06), 0 8px 24px rgba(20, 36, 32, 0.08);
+  --shadow-1: 0 1px 2px rgba(20, 36, 32, 0.05), 0 2px 10px rgba(20, 36, 32, 0.05);
+  --shadow-2: 0 2px 4px rgba(20, 36, 32, 0.05), 0 10px 28px rgba(20, 36, 32, 0.09);
   --font: 'Noto Sans', 'Noto Sans Devanagari', system-ui, sans-serif;
   color-scheme: light;
 }
@@ -181,7 +183,7 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; }
 
 .said { font-size: 17px; color: var(--ink-2); margin: 16px 2px 8px; }
 .said b { color: var(--ink); }
-.card { background: var(--surface); border-radius: var(--r-group); padding: 18px; box-shadow: 0 0 0 1.5px var(--line) inset; }
+.card { background: var(--surface); border-radius: var(--r-group); padding: 18px; box-shadow: var(--shadow-1); }
 .card p { margin: 0 0 6px; font-size: 20px; }
 .confirm-lesson { display: flex; gap: 14px; align-items: center; font-size: 22px; font-weight: 700; margin: 10px 0 2px; line-height: 1.3; }
 .thanks { color: var(--safe); font-weight: 700; text-align: center; margin: 10px 0 0; }
@@ -206,12 +208,12 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; }
 .safety-card b { display: block; font-size: 20px; line-height: 1.25; }
 .safety-card span { font-size: 15px; color: var(--ink-2); }
 
-.section-h { display: flex; align-items: center; gap: 10px; font-size: 20px; font-weight: 800; margin: 26px 2px 10px; }
+.section-h { display: flex; align-items: center; gap: 10px; font-size: 21px; font-weight: 800; margin: 28px 2px 12px; }
 .section-h .tag { margin-left: auto; }
 .tag { font-size: 13px; font-weight: 700; background: var(--peacock-soft); color: var(--peacock-deep); padding: 3px 10px; border-radius: 999px; white-space: nowrap; }
 
 /* A group of lessons: one surface, rows separated by hairlines (like Android settings lists). */
-.group { background: var(--surface); border-radius: var(--r-group); box-shadow: 0 0 0 1.5px var(--line) inset; overflow: hidden; }
+.group { background: var(--surface); border-radius: var(--r-group); box-shadow: var(--shadow-1); overflow: hidden; }
 .row {
   display: flex;
   align-items: center;
@@ -234,9 +236,69 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; }
 .medal { flex: none; width: 48px; height: 48px; border-radius: 15px; background: var(--peacock-soft); color: var(--peacock-deep); display: grid; place-items: center; }
 .medal.lg { width: 84px; height: 84px; border-radius: 26px; }
 .medal.wait { background: var(--marigold-soft); color: var(--marigold-deep); }
-.app-icon { display: inline-grid; place-items: center; border-radius: 10px; border: 1.5px solid; flex: none; }
+.app-icon { display: inline-grid; place-items: center; border-radius: 27%; border: 1.5px solid; flex: none; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12); }
 .home-foot { margin-top: 28px; text-align: center; font-size: 16px; }
 .home-foot a { color: var(--peacock-deep); font-weight: 600; }
+
+
+/* ---------- Home (v2): ask bar, up-next card, app grid ---------- */
+.home-h { font-size: 30px; font-weight: 800; margin: 0 2px 14px; letter-spacing: -0.02em; }
+.askbar { display: flex; align-items: center; gap: 10px; background: var(--surface); border-radius: 999px; padding: 6px 6px 6px 18px; box-shadow: var(--shadow-2); color: var(--ink-2); }
+.askbar.listening { box-shadow: 0 0 0 3px var(--marigold), var(--shadow-2); }
+.askbar input { flex: 1; min-width: 0; border: none; outline: none; background: transparent; font: inherit; font-size: 19px; color: var(--ink); min-height: 52px; }
+.askbar input::placeholder { color: var(--ink-3); }
+.askbar .mic { width: 60px; height: 60px; background: var(--peacock); color: #fff; box-shadow: 0 4px 12px rgba(14, 107, 92, 0.35); }
+.askbar .mic.on { background: var(--marigold); color: #3a2300; }
+.ask-sub { font-size: 16px; color: var(--ink-2); margin: 10px 4px 0; }
+.ask-sub.warn-text { color: var(--marigold-deep); font-weight: 600; }
+.result { margin-top: 6px; }
+
+.next-card { margin-top: 22px; background: var(--surface); border-radius: var(--r-sheet); padding: 18px 18px 16px; box-shadow: var(--shadow-1); }
+.next-top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.eyebrow { font-size: 14px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--peacock); }
+.next-progress { font-size: 15px; color: var(--ink-2); font-weight: 600; }
+.meter { height: 8px; background: var(--peacock-soft); border-radius: 99px; margin: 10px 0 16px; overflow: hidden; }
+.meter span { display: block; height: 100%; background: var(--peacock); border-radius: 99px; }
+.next-body { display: flex; align-items: center; gap: 14px; }
+.next-body b { display: block; font-size: 21px; line-height: 1.3; }
+.next-body small { display: block; font-size: 16px; color: var(--ink-2); margin-top: 2px; }
+.next-card .btn { margin-top: 16px; }
+.all-done { display: block; font-size: 21px; }
+
+.section-h .link-btn { margin-left: auto; }
+.link-btn { border: none; background: none; color: var(--peacock-deep); font-weight: 700; font-size: 16px; padding: 8px 4px; text-decoration: underline; text-underline-offset: 3px; }
+.app-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.app-tile { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 4px; padding: 16px 6px 14px; background: var(--surface); border-radius: var(--r-group); box-shadow: var(--shadow-1); text-decoration: none; color: var(--ink); transition: transform 0.08s; }
+.app-tile:active { transform: scale(0.97); }
+.app-tile b { font-size: 16px; line-height: 1.2; margin-top: 6px; }
+.app-tile small { font-size: 14px; color: var(--ink-2); }
+.mine-dot { position: absolute; top: 10px; right: 10px; width: 10px; height: 10px; border-radius: 50%; background: var(--marigold); }
+
+.feature-card { display: flex; align-items: center; gap: 14px; margin-top: 14px; padding: 18px; border-radius: var(--r-group); background: var(--surface); box-shadow: var(--shadow-1); text-decoration: none; color: var(--ink); }
+.feature-card:first-of-type { margin-top: 22px; }
+.feature-card > div { flex: 1; min-width: 0; }
+.feature-card b { display: block; font-size: 20px; line-height: 1.25; }
+.feature-card > div span { display: block; font-size: 15px; color: var(--ink-2); }
+.feature-card.dark { background: var(--ink); color: #fff; margin-top: 22px; }
+.feature-card.dark > div span { color: rgba(255, 255, 255, 0.75); }
+.feature-ic { flex: none; width: 54px; height: 54px; border-radius: 16px; display: grid; place-items: center; background: var(--marigold); color: #3a2300 !important; }
+.feature-ic.soft { background: var(--peacock-soft); color: var(--peacock-deep) !important; }
+
+/* ---------- One app's lessons ---------- */
+.app-head { display: flex; align-items: center; gap: 16px; margin: 4px 2px 20px; }
+.app-head h1 { font-size: 30px; font-weight: 800; margin: 0; }
+.app-head p { margin: 2px 0 0; font-size: 17px; }
+.lesson-list { display: flex; flex-direction: column; gap: 10px; }
+.lesson-card { display: flex; align-items: center; gap: 14px; padding: 16px; background: var(--surface); border-radius: var(--r-group); box-shadow: var(--shadow-1); text-decoration: none; color: var(--ink); min-height: 84px; }
+.lesson-card:active { background: var(--peacock-soft); }
+.lesson-num { flex: none; width: 44px; height: 44px; border-radius: 50%; background: var(--peacock-soft); color: var(--peacock-deep); display: grid; place-items: center; font-weight: 800; font-size: 19px; }
+.lesson-card.is-done .lesson-num { background: var(--safe); color: #fff; }
+.lesson-main { flex: 1; min-width: 0; }
+.lesson-main b { display: block; font-size: 19px; line-height: 1.3; }
+.lesson-main small { display: inline-flex; align-items: center; gap: 4px; font-size: 15px; color: var(--ink-2); margin-top: 4px; }
+.lesson-main em { font-style: normal; color: var(--safe); font-weight: 700; }
+.lesson-go { color: var(--ink-3); }
+.ask-more { display: flex; align-items: center; gap: 10px; margin-top: 18px; padding: 16px; border-radius: var(--r-group); background: var(--peacock-soft); color: var(--peacock-deep); font-weight: 700; text-decoration: none; font-size: 17px; }
 
 /* Onboarding */
 .onboard { max-width: 480px; margin: 0 auto; min-height: 100dvh; padding: 28px 20px calc(24px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; }
@@ -359,8 +421,8 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; }
 
 /* Lesson intro (inside the screen frame) */
 .intro { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 24px; background: linear-gradient(180deg, var(--peacock-soft), #fff 75%); font-family: var(--font); }
-.intro-app { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 17px; color: var(--ink-2); margin-bottom: 18px; }
-.intro-title { font-size: 26px; font-weight: 800; margin: 18px 0 12px; line-height: 1.25; color: var(--ink); }
+.intro-app { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 17px; color: var(--ink-2); margin-top: 12px; }
+.intro-title { font-size: 26px; font-weight: 800; margin: 6px 0 14px; line-height: 1.25; color: var(--ink); }
 .intro-chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
 .intro-chips span { background: #fff; box-shadow: 0 0 0 1.5px var(--line) inset; border-radius: 999px; padding: 4px 12px; font-size: 15px; font-weight: 600; color: var(--ink-2); }
 .intro-chips span.safe { background: var(--marigold-soft); box-shadow: none; color: #6b4300; }
@@ -373,7 +435,7 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; }
 .done-title { font-size: 34px; font-weight: 800; margin: 18px 0 0; color: var(--ink); }
 .done-sub { margin: 4px 0 0; color: var(--ink-2); font-size: 18px; }
 .done-lesson { font-weight: 700; font-size: 21px; margin: 2px 0 16px; }
-.takeaways { text-align: left; list-style: none; padding: 6px 16px; margin: 0 0 6px; background: var(--surface); border-radius: var(--r-group); box-shadow: 0 0 0 1.5px var(--line) inset; }
+.takeaways { text-align: left; list-style: none; padding: 6px 16px; margin: 0 0 6px; background: var(--surface); border-radius: var(--r-group); box-shadow: var(--shadow-1); }
 .takeaways li { display: flex; gap: 10px; padding: 10px 0; font-size: 18px; }
 .takeaways li + li { border-top: 1px solid var(--line); }
 .takeaways li::before { content: '✓'; color: var(--safe); font-weight: 800; }
@@ -474,7 +536,7 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; }
 .step-input input { flex: 1; min-height: 52px; border-radius: 14px; border: none; box-shadow: 0 0 0 1.5px var(--line) inset; padding: 0 14px; font: inherit; font-size: 17px; }
 .voice-row { display: flex; gap: 8px; align-items: center; }
 .voice-row audio { flex: 1; min-width: 0; }
-.media-card { background: var(--surface); border-radius: var(--r-group); padding: 16px; margin-bottom: 12px; box-shadow: 0 0 0 1.5px var(--line) inset; }
+.media-card { background: var(--surface); border-radius: var(--r-group); padding: 16px; margin-bottom: 12px; box-shadow: var(--shadow-1); }
 .media-card b { display: block; font-size: 19px; margin-bottom: 10px; }
 .media-card audio, .media-card video, .media-card img { width: 100%; border-radius: 14px; }
 .warn { background: var(--marigold-soft); padding: 12px 14px; border-radius: 14px; }
@@ -500,75 +562,23 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; }
 .plain { padding-left: 18px; }
 .plain li { margin: 4px 0; }
 
-/* ---------- Get Folks on your phone (shown on computers only) ---------- */
-.topnav, .phone-app { display: none; }
-
-/* ---------- Computer: a full-page web app ----------
-   Same screens, laid out for a wide window: sections in the top bar, home in two columns,
-   and in a lesson the practice phone sits in the middle with the coach beside it. */
-@media (min-width: 960px) {
-  body { background: radial-gradient(1100px 520px at 15% 0%, #e7f3ef, transparent 60%), radial-gradient(900px 500px at 100% 100%, #fff3df, transparent 60%), var(--paper); background-attachment: fixed; }
-
-  /* Top bar with the three sections */
-  .shell { max-width: 1160px; }
-  .appbar { max-width: 1160px; display: grid; grid-template-columns: 1fr auto 1fr; padding: 22px 32px 10px; }
-  .appbar .icon-btn { justify-self: end; }
-  .topnav { display: flex; gap: 6px; background: var(--surface); padding: 6px; border-radius: 999px; box-shadow: 0 0 0 1.5px var(--line) inset; }
-  .topnav-i { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 999px; text-decoration: none; color: var(--ink-2); font-weight: 700; font-size: 17px; }
-  .topnav-i:hover { background: var(--paper); color: var(--ink); }
-  .topnav-i.on { background: var(--peacock-soft); color: var(--peacock-deep); }
-  .bottomnav { display: none; }
-  .shell-main { padding: 8px 32px 64px; width: 100%; }
-  .shell-main:not(.home) { max-width: 800px; margin: 0 auto; }
-
-  /* Home: ask + lessons on the left, progress and shortcuts on the right */
-  .home { display: grid; grid-template-columns: minmax(0, 1fr) 360px; grid-template-areas: 'top side' 'lessons side'; column-gap: 40px; align-items: start; }
-  .home-top { grid-area: top; }
-  .home-side { grid-area: side; position: sticky; top: 20px; padding-top: 34px; }
-  .home-side .progress-strip { margin-top: 0; background: var(--surface); padding: 16px; border-radius: var(--r-group); box-shadow: 0 0 0 1.5px var(--line) inset; }
-  .home-lessons { grid-area: lessons; }
-  .greet { font-size: 19px; margin-top: 10px; }
-  .ask-card { padding: 30px 32px 26px; }
-  .ask-card h1 { font-size: 34px; }
-  .ask-card::before { width: 320px; height: 320px; right: -80px; top: -120px; }
-  .home-lessons .group { display: grid; grid-template-columns: 1fr 1fr; }
-  .home-lessons .group .row + .row { border-top: none; }
-  .home-lessons .group .row:nth-child(n + 3) { border-top: 1px solid var(--line); }
-  .home-lessons .group .row:nth-child(odd) { border-right: 1px solid var(--line); }
-  .row:hover, .safety-card:hover { filter: brightness(0.98); }
-  .row:hover { background: var(--paper); }
-  .home-foot { text-align: left; }
-
-  .phone-app { display: block; margin-top: 16px; background: var(--surface); border-radius: var(--r-group); padding: 16px; box-shadow: 0 0 0 1.5px var(--line) inset; }
-  .phone-app-row { display: flex; gap: 14px; align-items: center; }
-  .phone-qr { width: 104px; height: 104px; flex: none; background: #fff; border-radius: 10px; }
-  .phone-qr svg { width: 100%; height: 100%; display: block; }
-  .phone-app b { display: block; font-size: 18px; line-height: 1.3; }
-  .phone-app span { display: block; font-size: 15px; color: var(--ink-2); margin-top: 2px; }
-  .phone-app small { display: block; font-size: 13px; color: var(--ink-3); margin-top: 4px; word-break: break-all; }
-
-  /* Lesson: phone-sized practice screen in the middle, coach card beside it */
-  .player.stage { max-width: none; height: 100dvh; display: grid; grid-template-columns: minmax(360px, 420px) minmax(360px, 440px); grid-template-rows: auto minmax(0, 1fr); justify-content: center; column-gap: 40px; padding: 0 32px 28px; }
-  .player.stage .ptop { grid-column: 1 / -1; width: 100%; max-width: 900px; justify-self: center; padding: 18px 0 14px; }
-  .player.stage .screen-wrap { padding: 14px 0 0; height: 100%; max-height: 860px; align-self: center; width: 100%; }
-  .player.stage .coach { margin: 0; align-self: center; border-radius: var(--r-sheet); max-height: calc(100dvh - 120px); padding: 26px 28px; box-shadow: var(--shadow-lift); }
-  .player.stage .coach::before { display: none; }
-  .coach-text { font-size: 23px; }
-
-  .player { background: transparent; }
-  .player.reading { max-width: 820px; }
-  .player.reading .ptop { padding-top: 18px; }
-  .read { padding: 4px 24px 40px; }
-
-  /* Sheets become centred dialogs */
+/* ---------- Wide screens: the phone app centred, with a QR card beside it ---------- */
+.phone-app { display: none; }
+@media (min-width: 720px) {
+  body { background: radial-gradient(1000px 520px at 10% 0%, #e2f0eb, transparent 60%), radial-gradient(900px 500px at 100% 100%, #fff1dc, transparent 60%), #eef1ed; background-attachment: fixed; }
+  .shell, .player, .page, .onboard { background: var(--paper); box-shadow: 0 0 0 1px rgba(20, 36, 32, 0.06), 0 24px 70px rgba(20, 36, 32, 0.14); min-height: 100vh; }
+  .shell .bottomnav { left: 50%; right: auto; width: 480px; transform: translateX(-50%); }
   .settings-wrap { align-items: center; }
-  .settings { max-width: 520px; border-radius: var(--r-sheet); padding: 20px 26px 26px; }
+  .settings { border-radius: var(--r-sheet); }
   .settings::before { display: none; }
-
-  .page { max-width: 680px; padding-top: 32px; }
-  .done { max-width: 560px; }
-  .onboard { max-width: 560px; }
-  .btn:hover { filter: brightness(1.04); }
+}
+@media (min-width: 1100px) {
+  .phone-app { display: flex; flex-direction: column; gap: 4px; position: fixed; top: 50%; left: calc(50% + 280px); transform: translateY(-50%); width: 230px; background: var(--surface); border-radius: var(--r-group); padding: 18px; box-shadow: var(--shadow-2); }
+  .phone-qr { width: 132px; height: 132px; margin-bottom: 10px; }
+  .phone-qr svg { width: 100%; height: 100%; display: block; }
+  .phone-app b { font-size: 18px; }
+  .phone-app span { font-size: 14.5px; color: var(--ink-2); line-height: 1.4; }
+  .phone-app small { font-size: 12.5px; color: var(--ink-3); margin-top: 6px; word-break: break-all; }
 }
 
 .chip.talking { box-shadow: 0 0 0 2px var(--peacock) inset; color: var(--peacock-deep); background: var(--peacock-soft); }
