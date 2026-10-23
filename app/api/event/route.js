@@ -10,6 +10,7 @@ const ALLOWED = new Set([
   'real_try',
   'share',
   'feedback',
+  'feedback_detail',
   'voice_search',
   'ask_child',
   'tile_soon',
@@ -39,7 +40,8 @@ export async function POST(req) {
     return NextResponse.json({ ok: false, error: 'bad type' }, { status: 400 });
   }
 
-  const meta = body.meta && typeof body.meta === 'object' ? body.meta : {};
+  const meta = body.meta && typeof body.meta === 'object' ? { ...body.meta } : {};
+  if (typeof body.at === 'string') meta.client_at = body.at.slice(0, 40); // when it really happened, if it was queued
   const metaStr = JSON.stringify(meta);
   const row = {
     device: clip(body.device, 64),

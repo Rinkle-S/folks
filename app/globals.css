@@ -672,3 +672,13 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; }
 .fl-opt b { display: block; font-size: 20px; }
 .fl-opt small { display: block; font-size: 16px; color: var(--ink-2); margin-top: 2px; }
 .fl-opt.on { border-color: var(--peacock); background: var(--peacock-soft); }
+
+.fb-more { display: grid; gap: 10px; text-align: left; margin-top: 8px; }
+.fb-more p { margin: 0; font-weight: 700; }
+.fb-reasons { display: flex; flex-wrap: wrap; gap: 8px; }
+.fb-more textarea { font: inherit; font-size: 17px; padding: 10px 14px; border-radius: 14px; border: none; box-shadow: 0 0 0 1.5px var(--line) inset; background: #fff; resize: none; }
+
+.fl-opt.tick { display: flex; align-items: center; gap: 14px; }
+.fl-opt.tick b { font-size: 19px; }
+.tick-box { flex: none; width: 30px; height: 30px; border-radius: 8px; border: 2px solid var(--ink-3); display: grid; place-items: center; font-weight: 800; color: #fff; background: #fff; }
+.fl-opt.tick.on .tick-box { background: var(--peacock); border-color: var(--peacock); }

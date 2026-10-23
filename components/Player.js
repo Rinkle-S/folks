@@ -43,6 +43,9 @@ function PlayerInner({ id }) {
   const [tapFx, setTapFx] = useState(false);
   const [paused, setPaused] = useState(false);
   const [feedback, setFeedback] = useState(null);
+  const [fbReasons, setFbReasons] = useState([]);
+  const [fbNote, setFbNote] = useState('');
+  const [fbSent, setFbSent] = useState(false);
   const [realTry, setRealTry] = useState(false);
   const [from, setFrom] = useState('');
   const [bubble, setBubble] = useState(null);
@@ -324,6 +327,9 @@ function PlayerInner({ id }) {
     setShowHint(false);
     setDone(false);
     setFeedback(null);
+    setFbReasons([]);
+    setFbNote('');
+    setFbSent(false);
     setRealTry(false);
     setMode(m);
     setPaused(false);
@@ -429,8 +435,34 @@ function PlayerInner({ id }) {
 
         <div className="feedback">
           <p>{t.howWasIt}</p>
-          {feedback ? (
+          {feedback && (feedback === 'easy' || fbSent) ? (
             <p className="thanks">{t.thanks}</p>
+          ) : feedback ? (
+            <div className="fb-more">
+              <p>{t.fbWhy}</p>
+              <div className="fb-reasons">
+                {['stuck', 'mismatch', 'words', 'voice', 'other'].map((k) => (
+                  <button
+                    key={k}
+                    className={`chip ${fbReasons.includes(k) ? 'talking' : ''}`}
+                    aria-pressed={fbReasons.includes(k)}
+                    onClick={() => setFbReasons(fbReasons.includes(k) ? fbReasons.filter((x) => x !== k) : [...fbReasons, k])}
+                  >
+                    {t['fbr_' + k]}
+                  </button>
+                ))}
+              </div>
+              <textarea value={fbNote} onChange={(e) => setFbNote(e.target.value)} placeholder={t.fbNote} maxLength={300} rows={2} aria-label={t.fbNote} />
+              <button
+                className="btn primary"
+                onClick={() => {
+                  track('feedback_detail', { lesson: id, meta: { v: feedback, reasons: fbReasons, note: fbNote.trim(), lang, mode, steps: total } });
+                  setFbSent(true);
+                }}
+              >
+                {t.fbSend}
+              </button>
+            </div>
           ) : (
             <div className="fb-row">
               {[
@@ -443,7 +475,7 @@ function PlayerInner({ id }) {
                   className="fb"
                   onClick={() => {
                     setFeedback(v);
-                    track('feedback', { lesson: id, meta: { v, mode } });
+                    track('feedback', { lesson: id, meta: { v, mode, lang } });
                   }}
                 >
                   <span>{e}</span>
