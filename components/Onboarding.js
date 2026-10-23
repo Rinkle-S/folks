@@ -6,10 +6,14 @@ import AppIcon from './AppIcon';
 import { ALL_APPS } from '@/lib/apps';
 import { T } from '@/lib/i18n';
 import { LANGS } from '@/lib/langs';
+import PhonePick from './PhonePick';
+import { saveProfile } from '@/lib/profile';
 
 export default function Onboarding({ lang, setLang, onDone }) {
   const [step, setStep] = useState(0);
   const [apps, setApps] = useState([]);
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState({ brand: '', model: '' });
   const t = T[lang];
   const toggle = (id) => setApps(apps.includes(id) ? apps.filter((x) => x !== id) : [...apps, id]);
 
@@ -18,6 +22,8 @@ export default function Onboarding({ lang, setLang, onDone }) {
       <div className="dots-step" aria-hidden="true">
         <span className={step === 0 ? 'on' : ''} />
         <span className={step === 1 ? 'on' : ''} />
+        <span className={step === 2 ? 'on' : ''} />
+        <span className={step === 3 ? 'on' : ''} />
       </div>
 
       {step === 0 ? (
@@ -64,6 +70,45 @@ export default function Onboarding({ lang, setLang, onDone }) {
           </div>
           <button className="btn primary" onClick={() => setStep(1)}>
             {t.obNext}
+          </button>
+        </>
+      ) : step === 1 ? (
+        <>
+          <div className="onboard-hero">
+            <h1>{t.obNameQ}</h1>
+            <p>{t.obNameSub}</p>
+            <input className="name-input" value={name} onChange={(e) => setName(e.target.value)} placeholder={t.obNamePh} maxLength={30} aria-label={t.obNamePh} autoComplete="given-name" />
+          </div>
+          <button className="btn primary" onClick={() => setStep(2)}>
+            {t.obNext}
+          </button>
+          <button className="btn ghost" onClick={() => setStep(2)}>
+            {t.obSkip}
+          </button>
+        </>
+      ) : step === 2 ? (
+        <>
+          <div className="onboard-hero">
+            <h1>{t.obPhoneQ}</h1>
+            <PhonePick lang={lang} value={phone} onChange={setPhone} />
+          </div>
+          <button
+            className="btn primary"
+            onClick={() => {
+              saveProfile({ name, ...phone });
+              setStep(3);
+            }}
+          >
+            {t.obNext}
+          </button>
+          <button
+            className="btn ghost"
+            onClick={() => {
+              saveProfile({ name });
+              setStep(3);
+            }}
+          >
+            {t.obSkip}
           </button>
         </>
       ) : (
