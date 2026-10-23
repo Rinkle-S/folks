@@ -1,34 +1,12 @@
 'use client';
 // "Read the steps": the whole lesson as a written guide, worded for the real app.
 // Every step can be read aloud, and can show a small picture of the screen.
-import { useEffect, useMemo, useRef, useState } from 'react';
-import Screen from './Screens';
+import { useEffect, useMemo, useState } from 'react';
+import StepPicture from './StepPicture';
 import AppIcon from './AppIcon';
-import { REAL, FOLLOW_SKIP } from '@/lib/lessons';
+import { buildCards } from '@/lib/followCards';
 import { speak, track } from '@/lib/client';
 import Icon from './Icons';
-import PrintBar from './PrintBar';
-
-function Picture({ card, lesson, lang, t }) {
-  const ref = useRef(null);
-  useEffect(() => {
-    const root = ref.current;
-    if (!root) return;
-    const s = card.step;
-    let sel = null;
-    if (s.kind === 'tap') sel = `[data-t="${s.target}"]`;
-    if (s.kind === 'input') sel = `[data-key="${s.expected[0]}"]`;
-    if (sel) root.querySelectorAll(sel).forEach((el) => el.classList.add('hl'));
-  }, [card]);
-  return (
-    <div className="follow-preview" ref={ref} aria-hidden="true">
-      <div className="pic-tag">{t.pictureTag}</div>
-      <div className="follow-scale">
-        <Screen step={card.step} lesson={lesson} lang={lang} t={t} values={card.values} typed="" />
-      </div>
-    </div>
-  );
-}
 
 export default function FollowView({ lesson, lang, t, onDone, onPractice }) {
   const [open, setOpen] = useState({});
@@ -46,26 +24,7 @@ export default function FollowView({ lesson, lang, t, onDone, onPractice }) {
     } catch {}
   };
 
-  const cards = useMemo(() => {
-    const skip = FOLLOW_SKIP[lesson.id] || [];
-    const real = REAL[lesson.id] || {};
-    const list = [];
-    const values = {};
-    lesson.steps.forEach((s, idx) => {
-      if (s.kind === 'info' && idx === 0) return;
-      if (skip.includes(s.id)) return;
-      let text = real[s.id] ? real[s.id][lang] : s.say[lang];
-      let tip = false;
-      if (s.kind === 'quiz') {
-        const right = s.options.find((o) => o.correct);
-        text = real[s.id] ? real[s.id][lang] : right.why[lang];
-        tip = !real[s.id];
-      }
-      list.push({ step: s, text, tip, values: { ...values } });
-      if (s.kind === 'input') values[s.field] = s.expected;
-    });
-    return list;
-  }, [lesson, lang]);
+  const cards = useMemo(() => buildCards(lesson, lang), [lesson, lang]);
 
   const steps = cards.filter((c) => !c.tip);
   const tips = cards.filter((c) => c.tip);
@@ -88,12 +47,6 @@ export default function FollowView({ lesson, lang, t, onDone, onPractice }) {
         </button>
       </div>
 
-      <PrintBar
-        lang={lang}
-        t={t}
-        heading={lesson.title[lang]}
-        entries={[{ id: lesson.id, title: lesson.title[lang], app: lesson.appName, steps: steps.map((c) => c.text), caution: tips.map((c) => c.text).join(' ') }]}
-      />
 
       <button className="chip pics-toggle" onClick={togglePics} aria-pressed={pics}>
         <Icon name="image" size={20} /> {pics ? t.hideAllPics : t.showAllPics}
@@ -112,7 +65,7 @@ export default function FollowView({ lesson, lang, t, onDone, onPractice }) {
                   <Icon name="image" size={20} /> {open[i] ?? pics ? t.hidePicture : t.showPicture}
                 </button>
               </div>
-              {(open[i] ?? pics) && <Picture card={c} lesson={lesson} lang={lang} t={t} />}
+              {(open[i] ?? pics) && <StepPicture card={c} lesson={lesson} lang={lang} t={t} />}
             </div>
           </li>
         ))}

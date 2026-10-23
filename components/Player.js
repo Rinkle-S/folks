@@ -14,6 +14,7 @@ import { levelOf } from '@/lib/levels';
 import { sentences } from '@/lib/sentences';
 import Settings from './Settings';
 import FollowView from './FollowView';
+import LessonPrint from './LessonPrint';
 import Icon from './Icons';
 import { LESSONS } from '@/lib/lessons';
 import { T } from '@/lib/i18n';
@@ -45,6 +46,7 @@ function PlayerInner({ id }) {
   const [showHint, setShowHint] = useState(false);
   const [quiz, setQuiz] = useState(null); // { correct, why }
   const [done, setDone] = useState(false);
+  const [hidePrint, setHidePrint] = useState(false);
   const [flash, setFlash] = useState(false);
   const [shake, setShake] = useState(false);
   const [tapFx, setTapFx] = useState(false);
@@ -436,6 +438,8 @@ function PlayerInner({ id }) {
           ))}
         </ul>
 
+        {!hidePrint && <LessonPrint lesson={lesson} lang={lang} t={t} variant="card" onSkip={() => setHidePrint(true)} />}
+
         {mode !== 'practice' && (
           <button className="btn primary" onClick={() => restart('practice')}>
             <Icon name="hand" size={22} /> {t.nowPractise}
@@ -555,6 +559,7 @@ function PlayerInner({ id }) {
             <Icon name="close" size={24} />
           </Link>
           <div className="progress" />
+          <LessonPrint lesson={lesson} lang={lang} t={t} variant="icon" />
           <button className="ptop-btn" onClick={() => setShowSettings(true)} aria-label="Settings">
             <Icon name="gear" size={24} />
           </button>
@@ -581,6 +586,7 @@ function PlayerInner({ id }) {
           </div>
           <small>{watching ? `${t.watching}: ${t.step(idx + 1, total)}` : t.step(idx + 1, total)}</small>
         </div>
+        <LessonPrint lesson={lesson} lang={lang} t={t} variant="icon" />
         <button className="ptop-btn" onClick={() => setShowSettings(true)} aria-label="Settings">
           <Icon name="gear" size={24} />
         </button>

@@ -8,6 +8,8 @@ import Icon from './Icons';
 import { T } from '@/lib/i18n';
 import { useLang, track } from '@/lib/client';
 import PrintBar from './PrintBar';
+import LessonPrint from './LessonPrint';
+import { LESSONS } from '@/lib/lessons';
 import { GUIDES } from '@/lib/guides';
 import { canOpenApp, openRealApp } from '@/lib/openApp';
 
@@ -75,12 +77,16 @@ export default function GuideView({ id }) {
         </button>
       )}
 
-      <PrintBar
-        lang={lang}
-        t={t}
-        heading={guide.title}
-        entries={[{ id, title: guide.title, app: guide.appName, steps: guide.steps.map((s) => s.text), caution: guide.caution }]}
-      />
+      {LESSONS['gd-' + id] ? (
+        <LessonPrint lesson={LESSONS['gd-' + id]} lang={lang} t={t} variant="bar" />
+      ) : (
+        <PrintBar
+          lang={lang}
+          t={t}
+          heading={guide.title}
+          entries={[{ id, title: guide.title, app: guide.appName, steps: guide.steps.map((s) => s.text), caution: guide.caution }]}
+        />
+      )}
 
       <button className="link-btn" onClick={() => setAll(!all)}>
         {all ? t.oneByOne : t.allSteps}
