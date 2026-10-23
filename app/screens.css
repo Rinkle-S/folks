@@ -790,3 +790,6 @@
 .g-fab { position: absolute; right: 16px; bottom: 74px; z-index: 3; min-width: 58px; height: 58px; padding: 0 16px; border-radius: 18px; background: var(--g-fab, #25d366); color: #fff; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-weight: 600; font-size: 22px; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3); }
 .g-fab.low { bottom: 18px; }
 .g-fab.ext { font-size: 15px; }
+
+.focus-box { outline: 3px solid #f5a623; outline-offset: 3px; border-radius: 10px; }
+.rp-cancel { margin: 10px 14px 6px; padding: 12px; text-align: center; border: 2px solid #d93025; color: #d93025; border-radius: 12px; font-weight: 700; }

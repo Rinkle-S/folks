@@ -20,7 +20,7 @@ export default function PrintHelp() {
           {t.helpTitle}
         </Link>
       </main>
-      <BottomNav active="learn" t={t} />
+      <BottomNav active="help" t={t} />
     </div>
   );
 }

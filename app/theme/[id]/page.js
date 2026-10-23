@@ -6,6 +6,7 @@ import Icon from '@/components/Icons';
 import AppIcon from '@/components/AppIcon';
 import { AppBar, BottomNav } from '@/components/AppShell';
 import PrintBar from '@/components/PrintBar';
+import JourneyArticle from '@/components/JourneyArticle';
 import { T } from '@/lib/i18n';
 import { useLang, getDone } from '@/lib/client';
 import { THEMES } from '@/lib/themes';
@@ -44,6 +45,8 @@ export default function Theme({ params }) {
             </div>
           ))}
         </div>
+
+        <JourneyArticle ids={th.lessons} lang={lang} t={t} />
 
         <div className="section-h">
           <span>{t.lessonsInOrder}</span>

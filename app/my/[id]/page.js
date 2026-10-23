@@ -58,7 +58,7 @@ export default function MyLesson({ params }) {
   return (
     <div className="page my">
       <div className="scam-top">
-        <Link href="/for-you" className="ptop-btn" aria-label={t.exit} onClick={() => stopSpeaking()}>
+        <Link href="/help" className="ptop-btn" aria-label={t.exit} onClick={() => stopSpeaking()}>
           <Icon name="close" size={24} />
         </Link>
       </div>

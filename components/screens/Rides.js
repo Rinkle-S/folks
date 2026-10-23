@@ -36,10 +36,10 @@ export function MapView({ route = false, pin = false, car = false, tall = false 
 
 /* ---------- Uber ---------- */
 
-function UbNav() {
+function UbNav({ on = 'home' }) {
   return (
     <div className="ub-nav">
-      <span className="on">
+      <span className={on === 'home' ? 'on' : ''}>
         <Icon name="home" size={22} />
         Home
       </span>
@@ -47,7 +47,7 @@ function UbNav() {
         <Icon name="grid" size={22} />
         Services
       </span>
-      <span>
+      <span className={on === 'activity' ? 'on' : ''} data-t="activity">
         <Icon name="list" size={22} />
         Activity
       </span>
@@ -180,7 +180,7 @@ export function UbRides({ selected }) {
             <b className="ub-price">{r.price}</b>
           </div>
         ))}
-        <div className="ub-pay">
+        <div className="ub-pay" data-t="pay">
           <span className="ub-cash">₹</span> Cash
           <Icon name="chevron" size={18} />
         </div>
@@ -213,7 +213,7 @@ export function UbPickup() {
   );
 }
 
-export function UbDriver({ shared, cancel }) {
+export function UbDriver({ shared, cancel, focus }) {
   return (
     <div className="app ub">
       <MapView route car />
@@ -223,16 +223,16 @@ export function UbDriver({ shared, cancel }) {
           <span>3 min</span>
         </div>
         <div className="ub-driver">
-          <div className="ub-plate">
+          <div className={`ub-plate ${focus === 'plate' ? 'focus-box' : ''}`}>
             <b>DL 3C AB 1234</b>
             <small>White Swift Dzire</small>
           </div>
-          <div className="ub-dp">
+          <div className={`ub-dp ${focus === 'dp' ? 'focus-box' : ''}`}>
             <span>R</span>
             <small>Rakesh · ★ 4.9</small>
           </div>
         </div>
-        <div className="ub-pin">
+        <div className={`ub-pin ${focus === 'pin' ? 'focus-box' : ''}`}>
           Your PIN <b>4821</b>
         </div>
         <div className="ub-acts">
@@ -424,7 +424,7 @@ export function RpRides({ selected }) {
   );
 }
 
-export function RpCaptain() {
+export function RpCaptain({ cancel }) {
   return (
     <div className="app rp">
       <MapView route car />
@@ -454,6 +454,11 @@ export function RpCaptain() {
           </span>
           <span className="fare">₹78 · Cash</span>
         </div>
+        {cancel !== undefined && (
+          <div className="rp-cancel" data-t={cancel ? 'cancel' : undefined}>
+            Cancel
+          </div>
+        )}
       </div>
     </div>
   );
@@ -489,6 +494,191 @@ export function RpEnd({ rated }) {
             </span>
           ))}
         </div>
+      </div>
+    </div>
+  );
+}
+
+// ---------- Uber: Activity, trip details, Help, lost item, rating, payment ----------
+export function UbActivity() {
+  const trips = [
+    { when: 'Today, 11:20 am', to: 'City Hospital', fare: '₹186', t: 'trip' },
+    { when: '12 Oct, 6:05 pm', to: 'Railway Station', fare: '₹212' },
+    { when: '3 Oct, 9:40 am', to: 'Gurudwara Sahib', fare: '₹148' },
+  ];
+  return (
+    <div className="app ub">
+      <div className="ub-title">Activity</div>
+      <div className="ub-h">Past</div>
+      <div className="ub-recent">
+        {trips.map((x) => (
+          <div key={x.when} data-t={x.t}>
+            <span className="ub-ic">
+              <Icon name="car" size={18} />
+            </span>
+            <p>
+              <b>{x.to}</b>
+              <small>
+                {x.when} · {x.fare}
+              </small>
+            </p>
+            <Icon name="chevron" size={18} />
+          </div>
+        ))}
+      </div>
+      <UbNav on="activity" />
+    </div>
+  );
+}
+
+export function UbTrip() {
+  return (
+    <div className="app ub">
+      <div className="ub-bar">
+        <Icon name="back" size={24} />
+        <b>Trip details</b>
+      </div>
+      <MapView route />
+      <div className="ub-sheet">
+        <div className="ub-addr">
+          <Icon name="pin" size={20} />
+          <p>
+            <b>City Hospital</b>
+            <small>Today, 11:20 am · Rakesh · White Swift Dzire</small>
+          </p>
+          <b>₹186</b>
+        </div>
+        <div className="ub-opt">
+          <Icon name="file" size={20} />
+          <p>
+            <b>Receipt</b>
+            <small>Fare breakdown</small>
+          </p>
+        </div>
+        <div className="ub-opt" data-t="help">
+          <Icon name="help" size={20} />
+          <p>
+            <b>Help</b>
+            <small>Lost item, fare or driver issue</small>
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function UbHelp() {
+  const rows = [
+    ['lost', 'I lost something', 'Contact your driver'],
+    [undefined, 'Review my fare or fees', 'Ask about a charge'],
+    [undefined, 'My driver or vehicle was not right', 'Tell us what happened'],
+  ];
+  return (
+    <div className="app ub">
+      <div className="ub-bar">
+        <Icon name="back" size={24} />
+        <b>Help</b>
+      </div>
+      <div className="ub-recent">
+        {rows.map(([k, a, b]) => (
+          <div key={a} data-t={k}>
+            <span className="ub-ic">
+              <Icon name="help" size={18} />
+            </span>
+            <p>
+              <b>{a}</b>
+              <small>{b}</small>
+            </p>
+            <Icon name="chevron" size={18} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export function UbLost() {
+  return (
+    <div className="app ub">
+      <div className="ub-bar">
+        <Icon name="back" size={24} />
+        <b>I lost something</b>
+      </div>
+      <div className="ub-h">What would you like to do?</div>
+      <div className="ub-opt" data-t="contact">
+        <Icon name="phone" size={20} />
+        <p>
+          <b>Contact driver about a lost item</b>
+          <small>We connect you without showing your number</small>
+        </p>
+      </div>
+      <div className="ub-opt">
+        <Icon name="help" size={20} />
+        <p>
+          <b>I could not reach my driver</b>
+          <small>Talk to Uber support</small>
+        </p>
+      </div>
+    </div>
+  );
+}
+
+export function UbRate({ rated }) {
+  return (
+    <div className="app ub">
+      <div className="rp-end-top" style={{ textAlign: 'center', padding: '18px 16px 6px' }}>
+        <b style={{ fontSize: 20 }}>You have reached City Hospital</b>
+        <p style={{ margin: '6px 0 0', color: '#6b6b6b' }}>Pay Rakesh ₹186 in cash</p>
+      </div>
+      <div className="ub-h" style={{ textAlign: 'center' }}>How was your trip with Rakesh?</div>
+      <div className="rp-stars" data-t="stars" style={{ display: 'flex', justifyContent: 'center', gap: 6, fontSize: 38, padding: '4px 0 10px' }}>
+        {[1, 2, 3, 4, 5].map((i) => (
+          <span key={i} style={{ color: rated && i <= rated ? '#f5a623' : '#cfcfcf' }}>
+            ★
+          </span>
+        ))}
+      </div>
+      {rated && rated < 5 && (
+        <div className="ub-sugg" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
+          {['Driving', 'Car condition', 'Route', 'Pickup'].map((x) => (
+            <div key={x}>
+              <span style={{ fontSize: 14, fontWeight: 600 }}>{x}</span>
+            </div>
+          ))}
+        </div>
+      )}
+      <div className="ub-btn" data-t="submit" style={{ margin: '10px 14px' }}>
+        Submit
+      </div>
+    </div>
+  );
+}
+
+export function UbPay() {
+  const rows = [
+    ['cash', 'Cash', 'Pay your driver at the end', '₹'],
+    ['upi', 'UPI', 'Pay with an app like Google Pay', 'U'],
+    [undefined, 'Add payment method', 'Card or wallet', '+'],
+  ];
+  return (
+    <div className="app ub">
+      <div className="ub-bar">
+        <Icon name="back" size={24} />
+        <b>Payment</b>
+      </div>
+      <div className="ub-recent">
+        {rows.map(([k, a, b, c]) => (
+          <div key={a} data-t={k}>
+            <span className="ub-ic" style={{ fontWeight: 700 }}>
+              {c}
+            </span>
+            <p>
+              <b>{a}</b>
+              <small>{b}</small>
+            </p>
+            {k === 'cash' && <Icon name="check" size={18} />}
+          </div>
+        ))}
       </div>
     </div>
   );

@@ -34,19 +34,11 @@ alter table public.custom_lessons enable row level security;
 -- Voice notes, videos and screenshots: create a PRIVATE storage bucket named "recordings"
 -- (Supabase → Storage → New bucket → name: recordings → leave "Public" off).
 
--- Lesson voice clips (generated once by Sarvam, then reused): create a PRIVATE storage bucket named "tts".
+-- No audio is stored for now (voice is off, and lesson wording changes often). If it is turned on later,
+-- create a PRIVATE bucket for it then, and key each clip by a hash of the text so a wording change makes a new clip.
 
--- "Ask anything": step-by-step guides the AI made for questions we had no lesson for.
--- The same question (same language, same phone) is answered from here the next time, free.
-create table if not exists public.ai_tutorials (
-  id text primary key,
-  created_at timestamptz not null default now(),
-  question text,
-  lang text,
-  phone text,
-  title text,
-  app text,
-  steps jsonb,
-  caution text
-);
-alter table public.ai_tutorials enable row level security;
+-- The "ask anything" AI helper was removed, so there is no ai_tutorials table.
+
+-- Changing content later: lessons are identified by a short stable id (for example "qr-pay") and events only store that id plus
+-- a free-form "meta" column. Rename a lesson's title freely. If you ever rename an id, add a line to docs/CONTENT-IDS.md so
+-- old events can still be read. New fields never need a migration: put them in "meta".
