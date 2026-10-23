@@ -1,6 +1,8 @@
 'use client';
 // App frame: top bar with the Folks name and settings, and a labelled bottom navigation (like an Android app).
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { getProfile } from '@/lib/profile';
 import Icon from './Icons';
 
 function navItems(t) {
@@ -12,6 +14,11 @@ function navItems(t) {
 }
 
 export function AppBar({ onSettings, back }) {
+  const [initial, setInitial] = useState('');
+  useEffect(() => {
+    const n = getProfile().name;
+    setInitial(n ? n.trim()[0].toUpperCase() : '');
+  }, []);
   return (
     <header className="appbar">
       {back ? (
@@ -24,11 +31,18 @@ export function AppBar({ onSettings, back }) {
           Folks
         </Link>
       )}
-      {onSettings && (
-        <button className="icon-btn" onClick={onSettings} aria-label="Settings">
-          <Icon name="gear" size={24} />
-        </button>
-      )}
+      <span className="appbar-right">
+        {!back && (
+          <Link href="/profile" className="avatar" aria-label="My profile">
+            {initial || '👤'}
+          </Link>
+        )}
+        {onSettings && (
+          <button className="icon-btn" onClick={onSettings} aria-label="Settings">
+            <Icon name="gear" size={24} />
+          </button>
+        )}
+      </span>
     </header>
   );
 }

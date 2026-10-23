@@ -11,6 +11,7 @@ import Onboarding from './Onboarding';
 import { AppBar, BottomNav } from './AppShell';
 import { LESSONS, APPS, findLesson } from '@/lib/lessons';
 import { matchLesson, matchGuide } from '@/lib/match';
+import { getProfile } from '@/lib/profile';
 import { GUIDES } from '@/lib/guides';
 import { T } from '@/lib/i18n';
 import { langCode } from '@/lib/langs';
@@ -50,6 +51,7 @@ export default function Home() {
   const [made, setMade] = useState([]);
   const [done, setDone] = useState([]);
   const [greet, setGreet] = useState('greetDay');
+  const [profileName, setProfileName] = useState('');
   const recRef = useRef(null);
   const gotResult = useRef(false);
   const mediaRef = useRef(null);
@@ -60,6 +62,7 @@ export default function Home() {
     setInApp(/Android/i.test(ua) && (/; wv\)/.test(ua) || /WhatsApp|Instagram|FBAN|FBAV|FB_IAB|Line\//i.test(ua)));
     setOb(isOnboarded());
     setMyApps(getApps());
+    setProfileName(getProfile().name);
     setDone(getDone());
     const h = new Date().getHours();
     setGreet(h < 12 ? 'greetMorning' : h < 17 ? 'greetDay' : 'greetEvening');
@@ -325,31 +328,36 @@ export default function Home() {
     <div className="shell">
       <AppBar onSettings={() => setShowSettings(true)} />
       <main className="shell-main">
-        <p className="greet">{t[greet]}</p>
+        <p className="greet">{profileName ? `${t[greet]}, ${profileName}` : t[greet]}</p>
         <h1 className="home-h">{t.askCardTitle}</h1>
 
+        <div className="mic-hero">
+          <button
+            type="button"
+            className={`mic-big ${state === 'listening' ? 'on' : ''}`}
+            onClick={startMic}
+            aria-label={state === 'listening' ? t.listening : t.tapToSpeak}
+            disabled={state === 'processing'}
+          >
+            <Icon name="mic" size={64} stroke={2.2} />
+          </button>
+          <p className={`mic-cap ${micMsg ? 'warn-text' : ''}`} aria-live="polite">
+            {state === 'listening' ? t.listening : state === 'processing' ? t.processing : micMsg || t.tapToSpeak}
+          </p>
+        </div>
         <form
-          className={`askbar ${state === 'listening' ? 'listening' : ''}`}
+          className="askbar typed"
           onSubmit={(e) => {
             e.preventDefault();
             if (typedQ.trim()) handleQuery(typedQ.trim(), 'typed');
           }}
         >
-          <Icon name="search" size={24} />
+          <Icon name="search" size={22} />
           <input value={typedQ} onChange={(e) => setTypedQ(e.target.value)} placeholder={t.typePlaceholder} aria-label={t.typePlaceholder} enterKeyHint="search" />
-          <button
-            type="button"
-            className={`mic ${state === 'listening' ? 'on' : ''}`}
-            onClick={startMic}
-            aria-label={state === 'listening' ? t.listening : t.askCardTitle}
-            disabled={state === 'processing'}
-          >
-            <Icon name="mic" size={28} stroke={2.2} />
+          <button type="submit" className="ask-go" aria-label={t.yesStart}>
+            <Icon name="arrow" size={22} stroke={2.4} />
           </button>
         </form>
-        <p className={`ask-sub ${micMsg ? 'warn-text' : ''}`} aria-live="polite">
-          {state === 'listening' ? t.listening : state === 'processing' ? t.processing : micMsg || t.askCardSub}
-        </p>
         {inApp && (
           <button className="btn ghost" onClick={openInChrome}>
             {t.openChrome}
