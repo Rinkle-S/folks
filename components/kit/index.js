@@ -1,0 +1,129 @@
+// Registry of practice-screen templates. A lesson step says { screen: 'kit', kit: '<name>', p: {...props}, ov: {...overlay} }.
+import { Overlay, Done } from './ui';
+import * as A from './Android';
+import * as W from './WhatsApp';
+import * as M from './Money';
+import * as MD from './Media';
+import * as S from './Shop';
+import * as TR from './Travel';
+
+export const KIT = {
+  'and-home': A.AHome,
+  'and-settings': A.SetMain,
+  'and-page': A.SetPage,
+  'and-pin': A.SetPin,
+  'and-qs': A.QuickSettings,
+  'and-clock': A.Clock,
+  'and-contacts': A.Contacts,
+  'and-contact-form': A.ContactForm,
+  'and-play': A.Play,
+  'and-gallery': A.Gallery,
+  'and-sms': A.Sms,
+  'and-gmail': A.Gmail,
+  'and-wall': A.WallPreview,
+  done: Done,
+  'wa-list': W.WaList,
+  'wa-thread': W.WaThread,
+  'wa-new': W.WaNewChat,
+  'wa-pick': W.WaPick,
+  'wa-group-name': W.WaGroupName,
+  'wa-settings': W.WaSettings,
+  'wa-profile': W.WaProfile,
+  'wa-photos': W.WaPhotos,
+  'wa-send': W.WaSendPreview,
+  'and-call': A.ACall,
+  'and-web': A.AWeb,
+  'gp-home': M.GpHome,
+  'gp-amount': M.GpAmount,
+  'gp-pin': M.GpPin,
+  'gp-banks': M.GpBanks,
+  'gp-profile': M.GpProfile,
+  'gp-bank': M.GpBankPage,
+  'gp-balance': M.GpBalance,
+  'gp-history': M.GpHistory,
+  'gp-txn': M.GpTxn,
+  'gp-card': M.GpCard,
+  'gp-otp': M.GpOtp,
+  'gp-phone': M.GpPayPhone,
+  'gp-scan-g': M.GpScanG,
+  'photo-pick': M.PhotoPick,
+  'pp-home': M.PpHome,
+  'pp-contacts': M.PpContacts,
+  'pp-amount': M.PpAmount,
+  'pt-home': M.PtHome,
+  'pt-contacts': M.PtContacts,
+  'pt-amount': M.PtAmount,
+  'bk-login': M.BkLogin,
+  'bk-home': M.BkHome,
+  'bk-list': M.BkList,
+  'bk-form': M.BkForm,
+  'bk-otp': M.BkOtp,
+  'bk-statement': M.BkStatement,
+  'yt-home': MD.YtHomeK,
+  'yt-watch': MD.YtWatch,
+  'yt-you': MD.YtYou,
+  'yt-search': MD.YtSearchK,
+  'yt-results': MD.YtResults,
+  'ig-home': MD.IgHome,
+  'ig-search': MD.IgSearch,
+  'ig-profile': MD.IgProfile,
+  'ig-list': MD.IgList,
+  'sp-home': MD.SpHome,
+  'sp-library': MD.SpLibrary,
+  'sp-playlist': MD.SpPlaylist,
+  'sw-home': S.SwHomeK,
+  'sw-track': S.SwTrack,
+  'sw-page': S.SwPage,
+  'sw-address-map': S.SwAddressMap,
+  'sw-issue': S.SwIssue,
+  'bl-home': S.BlHome,
+  'bl-profile': S.BlProfile,
+  'bl-orders': S.BlOrders,
+  'bl-cart': S.BlCart,
+  'fk-home': S.FkHome,
+  'fk-account': S.FkAccount,
+  'fk-orders': S.FkOrders,
+  'fk-order': S.FkOrder,
+  'fk-addresses': S.FkAddresses,
+  'fk-address-form': S.FkAddressForm,
+  'ub-home': TR.UbHome,
+  'ub-search': TR.UbSearch,
+  'ub-rides': TR.UbRides,
+  'ub-pickup': TR.UbPickup,
+  'ub-driver': TR.UbDriver,
+  'ub-share': TR.UbShare,
+  'rp-home': TR.RpHome,
+  'rp-search': TR.RpSearch,
+  'rp-rides': TR.RpRides,
+  'rp-captain': TR.RpCaptain,
+  'ir-home': TR.IrHome,
+  'ir-login': TR.IrLogin,
+  'ir-bookings': TR.IrBookings,
+  'ir-ticket': TR.IrTicket,
+  'ir-cancel': TR.IrCancel,
+  'ir-otp': TR.IrOtp,
+  'ir-running': TR.IrRunning,
+  'mp-home': TR.MpHome,
+  'mp-list': TR.MpList,
+  'mp-place': TR.MpPlace,
+  'mp-saved': TR.MpSaved,
+  'mp-navigate': TR.MpNavigate,
+  'mp-offline': TR.MpOffline,
+};
+
+export function registerKit(more) {
+  Object.assign(KIT, more);
+}
+
+export default function KitScreen({ step }) {
+  const C = KIT[step.kit];
+  if (!C) return <div className="app" />;
+  return (
+    <div className="app k-wrap">
+      <C {...(step.p || {})} />
+      <Overlay ov={step.ov} />
+      {step.ov && step.ov.custom === 'bank-pp' && <M.PayBankSheet brand="#5f259f" label="PAY ₹500" />}
+      {step.ov && step.ov.custom === 'bank-pt' && <M.PayBankSheet brand="#00b9f1" label="Pay ₹500" />}
+    </div>
+  );
+}

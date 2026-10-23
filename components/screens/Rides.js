@@ -213,7 +213,7 @@ export function UbPickup() {
   );
 }
 
-export function UbDriver({ shared }) {
+export function UbDriver({ shared, cancel }) {
   return (
     <div className="app ub">
       <MapView route car />
@@ -248,6 +248,15 @@ export function UbDriver({ shared }) {
             <small>{shared ? 'Shared with Sunita ✓' : 'Family can follow your ride'}</small>
           </p>
         </div>
+        {cancel !== undefined && (
+          <div className="ub-opt" data-t={cancel ? 'cancel' : undefined}>
+            <Icon name="close" size={20} />
+            <p>
+              <b>Cancel trip</b>
+              <small>A fee may apply after 3 minutes</small>
+            </p>
+          </div>
+        )}
         <div className="ub-opt">
           <Icon name="shield" size={20} />
           <p>

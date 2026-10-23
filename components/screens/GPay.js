@@ -20,7 +20,7 @@ const PEOPLE = [
   { name: 'Raju', c: '#1967d2' },
 ];
 
-export function GpHome({ request }) {
+export function GpHome({ request, links, me }) {
   return (
     <div className={`app gp ${request ? 'stack' : ''}`}>
       <div className="gp-head">
@@ -28,7 +28,7 @@ export function GpHome({ request }) {
           <Icon name="search" size={18} />
           <span>Pay friends and merchants</span>
         </div>
-        <div className="gp-me">K</div>
+        <div className="gp-me" data-t={me ? 'me' : undefined}>K</div>
       </div>
       <div className="gp-hero">
         <span className="gp-tag">PRACTICE</span>
@@ -57,8 +57,8 @@ export function GpHome({ request }) {
       </div>
       <div className="gp-links">
         <div><Icon name="gauge" size={20} /> Check your CIBIL score for free</div>
-        <div><Icon name="history" size={20} /> See transaction history</div>
-        <div><Icon name="balance" size={20} /> Check bank balance</div>
+        <div data-t={links === 'history' ? 'history' : undefined}><Icon name="history" size={20} /> See transaction history</div>
+        <div data-t={links === 'balance' ? 'balance' : undefined}><Icon name="balance" size={20} /> Check bank balance</div>
       </div>
 
       {request && (

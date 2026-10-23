@@ -20,6 +20,7 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import './globals.css';
 import './screens.css';
+import './kit.css';
 import PwaBoot from '@/components/PwaBoot';
 import PhoneApp from '@/components/PhoneApp';
 
