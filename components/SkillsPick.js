@@ -22,7 +22,8 @@ export function skillsFor(apps) {
 export function fluencyFrom(ticked, shown) {
   if (!shown.length) return '';
   const share = shown.filter((k) => ticked.includes(k)).length / shown.length;
-  return share >= 0.67 ? 'comfy' : share >= 0.34 ? 'basic' : 'new';
+  const e = 1e-9; // so exactly two thirds (4 of 6) counts as comfy and one third (2 of 6) as basic
+  return share >= 2 / 3 - e ? 'comfy' : share >= 1 / 3 - e ? 'basic' : 'new';
 }
 
 export default function SkillsPick({ lang, apps, value, onChange }) {
