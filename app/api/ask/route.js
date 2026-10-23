@@ -71,10 +71,11 @@ Reply with ONLY this JSON, nothing else:
 
 // Free option: Google Gemini (free tier, with Google Search to look up the current steps).
 async function askGemini(q, lang, phone) {
-  const model = process.env.GEMINI_MODEL || 'gemini-3.8-flash';
-  const call = async (withSearch) => {
+  // Busy or retired models happen on the free tier, so try a few in turn: the chosen one, then Google's "latest" aliases.
+  const models = [process.env.GEMINI_MODEL || 'gemini-3.8-flash', 'gemini-flash-latest', 'gemini-flash-lite-latest'].filter((m, i, a) => a.indexOf(m) === i);
+  const call = async (model, withSearch, ms) => {
     const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
-      signal: AbortSignal.timeout(withSearch ? 35000 : 20000),
+      signal: AbortSignal.timeout(ms),
       method: 'POST',
       headers: { 'x-goog-api-key': process.env.GEMINI_API_KEY, 'content-type': 'application/json' },
       body: JSON.stringify({
@@ -85,23 +86,32 @@ async function askGemini(q, lang, phone) {
       }),
     });
     if (!r.ok) {
-      const e = new Error(`gemini ${r.status} ${(await r.text()).slice(0, 200)}`);
+      const e = new Error(`gemini ${model} ${r.status} ${(await r.text()).slice(0, 160)}`);
       e.status = r.status;
       throw e;
     }
     const j = await r.json();
     const text = ((j.candidates || [])[0]?.content?.parts || []).map((p) => p.text || '').join('\n');
     const m = text.match(/\{[\s\S]*\}/);
-    if (!m) throw new Error('no json');
+    if (!m) throw new Error(`gemini ${model} gave no json`);
     return JSON.parse(m[0]);
   };
-  try {
-    return await call(true);
-  } catch (e) {
-    // Newer models may not allow free Google Search lookups. Fall back to the model's own knowledge (less current).
-    if (e.status === 400 || e.status === 403 || e.status === 429 || e.name === 'TimeoutError') return await call(false);
-    throw e;
+  const started = Date.now();
+  let last;
+  for (const model of models) {
+    for (const withSearch of [true, false]) {
+      if (Date.now() - started > 42000) throw last || new Error('took too long');
+      try {
+        return await call(model, withSearch, withSearch ? 16000 : 12000);
+      } catch (e) {
+        last = e;
+        // Search not allowed on this model: retry the same model without it. Anything else (busy, retired, slow): next model.
+        const searchRefused = withSearch && (e.status === 400 || e.status === 403);
+        if (!searchRefused) break;
+      }
+    }
   }
+  throw last || new Error('no model answered');
 }
 
 async function askClaude(q, lang, phone) {
