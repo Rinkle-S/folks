@@ -2,6 +2,7 @@
 // Home: ask by voice or typing, see progress, practise scam-spotting, and pick a lesson by app.
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import Settings from './Settings';
 import AppIcon from './AppIcon';
 import AppsPicker from './AppsPicker';
@@ -9,8 +10,8 @@ import Icon from './Icons';
 import Onboarding from './Onboarding';
 import { AppBar, BottomNav } from './AppShell';
 import { LESSONS, APPS, findLesson } from '@/lib/lessons';
-import AiGuide from './AiGuide';
-import { matchLesson } from '@/lib/match';
+import { matchLesson, matchGuide } from '@/lib/match';
+import { GUIDES } from '@/lib/guides';
 import { T } from '@/lib/i18n';
 import { langCode } from '@/lib/langs';
 import { askSomeone, loadMade, isReady } from '@/lib/ask';
@@ -29,6 +30,7 @@ import {
 } from '@/lib/client';
 
 export default function Home() {
+  const router = useRouter();
   const [lang, setLang] = useLang();
   const [muted, toggleMute] = useMute();
   const [onboarded, setOb] = useState(undefined);
@@ -39,6 +41,7 @@ export default function Home() {
   const [micMsg, setMicMsg] = useState('');
   const [inApp, setInApp] = useState(false);
   const [asked, setAsked] = useState(false);
+  const [guideId, setGuideId] = useState(null); // a quick guide we wrote that fits
   const [ai, setAi] = useState({ s: 'idle', guide: null }); // idle | loading | ok | none
   const [showSettings, setShowSettings] = useState(false);
   const [serverStt, setServerStt] = useState(false);
@@ -102,9 +105,17 @@ export default function Home() {
     track('voice_search', {
       meta: { q: q.slice(0, 200), via, match: m ? m.id : null, lang },
     });
-    if (m && m.kind === 'lesson') {
+    // A practice lesson wins unless a quick guide fits the question clearly better ("cancel order" vs the order lesson).
+    const g0 = matchGuide(q);
+    const lessonWins = m && m.kind === 'lesson' && !(g0 && g0.score > m.task);
+    const gm = lessonWins ? null : g0;
+    setGuideId(gm ? gm.id : null);
+    setResult(lessonWins ? m : null);
+    if (lessonWins) {
       setAi({ s: 'idle', guide: null });
       speak([t.confirmQ, LESSONS[m.id].title[lang]], lang);
+    } else if (gm) {
+      setAi({ s: 'idle', guide: null });
     } else {
       askAi(q);
     }
@@ -125,7 +136,11 @@ export default function Home() {
       });
       const j = await r.json().catch(() => ({ status: 'error', detail: `server answered ${r.status} without a result` }));
       if (j.status === 'ok' && j.guide) {
+        try {
+          localStorage.setItem('folks_ai_guide', JSON.stringify(j.guide));
+        } catch {}
         setAi({ s: 'ok', guide: j.guide });
+        router.push('/guide/ai');
         track('ai_guide', { meta: { q: q.slice(0, 200), cached: !!j.cached, lang } });
       } else {
         setAi({ s: 'none', guide: null });
@@ -360,6 +375,20 @@ export default function Home() {
                   {t.noOther}
                 </button>
               </div>
+            ) : guideId && GUIDES[guideId] ? (
+              <div className="card guide-found">
+                <p>{t.guideFound}</p>
+                <div className="confirm-lesson">
+                  <AppIcon app={GUIDES[guideId].app} size={52} />
+                  {GUIDES[guideId].title[lang]}
+                </div>
+                <Link className="btn primary" href={`/guide/${guideId}`}>
+                  {t.showGuide}
+                </Link>
+                <button className="btn ghost" onClick={() => setState('idle')}>
+                  {t.noOther}
+                </button>
+              </div>
             ) : ai.s === 'loading' ? (
               <div className="card">
                 <p>
@@ -367,8 +396,6 @@ export default function Home() {
                 </p>
                 <p className="muted">{t.aiLookingSub}</p>
               </div>
-            ) : ai.s === 'ok' && ai.guide ? (
-              <AiGuide guide={ai.guide} t={t} onClose={() => setState('idle')} />
             ) : (
               <div className="card">
                 <p>{t.noMatch}</p>
