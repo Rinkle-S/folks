@@ -7,7 +7,7 @@ import { ALL_APPS } from '@/lib/apps';
 import { T } from '@/lib/i18n';
 import { LANGS } from '@/lib/langs';
 import PhonePick from './PhonePick';
-import FluencyPick from './FluencyPick';
+import SkillsPick, { skillsFor, fluencyFrom } from './SkillsPick';
 import { saveProfile } from '@/lib/profile';
 
 export default function Onboarding({ lang, setLang, onDone }) {
@@ -15,7 +15,7 @@ export default function Onboarding({ lang, setLang, onDone }) {
   const [apps, setApps] = useState([]);
   const [name, setName] = useState('');
   const [phone, setPhone] = useState({ brand: '', model: '' });
-  const [fluency, setFluency] = useState('');
+  const [skills, setSkills] = useState([]);
   const t = T[lang];
   const toggle = (id) => setApps(apps.includes(id) ? apps.filter((x) => x !== id) : [...apps, id]);
 
@@ -117,26 +117,6 @@ export default function Onboarding({ lang, setLang, onDone }) {
       ) : step === 3 ? (
         <>
           <div className="onboard-hero">
-            <h1>{t.obFluencyQ}</h1>
-            <p>{t.obFluencySub}</p>
-            <FluencyPick lang={lang} value={fluency} onChange={setFluency} />
-          </div>
-          <button
-            className="btn primary"
-            onClick={() => {
-              saveProfile({ fluency });
-              setStep(4);
-            }}
-          >
-            {t.obNext}
-          </button>
-          <button className="btn ghost" onClick={() => setStep(4)}>
-            {t.obSkip}
-          </button>
-        </>
-      ) : (
-        <>
-          <div className="onboard-hero">
             <h1>{t.appsQ}</h1>
             <p>{t.appsSub}</p>
             <div className="apps-grid">
@@ -149,10 +129,36 @@ export default function Onboarding({ lang, setLang, onDone }) {
               ))}
             </div>
           </div>
-          <button className="btn primary" onClick={() => onDone(apps.length ? apps : null)}>
+          <button className="btn primary" onClick={() => setStep(4)}>
+            {t.obNext}
+          </button>
+          <button
+            className="btn ghost"
+            onClick={() => {
+              setApps([]);
+              setStep(4);
+            }}
+          >
+            {t.obSkip}
+          </button>
+        </>
+      ) : (
+        <>
+          <div className="onboard-hero">
+            <h1>{t.skillsQ}</h1>
+            <p>{t.skillsSub}</p>
+            <SkillsPick lang={lang} apps={apps} value={skills} onChange={setSkills} />
+          </div>
+          <button
+            className="btn primary"
+            onClick={() => {
+              saveProfile({ fluency: fluencyFrom(skills, skillsFor(apps)) });
+              onDone(apps.length ? apps : null);
+            }}
+          >
             {t.obStart}
           </button>
-          <button className="btn ghost" onClick={() => onDone(null)}>
+          <button className="btn ghost" onClick={() => onDone(apps.length ? apps : null)}>
             {t.obSkip}
           </button>
         </>

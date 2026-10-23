@@ -58,6 +58,20 @@ export default async function Stats() {
   const fb = { easy: 0, okay: 0, hard: 0 };
   for (const f of of('feedback')) if (f.meta?.v in fb) fb[f.meta.v]++;
 
+  // Lessons people found okay or hard, with the reasons and notes they gave: where to improve.
+  const REASON = { stuck: 'got stuck', mismatch: 'screen did not match phone', words: 'words unclear', voice: 'voice or sound', other: 'other' };
+  const byLesson = {};
+  for (const f of of('feedback')) {
+    if (f.meta?.v === 'easy' || !f.lesson) continue;
+    (byLesson[f.lesson] ||= { n: 0, reasons: {}, notes: [] }).n++;
+  }
+  for (const f of of('feedback_detail')) {
+    const l = (byLesson[f.lesson] ||= { n: 0, reasons: {}, notes: [] });
+    for (const r of f.meta?.reasons || []) l.reasons[r] = (l.reasons[r] || 0) + 1;
+    if (f.meta?.note) l.notes.push(`${f.meta.note} (${f.meta.lang || '?'})`);
+  }
+  const needsWork = Object.entries(byLesson).sort((a, b) => b[1].n - a[1].n).slice(0, 25);
+
   const cards = [
     ['Parents who started', parents],
     ['Lessons finished', uniq(completes.map((e) => `${e.device}|${e.lesson}`))],
@@ -139,6 +153,25 @@ export default async function Stats() {
                 {k}: <b>{v}</b>
               </li>
             ))}
+        </ul>
+      )}
+
+      <h2>Lessons to improve (okay or hard)</h2>
+      {needsWork.length === 0 ? (
+        <p className="muted">No feedback yet.</p>
+      ) : (
+        <ul className="plain">
+          {needsWork.map(([id, v]) => (
+            <li key={id}>
+              <b>{LESSONS[id]?.title.en || id}</b>: {v.n} said okay or hard
+              {Object.keys(v.reasons).length > 0 && (
+                <span className="muted"> ({Object.entries(v.reasons).map(([r, c]) => `${REASON[r] || r} ${c}`).join(', ')})</span>
+              )}
+              {v.notes.slice(0, 3).map((n, i) => (
+                <div key={i} className="muted">"{n}"</div>
+              ))}
+            </li>
+          ))}
         </ul>
       )}
 

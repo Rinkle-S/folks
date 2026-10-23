@@ -1,9 +1,11 @@
 'use client';
 // Registers the service worker and keeps Chrome's install prompt for later (Settings → Add to home screen).
 import { useEffect } from 'react';
+import { flushOutbox } from '@/lib/client';
 
 export default function PwaBoot() {
   useEffect(() => {
+    flushOutbox(); // send feedback that was waiting for the database
     if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
     const onPrompt = (e) => {
       e.preventDefault();
