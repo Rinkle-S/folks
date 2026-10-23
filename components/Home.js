@@ -484,6 +484,17 @@ export default function Home() {
           </button>
         )}
 
+        <Link href="/themes" className="feature-card">
+          <span className="feature-ic soft">
+            <Icon name="library" size={26} />
+          </span>
+          <div>
+            <b>{t.themesTitle}</b>
+            <span>{t.homeThemesSub}</span>
+          </div>
+          <Icon name="chevron" size={24} />
+        </Link>
+
         <Link href="/scams" className="feature-card dark">
           <span className="feature-ic">
             <Icon name="shieldCheck" size={28} />

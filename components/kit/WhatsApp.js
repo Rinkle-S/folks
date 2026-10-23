@@ -110,10 +110,10 @@ const THREADS = {
 
 // One chat. who: thread key. Targets: clip, mic, more, name, send, msg-<i> (bubbles).
 // sel: index of a selected bubble (top bar shows reply/star/delete/forward). quote: replying to a bubble.
-export function WaThread({ who = 'ramesh', clip, mic, more, name, msg, sel, quote, typed, recording, sendT, extra }) {
+export function WaThread({ last, who = 'ramesh', clip, mic, more, name, msg, sel, quote, typed, recording, sendT, extra }) {
   const tx = useScreenText();
   const c = THREADS[who];
-  const msgs = [...c.msgs, ...(extra || [])];
+  const msgs = [...(last !== undefined ? c.msgs.slice(-last) : c.msgs), ...(extra || [])];
   return (
     <div className="app wa">
       {sel !== undefined ? (
@@ -165,11 +165,17 @@ export function WaThread({ who = 'ramesh', clip, mic, more, name, msg, sel, quot
         {msgs.map((m, i) => (
           <div key={i} className={`bub ${m.me ? 'me' : ''} ${sel === i ? 'sel' : ''}`} data-t={msg === i ? `msg-${i}` : undefined}>
             {m.from && <b className="wa-from">{m.from}</b>}
+            {m.fwd && <div className="wa-fwd">↪ {m.many ? 'Forwarded many times' : 'Forwarded'}</div>}
             {m.img && <div className="wa-img">{m.img}</div>}
             {tx(m.text)}
             <span>
               {m.t || '10:30 am'} {m.me ? <i className="wa-blue">✓✓</i> : ''}
             </span>
+            {m.many && (
+              <span className="wa-web" data-t="search-web">
+                <Icon name="search" size={16} stroke={2.4} />
+              </span>
+            )}
           </div>
         ))}
       </div>

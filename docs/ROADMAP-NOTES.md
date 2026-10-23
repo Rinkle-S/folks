@@ -25,3 +25,22 @@ button names every few months. A feasible plan, cheapest first:
 6. **Later:** AI-assisted compare. Upload a real screenshot, flag which template differs and what moved.
 Rule: label practice screens as "look-alike" (done), so a small difference is expected, and the lesson text names buttons
 the way the app shows them.
+
+## Topic courses: what is built and what is still to write (23 Oct 2026)
+Built now: "Learn by topic" (`/themes`, `lib/themes.js`): 2 topics per level (6 in all), each with a short "good to know"
+intro and an ordered lesson list, plus printable handouts (`/print`). New lessons: realistic Play Store (explore, install,
+update), common icons, check a WhatsApp forward. New scam practice: guaranteed 12% returns asking for an OTP.
+
+Still to write, from the workshop outlines (each becomes lessons or a topic):
+- **Beginner:** safer browsing and website checks (https, padlock), strong passwords and a password manager, data breaches
+  and identity theft explained, reporting an incident (1930, cybercrime.gov.in is already in Scams), social media privacy.
+- **Everyday (intermediate):** ride apps beyond Uber and Rapido (Ola); medicines: search a medicine, upload a prescription,
+  compare prices; choosing delivery slots; adding a biller and scheduling a bill payment (electricity is built); internet,
+  phone and insurance bills; music and video streaming (playlists, offline downloads, accessible features); health trackers
+  and brain games; exploring the Play Store on your own; reading product reviews and return policies.
+- **Confident (advanced):** set the phone to Hindi or Malayalam; video calls beyond WhatsApp (Meet, Zoom); voice assistants
+  and AI helpers (what to ask, what never to tell them); two-factor authentication; app permissions and privacy settings;
+  mobile banking in more depth.
+- **Icons:** a wider icon set (share, download, bell, heart, edit, trash, refresh, plus, filter) and a "which icon means
+  what" practice drawn from other senior guides.
+- Writing every lesson in Hindi and Malayalam needs a native read before launch.

@@ -7,6 +7,7 @@ import * as MD from './Media';
 import * as S from './Shop';
 import * as TR from './Travel';
 import * as L from './Lessons';
+import * as ST from './Store';
 import { GpScan } from '../screens/GPay';
 
 export const KIT = {
@@ -18,7 +19,9 @@ export const KIT = {
   'and-clock': A.Clock,
   'and-contacts': A.Contacts,
   'and-contact-form': A.ContactForm,
-  'and-play': A.Play,
+  'and-play': ST.PlayStore,
+  'icon-board': ST.IconBoard,
+  'icon-same': ST.IconSame,
   'and-gallery': A.Gallery,
   'and-sms': A.Sms,
   'and-gmail': A.Gmail,
