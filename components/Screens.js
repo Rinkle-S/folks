@@ -60,7 +60,7 @@ export default function Screen({ step, lesson, lang, t, values, typed }) {
     case 'intro':
       return <Intro lesson={lesson} lang={lang} t={t} />;
     case 'phone-home':
-      return <PhoneHome />;
+      return <PhoneHome app={lesson.app} />;
     case 'gen':
       return <GenScreen ui={step.ui} typed={typed} inputHere={inputHere} />;
 

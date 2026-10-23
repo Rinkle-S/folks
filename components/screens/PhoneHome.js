@@ -20,10 +20,30 @@ const BRAND = {
   rapido: 'Rapido',
   swiggy: 'Swiggy',
   drive: 'Drive',
+  flipkart: 'Flipkart',
+  instagram: 'Instagram',
+  spotify: 'Spotify',
+  yono: 'YONO SBI',
+  icici: 'iMobile',
+  blinkit: 'Blinkit',
+  zepto: 'Zepto',
+  irctc: 'IRCTC',
+  paytm: 'Paytm',
+  maps: 'Maps',
 };
+const POOL = Object.keys(BRAND);
+
+// Same phone, but the app being taught sits in a different place each time, like on a real phone.
+function layout(app) {
+  const seed = [...String(app)].reduce((a, c) => a + c.charCodeAt(0), 0);
+  const others = POOL.filter((x) => x !== app);
+  const rot = seed % others.length;
+  const eight = [...others.slice(rot), ...others.slice(0, rot)].slice(0, 7);
+  eight.splice(seed % 8, 0, app);
+  return ['gallery', 'camera', 'settings', 'clock', ...eight.filter((x) => BRAND[x])];
+}
 
 // The grid mixes everyday system apps with the lesson apps, like a real phone.
-const GRID = ['clock', 'calendar', 'gallery', 'camera', 'youtube', 'gpay', 'settings', 'swiggy', 'drive', 'rapido', 'uber', 'whatsapp'];
 const DOCK = ['phone', 'messages', 'camera', 'settings'];
 
 function Tile({ id, size = 50, label = true }) {
@@ -42,7 +62,8 @@ function Tile({ id, size = 50, label = true }) {
   );
 }
 
-export function PhoneHome() {
+export function PhoneHome({ app }) {
+  const GRID = layout(BRAND[app] ? app : 'gpay');
   return (
     <div className="app ph">
       <div className="ph-status">
