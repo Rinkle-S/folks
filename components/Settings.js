@@ -7,7 +7,7 @@ import { voiceStatus } from '@/lib/voice';
 import { T } from '@/lib/i18n';
 import { LANGS } from '@/lib/langs';
 
-export default function Settings({ lang, setLang, muted, toggleMute, onClose, onApps, appsLabel }) {
+export default function Settings({ lang, setLang, muted, toggleMute, onClose, onApps, appsLabel, onPracticeInfo }) {
   const [canInstall, install] = useInstall();
   const [tested, setTested] = useState(false);
   const [mode, setMode] = useState(getLearnMode());
@@ -75,6 +75,14 @@ export default function Settings({ lang, setLang, muted, toggleMute, onClose, on
             <span>{bi('My apps', 'मेरे ऐप', 'എന്റെ ആപ്പുകൾ')}</span>
             <button className="toggle" onClick={onApps}>
               {appsLabel || 'Choose'}
+            </button>
+          </div>
+        )}
+        {onPracticeInfo && (
+          <div className="settings-row">
+            <span>{t.practiceWhat}</span>
+            <button className="toggle" onClick={onPracticeInfo}>
+              {t.practiceShow}
             </button>
           </div>
         )}

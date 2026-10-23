@@ -21,6 +21,7 @@ function Picture({ card, lesson, lang, t }) {
   }, [card]);
   return (
     <div className="follow-preview" ref={ref} aria-hidden="true">
+      <div className="pic-tag">{t.pictureTag}</div>
       <div className="follow-scale">
         <Screen step={card.step} lesson={lesson} lang={lang} t={t} values={card.values} typed="" />
       </div>
