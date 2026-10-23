@@ -10,7 +10,7 @@ function navItems(t) {
   return [
     { k: 'learn', href: '/', icon: 'home', label: t.navLearn },
     { k: 'safe', href: '/scams', icon: 'shieldCheck', label: t.navSafe },
-    { k: 'foryou', href: '/for-you', icon: 'heart', label: t.navForYou },
+    { k: 'help', href: '/help', icon: 'help', label: t.navHelp },
   ];
 }
 

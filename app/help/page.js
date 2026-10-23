@@ -1,6 +1,7 @@
 'use client';
-// Help: common questions in plain words.
+// Help: ask for a lesson, lessons made for you, and common questions in plain words.
 import { AppBar, BottomNav } from '@/components/AppShell';
+import AskPanel from '@/components/AskPanel';
 import HelpList from '@/components/HelpList';
 import { T } from '@/lib/i18n';
 import { useLang } from '@/lib/client';
@@ -11,12 +12,20 @@ export default function Help() {
   const t = T[lang];
   return (
     <div className="shell">
-      <AppBar back="/" />
+      <AppBar />
       <main className="shell-main">
-        <h1 className="page-h">{t.helpTitle}</h1>
+        <h1 className="page-h">{t.helpPageTitle}</h1>
+        <p className="muted">{t.helpPageLead}</p>
+        <div className="section-h">
+          <span>{t.helpAsk}</span>
+        </div>
+        <AskPanel lang={lang} t={t} />
+        <div className="section-h" style={{ marginTop: 22 }}>
+          <span>{t.helpTitle}</span>
+        </div>
         <HelpList lang={lang} />
       </main>
-      <BottomNav active="learn" t={t} />
+      <BottomNav active="help" t={t} />
     </div>
   );
 }

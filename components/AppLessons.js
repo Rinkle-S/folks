@@ -67,7 +67,7 @@ export default function AppLessons({ app }) {
           })}
         </div>
 
-        <Link href="/for-you" className="ask-more">
+        <Link href="/help" className="ask-more">
           <Icon name="heart" size={20} /> {t.askMore}
         </Link>
       </main>

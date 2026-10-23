@@ -457,7 +457,7 @@ export default function Home() {
         </section>
 
         {readyMade.length > 0 && (
-          <Link href="/for-you" className="feature-card">
+          <Link href="/help" className="feature-card">
             <span className="feature-ic soft">
               <Icon name="heart" size={26} />
             </span>
@@ -475,7 +475,7 @@ export default function Home() {
         </footer>
       </main>
 
-      <BottomNav active="learn" t={t} dot={readyMade.length ? 'foryou' : null} />
+      <BottomNav active="learn" t={t} dot={readyMade.length ? 'help' : null} />
 
       {showSettings && (
         <Settings

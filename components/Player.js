@@ -190,7 +190,8 @@ function PlayerInner({ id }) {
       const above = r.top - R.top > 52;
       if (step.kind === 'tap') {
         // A small hand on the corner of the button: it never covers a neighbouring icon or its name.
-        setBubble({ compact: true, x: Math.min(r.right - R.left - 8, R.width - 22), y: Math.min(r.bottom - R.top - 6, R.height - 22), label });
+        const off = r.bottom < R.top + 6 ? 'up' : r.top > R.bottom - 6 ? 'down' : null; // the target is scrolled out of view
+        setBubble({ compact: true, off, x: Math.min(Math.max(r.right - R.left - 8, 22), R.width - 22), y: Math.min(Math.max(r.bottom - R.top - 6, 22), R.height - 22), label });
         return;
       }
       setBubble({ x, y: above ? r.top - R.top - 10 : r.bottom - R.top + 10, below: !above, label });
@@ -462,7 +463,6 @@ function PlayerInner({ id }) {
   );
 
   if (done) {
-    const shareText = `${lesson.share[lang]}\n${typeof window !== 'undefined' ? window.location.origin : ''}`;
     return (
       <div className="page done">
         <div className="done-medal">
@@ -571,9 +571,6 @@ function PlayerInner({ id }) {
         </Link>
         <div className="done-quiet">
           <LessonPrint lesson={lesson} lang={lang} t={t} variant="link" />
-          <a className="link-btn" href={whatsappLink(shareText)} target="_blank" rel="noopener noreferrer" onClick={() => track('share', { lesson: id })}>
-            {t.tellChild(from)}
-          </a>
           <button className="link-btn" onClick={() => restart(mode || 'practice')}>
             {t.practiceAgain}
           </button>
@@ -634,9 +631,15 @@ function PlayerInner({ id }) {
         <Screen step={step} lesson={lesson} lang={lang} t={t} values={values} typed={typed} />
         {bubble && (
           bubble.compact ? (
-            <div className="tap-hand" style={{ left: bubble.x, top: bubble.y }} aria-hidden="true">
-              👆
-            </div>
+            bubble.off ? (
+              <div className={`tap-off ${bubble.off}`} aria-hidden="true">
+                {bubble.off === 'up' ? '⬆' : '⬇'} {bubble.label}
+              </div>
+            ) : (
+              <div className="tap-hand" style={{ left: bubble.x, top: bubble.y }} aria-hidden="true">
+                👆
+              </div>
+            )
           ) : (
             <div className={`tap-bubble ${bubble.below ? 'below' : ''}`} style={{ left: bubble.x, top: bubble.y }}>
               👆 {bubble.label}

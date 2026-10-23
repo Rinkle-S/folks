@@ -25,6 +25,13 @@ const ALLOWED = new Set([
   'custom_created',
   'custom_view',
   'recording_uploaded',
+  'print',
+  'cheated_call',
+  'cheated_portal',
+  'guide_open',
+  'open_real_app',
+  'profile_set',
+  'lesson_request',
 ]);
 
 const clip = (v, n) => (typeof v === 'string' ? v.slice(0, n) : null);
@@ -42,6 +49,8 @@ export async function POST(req) {
 
   const meta = body.meta && typeof body.meta === 'object' ? { ...body.meta } : {};
   if (typeof body.at === 'string') meta.client_at = body.at.slice(0, 40); // when it really happened, if it was queued
+  // Which version of the app wrote this event, so results stay readable after the content changes.
+  if (process.env.VERCEL_GIT_COMMIT_SHA) meta.build = process.env.VERCEL_GIT_COMMIT_SHA.slice(0, 7);
   const metaStr = JSON.stringify(meta);
   const row = {
     device: clip(body.device, 64),
