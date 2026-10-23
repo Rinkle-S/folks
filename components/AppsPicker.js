@@ -4,8 +4,17 @@ import { useState } from 'react';
 import AppIcon from './AppIcon';
 import { ALL_APPS } from '@/lib/apps';
 
+const nameOf = (id) => (ALL_APPS.find((a) => a.id === id) || { name: id }).name;
+
 export default function AppsPicker({ t, initial = [], onSave, onClose }) {
   const [sel, setSel] = useState(initial);
+  const move = (i, d) => {
+    const j = i + d;
+    if (j < 0 || j >= sel.length) return;
+    const a = [...sel];
+    [a[i], a[j]] = [a[j], a[i]];
+    setSel(a);
+  };
   const toggle = (id) => setSel(sel.includes(id) ? sel.filter((x) => x !== id) : [...sel, id]);
   return (
     <div className="settings-wrap" onClick={onClose}>
@@ -23,6 +32,28 @@ export default function AppsPicker({ t, initial = [], onSave, onClose }) {
             </button>
           ))}
         </div>
+        {sel.length > 1 && (
+          <>
+            <div className="settings-h">
+              <b>↕️ {t.orderTitle}</b>
+            </div>
+            <p className="muted small">{t.orderSub}</p>
+            <div className="order-list">
+              {sel.map((id, i) => (
+                <div className="order-row" key={id}>
+                  <AppIcon app={id} size={36} />
+                  <b>{nameOf(id)}</b>
+                  <button className="mv" onClick={() => move(i, -1)} disabled={i === 0} aria-label={`${nameOf(id)} ${t.moveUp}`}>
+                    ▲ {t.moveUp}
+                  </button>
+                  <button className="mv" onClick={() => move(i, 1)} disabled={i === sel.length - 1} aria-label={`${nameOf(id)} ${t.moveDown}`}>
+                    ▼ {t.moveDown}
+                  </button>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
         <button className="btn primary" onClick={() => onSave(sel)}>
           {t.appsSave}
         </button>

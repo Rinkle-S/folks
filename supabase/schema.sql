@@ -35,3 +35,18 @@ alter table public.custom_lessons enable row level security;
 -- (Supabase → Storage → New bucket → name: recordings → leave "Public" off).
 
 -- Lesson voice clips (generated once by Sarvam, then reused): create a PRIVATE storage bucket named "tts".
+
+-- "Ask anything": step-by-step guides the AI made for questions we had no lesson for.
+-- The same question (same language, same phone) is answered from here the next time, free.
+create table if not exists public.ai_tutorials (
+  id text primary key,
+  created_at timestamptz not null default now(),
+  question text,
+  lang text,
+  phone text,
+  title text,
+  app text,
+  steps jsonb,
+  caution text
+);
+alter table public.ai_tutorials enable row level security;
