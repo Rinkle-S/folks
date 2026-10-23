@@ -74,6 +74,7 @@ async function askGemini(q, lang, phone) {
   const model = process.env.GEMINI_MODEL || 'gemini-3.8-flash';
   const call = async (withSearch) => {
     const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+      signal: AbortSignal.timeout(withSearch ? 35000 : 20000),
       method: 'POST',
       headers: { 'x-goog-api-key': process.env.GEMINI_API_KEY, 'content-type': 'application/json' },
       body: JSON.stringify({
@@ -98,7 +99,7 @@ async function askGemini(q, lang, phone) {
     return await call(true);
   } catch (e) {
     // Newer models may not allow free Google Search lookups. Fall back to the model's own knowledge (less current).
-    if (e.status === 400 || e.status === 403 || e.status === 429) return await call(false);
+    if (e.status === 400 || e.status === 403 || e.status === 429 || e.name === 'TimeoutError') return await call(false);
     throw e;
   }
 }

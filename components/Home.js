@@ -123,7 +123,7 @@ export default function Home() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ q, lang, phone, device: deviceId() }),
       });
-      const j = await r.json().catch(() => ({}));
+      const j = await r.json().catch(() => ({ status: 'error', detail: `server answered ${r.status} without a result` }));
       if (j.status === 'ok' && j.guide) {
         setAi({ s: 'ok', guide: j.guide });
         track('ai_guide', { meta: { q: q.slice(0, 200), cached: !!j.cached, lang } });
@@ -133,8 +133,8 @@ export default function Home() {
         setAi({ s: 'none', guide: null, why: j.status || 'error', detail: j.detail || '' });
         speak(t.noMatch, lang);
       }
-    } catch {
-      setAi({ s: 'none', guide: null });
+    } catch (e) {
+      setAi({ s: 'none', guide: null, why: 'error', detail: `could not reach the server (${(e && e.message) || 'network'})` });
     }
   }
 
