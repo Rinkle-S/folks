@@ -308,7 +308,7 @@
 /* ---------- Shared: drawn map ---------- */
 .mapv { position: relative; flex: none; height: 130px; overflow: hidden; }
 .mapv.tall { flex: 1; height: auto; min-height: 150px; }
-.mapv svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.mapv > svg { position: absolute; inset: 0; width: 100%; height: 100%; }
 .map-pin { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -85%); display: flex; flex-direction: column; align-items: center; color: #111; }
 .map-pin span { background: #111; color: #fff; font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 6px; margin-bottom: 2px; white-space: nowrap; }
 .ub .caret, .rp .caret, .yt .caret, .sw .caret { display: inline-block; width: 2px; height: 18px; background: #276ef1; margin-left: 2px; vertical-align: middle; animation: caret 1s steps(1) infinite; }
@@ -572,7 +572,7 @@
 .sw-help { margin: 6px 14px; display: flex; align-items: center; gap: 8px; color: #676a6d; font-size: 13px; }
 
 /* ---------- Practice Android home screen ---------- */
-.ph { background: linear-gradient(170deg, #20435c 0%, #3d6b6a 45%, #c58a52 100%); color: #fff; font-family: 'Roboto', system-ui, sans-serif; }
+.app.ph { background: linear-gradient(170deg, #20435c 0%, #3d6b6a 45%, #c58a52 100%); color: #fff; font-family: 'Roboto', system-ui, sans-serif; }
 .ph-status { display: flex; justify-content: space-between; padding: 6px 14px; font-size: 12px; opacity: 0.9; }
 .ph-clock { padding: 6px 18px 12px; }
 .ph-clock b { display: block; font-size: 38px; font-weight: 400; line-height: 1.1; }
@@ -581,7 +581,7 @@
 .ph-app { display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 4px 0; border-radius: 14px; }
 .ph-app small { font-size: 11.5px; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6); white-space: nowrap; }
 .ph-sys { display: grid; place-items: center; border-radius: 50%; color: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); }
-.ph .app-icon { border-radius: 50%; }
+.app.ph .app-icon { border-radius: 50%; }
 .ph-search { display: flex; align-items: center; gap: 10px; margin: auto 14px 10px; background: rgba(255, 255, 255, 0.9); color: #5f6368; border-radius: 999px; padding: 10px 16px; font-size: 14px; }
 .ph-search svg:last-child { margin-left: auto; }
 .ph-dock { display: grid; grid-template-columns: repeat(4, 1fr); padding: 6px 8px 12px; background: rgba(255, 255, 255, 0.12); }
