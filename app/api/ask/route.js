@@ -1,5 +1,5 @@
 // "Ask anything": when no lesson we wrote matches, build a short step-by-step guide for the real app.
-// Order: 1) saved answer (free)  2) Claude + web search (needs ANTHROPIC_API_KEY)  3) tell the app to fall back to "ask someone".
+// Order: 1) saved answer (free)  2) Gemini free tier (GEMINI_API_KEY) or Claude (ANTHROPIC_API_KEY), both with web search  3) tell the app to fall back to "ask someone".
 // Safety: the key stays on the server, there are per-device and per-day limits, and the guide is always shown as AI-made.
 import { NextResponse } from 'next/server';
 import { createHash } from 'crypto';
@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
 
 const MODEL = () => process.env.ANTHROPIC_MODEL || 'claude-sonnet-5-5';
-const DAILY_CAP = () => Number(process.env.AI_DAILY_CAP || 150);
+const DAILY_CAP = () => Number(process.env.AI_DAILY_CAP || 60);
 const DEVICE_CAP = () => Number(process.env.AI_DEVICE_CAP || 6);
 const LANG_NAME = { en: 'English', hi: 'Hindi (Devanagari script)', ml: 'Malayalam' };
 
@@ -67,6 +67,27 @@ Rules:
 
 Reply with ONLY this JSON, nothing else:
 {"title": "short title in the parent's language", "app": "app name or 'Phone'", "steps": [{"say": "the instruction", "look": "what the screen looks like or where to look (optional, short)"}], "caution": "one short line or empty"}`;
+}
+
+// Free option: Google Gemini (free tier, with Google Search to look up the current steps).
+async function askGemini(q, lang, phone) {
+  const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+  const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+    method: 'POST',
+    headers: { 'x-goog-api-key': process.env.GEMINI_API_KEY, 'content-type': 'application/json' },
+    body: JSON.stringify({
+      systemInstruction: { parts: [{ text: systemPrompt(lang, phone) }] },
+      contents: [{ role: 'user', parts: [{ text: `The parent asked: "${q}"` }] }],
+      tools: [{ google_search: {} }],
+      generationConfig: { maxOutputTokens: 2000, temperature: 0.3 },
+    }),
+  });
+  if (!r.ok) throw new Error(`gemini ${r.status} ${(await r.text()).slice(0, 200)}`);
+  const j = await r.json();
+  const text = ((j.candidates || [])[0]?.content?.parts || []).map((p) => p.text || '').join('\n');
+  const m = text.match(/\{[\s\S]*\}/);
+  if (!m) throw new Error('no json');
+  return JSON.parse(m[0]);
 }
 
 async function askClaude(q, lang, phone) {
@@ -131,7 +152,7 @@ export async function POST(req) {
   }
 
   // 2) AI, only if switched on and within limits
-  if (!process.env.ANTHROPIC_API_KEY) return NextResponse.json({ status: 'unavailable' });
+  if (!process.env.GEMINI_API_KEY && !process.env.ANTHROPIC_API_KEY) return NextResponse.json({ status: 'unavailable' });
   const dk = `${device}|${today()}`;
   const n = seen.get(dk) || 0;
   if (n >= DEVICE_CAP()) return NextResponse.json({ status: 'limit' });
@@ -139,7 +160,7 @@ export async function POST(req) {
   seen.set(dk, n + 1);
 
   try {
-    const guide = clean(await askClaude(q, lang, phone));
+    const guide = clean(process.env.GEMINI_API_KEY ? await askGemini(q, lang, phone) : await askClaude(q, lang, phone));
     if (!guide) return NextResponse.json({ status: 'refused' });
     await saveCache(db, { id, question: q, lang, phone: phone || null, title: guide.title, app: guide.app, steps: guide.steps, caution: guide.caution });
     return NextResponse.json({ status: 'ok', cached: false, guide });
