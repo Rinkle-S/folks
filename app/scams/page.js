@@ -50,7 +50,7 @@ export default function Scams() {
   if (!started) {
     return (
       <div className="shell">
-        <AppBar />
+        <AppBar t={t} active="safe" />
         <main className="shell-main">
           <section className="scams-hero">
             <span className="medal lg">

@@ -23,6 +23,10 @@ The three ways to learn each lesson:
 
 All lesson content lives in `lib/lessons.js` (and scam cards in `lib/scams.js`), so a new lesson gets all three ways automatically.
 
+## One web app, two layouts
+
+On a computer (960px and wider) Folks is a full-page web app: sections in the top bar, home in two columns, and in a lesson the practice phone sits in the middle with the coach card beside it. Home also shows a QR code to open Folks on a phone. On a phone it is the mobile app layout with the bottom bar.
+
 ## Installs like an app
 
 Folks is a Progressive Web App. On an Android phone in Chrome, open the link, then use **Settings → Add Folks to home screen** (or Chrome's menu → *Install app*). It gets its own icon and opens full screen, without the browser bar. It could later be wrapped for the Play Store (Trusted Web Activity) without rewriting anything. A native Android app is only needed for things a website can't do, like guiding on top of other apps or reading which apps are installed.

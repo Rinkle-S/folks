@@ -408,7 +408,7 @@ export default function Player({ id }) {
 
   if (mode === 'follow') {
     return (
-      <div className="player">
+      <div className="player reading">
         <div className="ptop">
           <Link href="/" className="ptop-btn" onClick={() => stopSpeaking()} aria-label={t.exit}>
             <Icon name="close" size={24} />
@@ -428,7 +428,7 @@ export default function Player({ id }) {
   const choosing = !mode && idx === 0;
 
   return (
-    <div className="player">
+    <div className="player stage">
       <div className="ptop">
         <Link href="/" className="ptop-btn" onClick={() => stopSpeaking()} aria-label={t.exit}>
           <Icon name="close" size={24} />

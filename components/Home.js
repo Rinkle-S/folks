@@ -7,12 +7,24 @@ import AppIcon from './AppIcon';
 import AppsPicker from './AppsPicker';
 import Icon from './Icons';
 import Onboarding from './Onboarding';
+import PhoneApp from './PhoneApp';
 import { AppBar, BottomNav } from './AppShell';
 import { LESSONS, APPS, findLesson } from '@/lib/lessons';
 import { matchLesson } from '@/lib/match';
 import { T } from '@/lib/i18n';
 import { askSomeone, loadMade, isReady } from '@/lib/ask';
-import { useLang, useMute, speak, track, getApps, saveApps, getRequests, getDone, isOnboarded, setOnboarded } from '@/lib/client';
+import {
+  useLang,
+  useMute,
+  speak,
+  track,
+  getApps,
+  saveApps,
+  getRequests,
+  getDone,
+  isOnboarded,
+  setOnboarded,
+} from '@/lib/client';
 
 function Ring({ done, total }) {
   const r = 22;
@@ -32,7 +44,15 @@ function Ring({ done, total }) {
         strokeDasharray={`${c * p} ${c}`}
         transform="rotate(-90 28 28)"
       />
-      <text x="28" y="33" textAnchor="middle" fontSize="15" fontWeight="800" fill="var(--ink)" fontFamily="Noto Sans, sans-serif">
+      <text
+        x="28"
+        y="33"
+        textAnchor="middle"
+        fontSize="15"
+        fontWeight="800"
+        fill="var(--ink)"
+        fontFamily="Noto Sans, sans-serif"
+      >
         {done}
       </text>
     </svg>
@@ -91,7 +111,9 @@ export default function Home() {
           if (apps) {
             saveApps(apps);
             setMyApps(apps);
-            track('apps_set', { meta: { apps: apps.join(','), from: 'onboarding' } });
+            track('apps_set', {
+              meta: { apps: apps.join(','), from: 'onboarding' },
+            });
           }
           setOnboarded();
           setOb(true);
@@ -107,7 +129,9 @@ export default function Home() {
     setAsked(false);
     setMicMsg('');
     setState('result');
-    track('voice_search', { meta: { q: q.slice(0, 200), via, match: m ? m.id : null, lang } });
+    track('voice_search', {
+      meta: { q: q.slice(0, 200), via, match: m ? m.id : null, lang },
+    });
     if (m && m.kind === 'lesson') speak([t.confirmQ, LESSONS[m.id].title[lang]], lang);
     else speak(t.noMatch, lang);
   }
@@ -127,11 +151,15 @@ export default function Home() {
     }
     let stream;
     try {
-      stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } });
+      stream = await navigator.mediaDevices.getUserMedia({
+        audio: { echoCancellation: true, noiseSuppression: true },
+      });
     } catch (e) {
       setState('idle');
       setMicMsg(inApp ? t.micInApp : t.micDenied);
-      track('mic_error', { meta: { error: 'getUserMedia', name: e && e.name, inApp, lang } });
+      track('mic_error', {
+        meta: { error: 'getUserMedia', name: e && e.name, inApp, lang },
+      });
       return;
     }
     try {
@@ -166,7 +194,14 @@ export default function Home() {
           } else {
             setState('idle');
             setMicMsg(t.micServer);
-            track('mic_error', { meta: { error: 'server', status: j.status || r.status, detail: j.detail || j.error, lang } });
+            track('mic_error', {
+              meta: {
+                error: 'server',
+                status: j.status || r.status,
+                detail: j.detail || j.error,
+                lang,
+              },
+            });
           }
         } catch {
           setState('idle');
@@ -273,170 +308,183 @@ export default function Home() {
 
   return (
     <div className="shell">
-      <AppBar onSettings={() => setShowSettings(true)} />
-      <main className="shell-main">
-        <p className="greet">{t[greet]}</p>
+      <AppBar onSettings={() => setShowSettings(true)} t={t} active="learn" />
+      <main className="shell-main home">
+        <div className="home-top">
+          <p className="greet">{t[greet]}</p>
 
-        <section className="ask-card" aria-label={t.askCardTitle}>
-          <div className="ask-row">
-            <h1>{t.askCardTitle}</h1>
-            <button
-              className={`mic ${state === 'listening' ? 'on' : ''}`}
-              onClick={startMic}
-              aria-label={state === 'listening' ? t.listening : t.askCardTitle}
-              disabled={state === 'processing'}
-            >
-              <Icon name="mic" size={40} stroke={2.2} />
-            </button>
-          </div>
-          <p className="ask-sub" aria-live="polite">
-            {state === 'listening' ? t.listening : state === 'processing' ? t.processing : micMsg || t.askCardSub}
-          </p>
-          <form
-            className="type-row"
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (typedQ.trim()) handleQuery(typedQ.trim(), 'typed');
-            }}
-          >
-            <input value={typedQ} onChange={(e) => setTypedQ(e.target.value)} placeholder={t.typePlaceholder} aria-label={t.typePlaceholder} />
-            <button className="btn small" type="submit">
-              {t.search}
-            </button>
-          </form>
-          {inApp && (
-            <button className="btn chrome-btn" onClick={openInChrome}>
-              {t.openChrome}
-            </button>
-          )}
-        </section>
-
-        {state === 'result' && (
-          <section aria-live="polite">
-            <p className="said">
-              {t.youSaid}: <b>"{query}"</b>
+          <section className="ask-card" aria-label={t.askCardTitle}>
+            <div className="ask-row">
+              <h1>{t.askCardTitle}</h1>
+              <button
+                className={`mic ${state === 'listening' ? 'on' : ''}`}
+                onClick={startMic}
+                aria-label={state === 'listening' ? t.listening : t.askCardTitle}
+                disabled={state === 'processing'}
+              >
+                <Icon name="mic" size={40} stroke={2.2} />
+              </button>
+            </div>
+            <p className="ask-sub" aria-live="polite">
+              {state === 'listening' ? t.listening : state === 'processing' ? t.processing : micMsg || t.askCardSub}
             </p>
-            {matched ? (
-              <div className="card">
-                <p>{t.confirmQ}</p>
-                <div className="confirm-lesson">
-                  <span className="medal">
-                    <Icon name={matched.icon} size={26} />
-                  </span>
-                  {matched.title[lang]}
-                </div>
-                <Link className="btn primary" href={`/lesson/${matched.id}`}>
-                  {t.yesStart}
-                </Link>
-                <button className="btn ghost" onClick={() => setState('idle')}>
-                  {t.noOther}
-                </button>
-              </div>
-            ) : (
-              <div className="card">
-                <p>{t.noMatch}</p>
-                <button className="btn wa-btn" onClick={() => askChild(query)}>
-                  <Icon name="share" size={22} /> {t.askChild}
-                </button>
-                {asked && <p className="thanks">{t.thanks}</p>}
-                <button className="btn ghost" onClick={() => setState('idle')}>
-                  {t.tryAgain}
-                </button>
-              </div>
+            <form
+              className="type-row"
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (typedQ.trim()) handleQuery(typedQ.trim(), 'typed');
+              }}
+            >
+              <input
+                value={typedQ}
+                onChange={(e) => setTypedQ(e.target.value)}
+                placeholder={t.typePlaceholder}
+                aria-label={t.typePlaceholder}
+              />
+              <button className="btn small" type="submit">
+                {t.search}
+              </button>
+            </form>
+            {inApp && (
+              <button className="btn chrome-btn" onClick={openInChrome}>
+                {t.openChrome}
+              </button>
             )}
           </section>
-        )}
 
-        <div className="progress-strip">
-          <Ring done={doneCount} total={lessons.length} />
-          <div>
-            <b>{doneCount ? t.progressOf(doneCount, lessons.length) : t.progressNone}</b>
-            <span>{t.progressSub}</span>
-          </div>
+          {state === 'result' && (
+            <section aria-live="polite">
+              <p className="said">
+                {t.youSaid}: <b>"{query}"</b>
+              </p>
+              {matched ? (
+                <div className="card">
+                  <p>{t.confirmQ}</p>
+                  <div className="confirm-lesson">
+                    <span className="medal">
+                      <Icon name={matched.icon} size={26} />
+                    </span>
+                    {matched.title[lang]}
+                  </div>
+                  <Link className="btn primary" href={`/lesson/${matched.id}`}>
+                    {t.yesStart}
+                  </Link>
+                  <button className="btn ghost" onClick={() => setState('idle')}>
+                    {t.noOther}
+                  </button>
+                </div>
+              ) : (
+                <div className="card">
+                  <p>{t.noMatch}</p>
+                  <button className="btn wa-btn" onClick={() => askChild(query)}>
+                    <Icon name="share" size={22} /> {t.askChild}
+                  </button>
+                  {asked && <p className="thanks">{t.thanks}</p>}
+                  <button className="btn ghost" onClick={() => setState('idle')}>
+                    {t.tryAgain}
+                  </button>
+                </div>
+              )}
+            </section>
+          )}
         </div>
 
-        <Link href="/scams" className="safety-card">
-          <span className="medal">
-            <Icon name="shieldCheck" size={26} />
-          </span>
-          <div style={{ flex: 1 }}>
-            <b>{t.safetyTitle}</b>
-            <span>{t.safetySub}</span>
+        <aside className="home-side">
+          <div className="progress-strip">
+            <Ring done={doneCount} total={lessons.length} />
+            <div>
+              <b>{doneCount ? t.progressOf(doneCount, lessons.length) : t.progressNone}</b>
+              <span>{t.progressSub}</span>
+            </div>
           </div>
-          <Icon name="chevron" size={24} />
-        </Link>
 
-        {readyMade.length > 0 && (
-          <Link href="/for-you" className="safety-card" style={{ background: 'var(--peacock-soft)' }}>
-            <span className="medal" style={{ background: 'var(--peacock)', color: '#fff' }}>
-              <Icon name="heart" size={24} />
+          <Link href="/scams" className="safety-card">
+            <span className="medal">
+              <Icon name="shieldCheck" size={26} />
             </span>
             <div style={{ flex: 1 }}>
-              <b>{t.forYouTitle}</b>
-              <span>{readyMade.map((m) => m.question).join(', ')}</span>
+              <b>{t.safetyTitle}</b>
+              <span>{t.safetySub}</span>
             </div>
             <Icon name="chevron" size={24} />
           </Link>
-        )}
 
-        {myApps === null && (
-          <button className="card row" style={{ marginTop: 16 }} onClick={() => setShowApps(true)}>
-            <span className="medal">
-              <Icon name="recharge" size={24} />
-            </span>
-            <span className="row-title">
-              {t.appsQ}
-              <small>{t.appsSub}</small>
-            </span>
-            <span className="row-end">
-              <Icon name="chevron" size={22} />
-            </span>
-          </button>
-        )}
-
-        {orderedApps.map((app) => {
-          const list = lessons.filter((l) => l.app === app.id);
-          if (!list.length) return null;
-          const isMine = mine.includes(app.id);
-          return (
-            <section key={app.id}>
-              <h2 className="section-h">
-                <AppIcon app={app.id} size={32} />
-                {app.name}
-                {isMine && <span className="tag">{t.yourApps}</span>}
-              </h2>
-              <div className="group">
-                {list.map((l) => {
-                  const isDone = done.includes(l.id);
-                  return (
-                    <Link key={l.id} href={`/lesson/${l.id}`} className="row">
-                      <span className="medal">
-                        <Icon name={l.icon} size={24} />
-                      </span>
-                      <span className="row-title">
-                        {l.title[lang]}
-                        <small>{isDone ? t.learned : t.minutesShort(l.minutes)}</small>
-                      </span>
-                      <span className="row-end">
-                        {isDone ? (
-                          <span className="done-check">
-                            <Icon name="check" size={18} stroke={3} />
-                          </span>
-                        ) : (
-                          <Icon name="chevron" size={22} />
-                        )}
-                      </span>
-                    </Link>
-                  );
-                })}
+          {readyMade.length > 0 && (
+            <Link href="/for-you" className="safety-card" style={{ background: 'var(--peacock-soft)' }}>
+              <span className="medal" style={{ background: 'var(--peacock)', color: '#fff' }}>
+                <Icon name="heart" size={24} />
+              </span>
+              <div style={{ flex: 1 }}>
+                <b>{t.forYouTitle}</b>
+                <span>{readyMade.map((m) => m.question).join(', ')}</span>
               </div>
-            </section>
-          );
-        })}
+              <Icon name="chevron" size={24} />
+            </Link>
+          )}
 
-        <footer className="home-foot">
-          <Link href="/send">{t.childLink}</Link>
-        </footer>
+          {myApps === null && (
+            <button className="card row" style={{ marginTop: 16 }} onClick={() => setShowApps(true)}>
+              <span className="medal">
+                <Icon name="recharge" size={24} />
+              </span>
+              <span className="row-title">
+                {t.appsQ}
+                <small>{t.appsSub}</small>
+              </span>
+              <span className="row-end">
+                <Icon name="chevron" size={22} />
+              </span>
+            </button>
+          )}
+
+          <PhoneApp t={t} />
+        </aside>
+
+        <div className="home-lessons">
+          {orderedApps.map((app) => {
+            const list = lessons.filter((l) => l.app === app.id);
+            if (!list.length) return null;
+            const isMine = mine.includes(app.id);
+            return (
+              <section key={app.id}>
+                <h2 className="section-h">
+                  <AppIcon app={app.id} size={32} />
+                  {app.name}
+                  {isMine && <span className="tag">{t.yourApps}</span>}
+                </h2>
+                <div className="group">
+                  {list.map((l) => {
+                    const isDone = done.includes(l.id);
+                    return (
+                      <Link key={l.id} href={`/lesson/${l.id}`} className="row">
+                        <span className="medal">
+                          <Icon name={l.icon} size={24} />
+                        </span>
+                        <span className="row-title">
+                          {l.title[lang]}
+                          <small>{isDone ? t.learned : t.minutesShort(l.minutes)}</small>
+                        </span>
+                        <span className="row-end">
+                          {isDone ? (
+                            <span className="done-check">
+                              <Icon name="check" size={18} stroke={3} />
+                            </span>
+                          ) : (
+                            <Icon name="chevron" size={22} />
+                          )}
+                        </span>
+                      </Link>
+                    );
+                  })}
+                </div>
+              </section>
+            );
+          })}
+
+          <footer className="home-foot">
+            <Link href="/send">{t.childLink}</Link>
+          </footer>
+        </div>
       </main>
 
       <BottomNav active="learn" t={t} dot={readyMade.length ? 'foryou' : null} />
