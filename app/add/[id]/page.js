@@ -117,7 +117,9 @@ export default function AddLesson({ params }) {
   const notify =
     lang === 'hi'
       ? `मैंने आपके लिए पाठ बना दिया: "${question}" 🙏\nयहाँ खोलिए:\n${parentLink}`
-      : `I've made your lesson: "${question}" 🙏\nOpen it here:\n${parentLink}`;
+      : lang === 'ml'
+        ? `ഞാൻ നിങ്ങൾക്കായി ഒരു പാഠം ഉണ്ടാക്കി: "${question}" 🙏\nഇവിടെ തുറക്കൂ:\n${parentLink}`
+        : `I've made your lesson: "${question}" 🙏\nOpen it here:\n${parentLink}`;
 
   if (status === 'saved') {
     return (
@@ -222,6 +224,9 @@ export default function AddLesson({ params }) {
           </button>
           <button className={lang === 'hi' ? 'on' : ''} onClick={() => setLang('hi')}>
             हिंदी
+          </button>
+          <button className={lang === 'ml' ? 'on' : ''} onClick={() => setLang('ml')}>
+            മലയാളം
           </button>
         </div>
       </div>

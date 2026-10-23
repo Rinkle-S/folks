@@ -1,5 +1,6 @@
 // IRCTC Rail Connect and Google Maps templates. (Uber and Rapido reuse components/screens/Rides.js.)
 import Icon from '../Icons';
+import { useScreenText } from '../LangCtx';
 import { Av, Status, Keys } from './ui';
 import { UbHome, UbSearch, UbRides, UbPickup, UbDriver, UbShare, RpHome, RpSearch, RpRides, RpCaptain, MapView } from '../screens/Rides';
 
@@ -7,6 +8,7 @@ export { UbHome, UbSearch, UbRides, UbPickup, UbDriver, UbShare, RpHome, RpSearc
 
 // ---------- IRCTC ----------
 export function IrHome({ tap }) {
+  const tx = useScreenText();
   return (
     <div className="app k-ir">
       <div className="k-ir-top">
@@ -16,7 +18,7 @@ export function IrHome({ tap }) {
       </div>
       <div className="k-ir-hero">
         <Icon name="train" size={40} color="#fff" />
-        <small>Namaste, Kamla</small>
+        <small>{tx('Namaste, Kamla')}</small>
       </div>
       <div className="k-ir-grid">
         {[

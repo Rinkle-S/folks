@@ -57,7 +57,7 @@ export default function Profile() {
         </div>
 
         <label className="field">
-          <span>Language / भाषा / ഭാഷ</span>
+          <span>{lang === 'ml' ? 'Language / ഭാഷ' : 'Language / भाषा / ഭാഷ'}</span>
           <select value={lang} onChange={(e) => setLang(e.target.value)}>
             {LANGS.map((l) => (
               <option key={l.id} value={l.id}>

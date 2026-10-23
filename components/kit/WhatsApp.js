@@ -1,6 +1,7 @@
 // WhatsApp templates (Android, current design), built on the same look as components/screens/WhatsApp.js.
 import Icon from '../Icons';
 import { Av } from './ui';
+import { useScreenText } from '../LangCtx';
 
 export const WA_CHATS = [
   { k: 'rahul', name: 'Rahul (Beta)', msg: 'Ok Mummy, call you in the evening', time: '9:30 am', color: '#2563eb' },
@@ -34,6 +35,7 @@ function Nav() {
 // Chat list. tap: a chat key to make tappable (data-t "chat-<k>"); fab / more: those become targets.
 // sel: a chat key shown selected (after press and hold), with the selection bar on top.
 export function WaList({ tap, fab, more, sel }) {
+  const tx = useScreenText();
   return (
     <div className="app wa">
       {sel ? (
@@ -82,7 +84,7 @@ export function WaList({ tap, fab, more, sel }) {
             </span>
             <div className="wa-mid">
               <div className="wa-name">{c.name}</div>
-              <div className="wa-msg">{c.msg}</div>
+              <div className="wa-msg">{tx(c.msg)}</div>
             </div>
             <div className="wa-right">
               <span className={c.unread ? 'green' : ''}>{c.time}</span>
@@ -109,6 +111,7 @@ const THREADS = {
 // One chat. who: thread key. Targets: clip, mic, more, name, send, msg-<i> (bubbles).
 // sel: index of a selected bubble (top bar shows reply/star/delete/forward). quote: replying to a bubble.
 export function WaThread({ who = 'ramesh', clip, mic, more, name, msg, sel, quote, typed, recording, sendT, extra }) {
+  const tx = useScreenText();
   const c = THREADS[who];
   const msgs = [...c.msgs, ...(extra || [])];
   return (
@@ -163,7 +166,7 @@ export function WaThread({ who = 'ramesh', clip, mic, more, name, msg, sel, quot
           <div key={i} className={`bub ${m.me ? 'me' : ''} ${sel === i ? 'sel' : ''}`} data-t={msg === i ? `msg-${i}` : undefined}>
             {m.from && <b className="wa-from">{m.from}</b>}
             {m.img && <div className="wa-img">{m.img}</div>}
-            {m.text}
+            {tx(m.text)}
             <span>
               {m.t || '10:30 am'} {m.me ? <i className="wa-blue">✓✓</i> : ''}
             </span>
@@ -173,13 +176,13 @@ export function WaThread({ who = 'ramesh', clip, mic, more, name, msg, sel, quot
       {quote !== undefined && (
         <div className="wa-quote">
           <b>{msgs[quote].me ? 'You' : msgs[quote].from || c.name}</b>
-          {msgs[quote].text}
+          {tx(msgs[quote].text)}
         </div>
       )}
       <div className="wa-input">
         <div className="wa-pill">
           <Icon name="emoji" size={22} />
-          <span className={typed ? 'typed' : ''}>{recording ? '🔴 0:07   ◀ Slide to cancel' : typed || 'Message'}</span>
+          <span className={typed ? 'typed' : ''}>{recording ? '🔴 0:07   ◀ Slide to cancel' : (typed && tx(typed)) || 'Message'}</span>
           {!typed && !recording && (
             <span data-t={clip ? 'clip' : undefined} className="wa-ic-hit">
               <Icon name="attach" size={20} />
