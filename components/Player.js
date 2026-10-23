@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import Screen from './Screens';
 import PracticeIntro from './PracticeIntro';
+import { watchPersona } from '@/lib/persona';
 import Settings from './Settings';
 import FollowView from './FollowView';
 import Icon from './Icons';
@@ -15,7 +16,18 @@ import { LESSONS } from '@/lib/lessons';
 import { T } from '@/lib/i18n';
 import { useLang, useMute, speak, stopSpeaking, prefetchSpeech, onSpeaking, track, getFrom, whatsappLink, markDone, vibrate, getLearnMode, addRecent, isPracticeSeen, setPracticeSeen } from '@/lib/client';
 
+// Shows the user's own name and trusted contact instead of the demo persona (see lib/persona.js).
 export default function Player({ id }) {
+  const ref = useRef(null);
+  useEffect(() => watchPersona(ref.current), []);
+  return (
+    <div ref={ref} style={{ display: 'contents' }}>
+      <PlayerInner id={id} />
+    </div>
+  );
+}
+
+function PlayerInner({ id }) {
   const lesson = LESSONS[id];
   const [lang, setLang] = useLang();
   const [muted, toggleMute] = useMute();

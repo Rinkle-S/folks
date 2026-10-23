@@ -9,15 +9,21 @@ import { LESSONS, APPS } from '@/lib/lessons';
 import { ALL_APPS } from '@/lib/apps';
 import { T } from '@/lib/i18n';
 import { useLang, getDone } from '@/lib/client';
+import { getProfile } from '@/lib/profile';
+import { orderForFluency } from '@/lib/levels';
 
 export default function AppLessons({ app }) {
   const [lang] = useLang();
   const [done, setDone] = useState([]);
-  useEffect(() => setDone(getDone()), []);
+  const [fluency, setFluency] = useState('');
+  useEffect(() => {
+    setDone(getDone());
+    setFluency(getProfile().fluency || '');
+  }, []);
   if (!lang) return <div className="page" />;
   const t = T[lang];
   const info = APPS.find((a) => a.id === app) || ALL_APPS.find((a) => a.id === app);
-  const list = Object.values(LESSONS).filter((l) => l.app === app);
+  const list = orderForFluency(Object.values(LESSONS).filter((l) => l.app === app), fluency);
   const d = list.filter((l) => done.includes(l.id)).length;
 
   return (
