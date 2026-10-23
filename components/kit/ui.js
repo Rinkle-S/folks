@@ -111,6 +111,14 @@ export function Overlay({ ov }) {
         </div>
       )}
       {ov.toast && <div className="k-toast">{ov.toast}</div>}
+      {ov.side && (
+        <div className="k-side">
+          <span className="k-side-b up" />
+          <span className="k-side-b down" data-t={ov.side === 'both' ? 'both' : undefined} />
+          <span className="k-side-b pow" data-t={ov.side === 'power' ? 'power' : undefined} />
+          <em data-t={ov.side === 'both' ? 'both' : undefined}>{ov.sideLabel || 'Volume down + Power'}</em>
+        </div>
+      )}
     </>
   );
 }
@@ -145,7 +153,7 @@ export function Keys({ dark }) {
   return (
     <div className={`k-keys ${dark ? 'dark' : ''}`}>
       {['1', '2', '3', '4', '5', '6', '7', '8', '9', '', '0', '⌫'].map((k, i) => (
-        <span key={i} className={k ? '' : 'blank'}>
+        <span key={i} className={k ? '' : 'blank'} data-key={k === '⌫' ? 'back' : k || undefined}>
           {k}
         </span>
       ))}

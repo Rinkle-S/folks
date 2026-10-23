@@ -254,7 +254,7 @@ function MpNav({ tap }) {
   );
 }
 
-export function MpHome({ chip, me, nav }) {
+export function MpHome({ chip, me, nav, search }) {
   return (
     <div className="app k-mp">
       <div className="k-mp-mapbg">
@@ -262,7 +262,7 @@ export function MpHome({ chip, me, nav }) {
         <span className="k-mp-dot" />
       </div>
       <div className="k-mp-over">
-        <div className="k-mp-search">
+        <div className="k-mp-search" data-t={search ? 'search' : undefined}>
           <Icon name="location" size={20} color="#d93025" />
           <span>Search here</span>
           <Icon name="mic" size={20} />

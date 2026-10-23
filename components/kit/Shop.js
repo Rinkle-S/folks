@@ -343,12 +343,12 @@ function FkNav({ tap }) {
   );
 }
 
-export function FkHome({ nav }) {
+export function FkHome({ nav, search }) {
   return (
     <div className="app k-fk">
       <div className="k-fk-top">
         <b className="k-fk-word">Flipkart</b>
-        <div className="k-fk-search">
+        <div className="k-fk-search" data-t={search ? 'search' : undefined}>
           <Icon name="search" size={18} /> Search for products
         </div>
       </div>
