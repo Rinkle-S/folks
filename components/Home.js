@@ -12,7 +12,7 @@ import { AppBar, BottomNav } from './AppShell';
 import { LESSONS, APPS, findLesson } from '@/lib/lessons';
 import { matchLesson, matchGuide } from '@/lib/match';
 import { getProfile } from '@/lib/profile';
-import { GUIDES } from '@/lib/guides';
+import { GUIDES, GUIDE_LIST } from '@/lib/guides';
 import { T } from '@/lib/i18n';
 import { langCode } from '@/lib/langs';
 import { askSomeone, loadMade, isReady } from '@/lib/ask';
@@ -458,14 +458,15 @@ export default function Home() {
         <div className="app-grid">
           {orderedApps.map((app) => {
             const list = lessons.filter((l) => l.app === app.id);
-            if (!list.length) return null;
+            const gn = GUIDE_LIST.filter((x) => x.app === app.id).length;
+            if (!list.length && !gn) return null;
             const d = list.filter((l) => done.includes(l.id)).length;
             return (
               <Link key={app.id} href={`/app/${app.id}`} className="app-tile">
                 {mine.includes(app.id) && <span className="app-tag">{t.onMyPhone}</span>}
                 <AppIcon app={app.id} size={56} />
                 <b>{app.name}</b>
-                <small>{d === list.length ? `✓ ${t.learned}` : t.lessonsN(list.length)}</small>
+                <small>{!list.length ? `${gn} ${t.quickGuide}` : d === list.length ? `✓ ${t.learned}` : t.lessonsN(list.length)}</small>
               </Link>
             );
           })}
