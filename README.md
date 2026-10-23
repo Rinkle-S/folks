@@ -65,5 +65,5 @@ Without a key, the phone's own voice and speech recognition are used.
 
 ## Notes
 
-- **Practice screens are generic look-alikes.** They have no real brand logos, carry a permanent "Practice only: no real money" banner, and nothing is sent. The PIN is always the practice PIN 1234, and lessons teach never to type a real PIN anywhere else.
+- **Practice screens are look-alikes.** App icons are the real Play Store icons (loaded from Google's image server, with drawn badges as a fallback) so parents can recognise the app on their own phone. The practice screens carry a permanent "Practice only: no real money" banner, and nothing is sent. The PIN is always the practice PIN 1234, and lessons teach never to type a real PIN anywhere else.
 - **If voice isn't available,** typing, the tiles and the written steps still work.

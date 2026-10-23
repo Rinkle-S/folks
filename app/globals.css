@@ -236,6 +236,7 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; }
 .medal { flex: none; width: 48px; height: 48px; border-radius: 15px; background: var(--peacock-soft); color: var(--peacock-deep); display: grid; place-items: center; }
 .medal.lg { width: 84px; height: 84px; border-radius: 26px; }
 .medal.wait { background: var(--marigold-soft); color: var(--marigold-deep); }
+.app-icon.real { display: inline-block; object-fit: cover; border: none; background: #fff; }
 .app-icon { display: inline-grid; place-items: center; border-radius: 27%; border: 1.5px solid; flex: none; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12); }
 .home-foot { margin-top: 28px; text-align: center; font-size: 16px; }
 .home-foot a { color: var(--peacock-deep); font-weight: 600; }

@@ -1,4 +1,24 @@
+'use client';
+import { useState } from 'react';
 import Icon from './Icons';
+
+// The real app icons, exactly as they appear on the Play Store (and so on the parent's phone).
+// Loaded from Google's Play Store image server. If one can't load, the drawn badge below is shown.
+const PLAY = 'https://play-lh.googleusercontent.com/';
+const REAL = {
+  gpay: 'Wbik2RoUSGgWEg8ybAhFaMJO2fE7x9gqCXfwbmW0YPjh6TKcjKzecth8GaYkbUBYtLZXhyfVMpqkIuJgTM8p',
+  whatsapp: 'Gqxk4T0uZsDwFp07DE-508hkyvcNmgFuRwPiwTEfF7D7OzGv1FdHDzEyMxNsSBZLOJlGpe3ULvVM2RgrRAlBqA',
+  youtube: 'QNmuZQc9I6Zbe3mWnSr0hycnENqGFCI5p3yE29Hkxtf22T0IWS6zTrpxULLyyjWpB7ONAXDsDQXnXcVWokl3eg',
+  uber: 'OXQnDlRtPa5ha6KCnKPqVmxHYBP7tjrAa7PXGNRqcwDC_J03HVeuEKcKrkcIqnfOqsF5uy3uwWxIXR067QHsNQ',
+  rapido: '94XgU5OUmk5HIyv6gn9ZVJWudLxUjeAunu8QcORlmEx3sG_bw8NArUjvKx3lSAXsJAOYf7qfz1Fi7E-xEN4O',
+  swiggy: 'FJ5W5ygiN-DYfpd2-3LqyN5F-OxDtQ7z_9v5nAeD4vOrN8kQitoOwULactKgKvktXowVEM491wE-unmGmnt8OWM',
+  drive: 'chc-Fx3Qi3BisTZw1aOteYK_XkMHUiXKRbX2Hc8shyFI8pYt7DcyUPzVwLGJKIeKCKDD6nFVhEtUrIaEyzcnmA',
+  ola: 'X2EES6J1Q6cf18gTsBX-yWvsLrDm31TjwjwbSGE8t8w-v1uEIpHDNExfTF3tw_bbOqeRuYZhPg5mOu-kLWKhJ64',
+  zomato: 'F3A40FhcqC9fAoPeYpC_olDg2Upkq1UsylJCvmZmB7a26R0S6L-2Zo35-exR8n-__0M-uFTHq3T_nbS9oxDQ15w',
+  amazon: 'E2Nyw1kSrYFvi5DFOznWOR2iXY9mwxwfYHXV37aLHmuKtEW3gs7StIvVptoV2x8_ykiHQQmliwpfDsFm0Quuwbk',
+  phonepe: 'ARGoCZk-5QCKPpyTsGhn1WahhPbVMa95T1U7clwnI8gjtW-YNY96rAANqFkuENbU35IbYF2Gjg2UjZXA495x0A',
+  paytm: 'WDGsMRuVENnZPEpV4DEaXw12qtMY3em85xpmZqcXzeh0iT_eXFtAU9VUj-Z7xNQQd5DMqrkKSs9D0qbI1rlt',
+};
 
 // App badges that match the real icons in colour and shape, so parents recognise them on their phone,
 // without copying the real logos.
@@ -66,6 +86,23 @@ function Glyph({ app }) {
 }
 
 export default function AppIcon({ app, size = 34 }) {
+  const [failed, setFailed] = useState(false);
+  if (REAL[app] && !failed) {
+    const px = size <= 48 ? 96 : 192;
+    return (
+      <img
+        className="app-icon real"
+        src={`${PLAY}${REAL[app]}=s${px}`}
+        width={size}
+        height={size}
+        alt=""
+        aria-hidden="true"
+        loading="lazy"
+        referrerPolicy="no-referrer"
+        onError={() => setFailed(true)}
+      />
+    );
+  }
   const s = STYLE[app] || STYLE.other;
   const custom = !s.icon;
   return (
