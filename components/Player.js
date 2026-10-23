@@ -7,12 +7,13 @@ import { canOpenApp, openRealApp } from '@/lib/openApp';
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import Screen from './Screens';
+import PracticeIntro from './PracticeIntro';
 import Settings from './Settings';
 import FollowView from './FollowView';
 import Icon from './Icons';
 import { LESSONS } from '@/lib/lessons';
 import { T } from '@/lib/i18n';
-import { useLang, useMute, speak, stopSpeaking, prefetchSpeech, onSpeaking, track, getFrom, whatsappLink, markDone, vibrate, getLearnMode, addRecent } from '@/lib/client';
+import { useLang, useMute, speak, stopSpeaking, prefetchSpeech, onSpeaking, track, getFrom, whatsappLink, markDone, vibrate, getLearnMode, addRecent, isPracticeSeen, setPracticeSeen } from '@/lib/client';
 
 export default function Player({ id }) {
   const lesson = LESSONS[id];
@@ -34,6 +35,7 @@ export default function Player({ id }) {
   const [from, setFrom] = useState('');
   const [bubble, setBubble] = useState(null);
   const [showSettings, setShowSettings] = useState(false);
+  const [showIntro, setShowIntro] = useState(false);
   const [talking, setTalking] = useState(false);
   const screenRef = useRef(null);
   const coachRef = useRef(null);
@@ -47,6 +49,7 @@ export default function Player({ id }) {
   const watching = mode === 'watch';
 
   useEffect(() => setFrom(getFrom()), []);
+  useEffect(() => setShowIntro(!isPracticeSeen()), []);
 
   // Allow links that open straight into a mode (?mode=watch|follow|practice).
   useEffect(() => {
@@ -337,7 +340,17 @@ export default function Player({ id }) {
   }
 
   const settings = showSettings && (
-    <Settings lang={lang} setLang={setLang} muted={muted} toggleMute={toggleMute} onClose={() => setShowSettings(false)} />
+    <Settings lang={lang} setLang={setLang} muted={muted} toggleMute={toggleMute} onClose={() => setShowSettings(false)} onPracticeInfo={() => { setShowSettings(false); setShowIntro(true); }} />
+  );
+
+  const intro = showIntro && (
+    <PracticeIntro
+      t={t}
+      onClose={() => {
+        setPracticeSeen();
+        setShowIntro(false);
+      }}
+    />
   );
 
   if (done) {
@@ -455,6 +468,7 @@ export default function Player({ id }) {
         </div>
         <FollowView lesson={lesson} lang={lang} t={t} onDone={finish} onPractice={() => restart('practice')} />
         {settings}
+        {intro}
       </div>
     );
   }
@@ -480,7 +494,7 @@ export default function Player({ id }) {
       </div>
 
       <div className="screen-wrap">
-      {idx > 0 && <div className="practice-tag">{t.practiceTag}</div>}
+      <div className="practice-tag">{t.practiceTag}</div>
       <div
         className={`screen ${flash ? 'flash' : ''} ${tapFx ? 'tapfx' : ''} ${shake ? 'shake' : ''} ${watching ? 'watching' : ''}`}
         ref={screenRef}
@@ -577,6 +591,7 @@ export default function Player({ id }) {
         )}
       </div>
       {settings}
+      {intro}
     </div>
   );
 }
