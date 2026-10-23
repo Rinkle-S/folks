@@ -5,6 +5,7 @@ import { NextResponse } from 'next/server';
 import { speechTexts } from '@/lib/speechText';
 import { sb } from '@/lib/supabase';
 import { isLang, langCode } from '@/lib/langs';
+import { prepareSpeech } from '@/lib/speechPrep';
 
 export const dynamic = 'force-dynamic';
 
@@ -31,7 +32,8 @@ export async function GET(req) {
   if (!text) return NextResponse.json({ error: 'unknown text' }, { status: 404 });
 
   const db = sb();
-  const path = `${MODEL().replace(/[^a-z0-9]/gi, '')}-${SPEAKER(lang)}/${lang}/${id}.mp3`;
+  // v2: pauses fixed (see lib/speechPrep.js). A new version means new audio, not the old saved copy.
+  const path = `${MODEL().replace(/[^a-z0-9]/gi, '')}-${SPEAKER(lang)}-v2/${lang}/${id}.mp3`;
 
   // 1. Already generated? Serve the saved copy (no credits used).
   if (db && !u.searchParams.get('debug')) {
@@ -51,7 +53,7 @@ export async function GET(req) {
       method: 'POST',
       headers: { 'api-subscription-key': process.env.SARVAM_API_KEY, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        text,
+        text: prepareSpeech(text, lang),
         language_code: langCode(lang),
         model: MODEL(),
         speaker: SPEAKER(lang),
@@ -68,7 +70,7 @@ export async function GET(req) {
     audio = Buffer.from(j.audios.join(''), 'base64');
     if (u.searchParams.get('debug')) {
       return NextResponse.json(
-        { ok: true, bytes: audio.length, head: audio.subarray(0, 12).toString('hex'), model: MODEL(), speaker: SPEAKER(lang), text },
+        { ok: true, bytes: audio.length, head: audio.subarray(0, 12).toString('hex'), model: MODEL(), speaker: SPEAKER(lang), text, sent: prepareSpeech(text, lang) },
         { headers: { 'Cache-Control': 'no-store' } }
       );
     }
