@@ -17,14 +17,16 @@ export default function AppLessons({ app }) {
   const [lang] = useLang();
   const [done, setDone] = useState([]);
   const [fluency, setFluency] = useState('');
+  const [skills, setSkills] = useState([]);
   useEffect(() => {
     setDone(getDone());
     setFluency(effectiveFluency(getProfile().fluency));
+    setSkills(getProfile().skills || []);
   }, []);
   if (!lang) return <div className="page" />;
   const t = T[lang];
   const info = APPS.find((a) => a.id === app) || ALL_APPS.find((a) => a.id === app);
-  const list = orderForFluency(Object.values(LESSONS).filter((l) => l.app === app), fluency);
+  const list = orderForFluency(Object.values(LESSONS).filter((l) => l.app === app), fluency, skills);
   const d = list.filter((l) => done.includes(l.id)).length;
 
   return (

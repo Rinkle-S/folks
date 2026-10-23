@@ -152,7 +152,7 @@ export default function Onboarding({ lang, setLang, onDone }) {
           <button
             className="btn primary"
             onClick={() => {
-              saveProfile({ fluency: fluencyFrom(skills, skillsFor(apps)) });
+              saveProfile({ fluency: fluencyFrom(skills, skillsFor(apps)), skills });
               onDone(apps.length ? apps : null);
             }}
           >
