@@ -26,7 +26,6 @@ import {
   saveApps,
   getRequests,
   getDone,
-  getRecent,
   isOnboarded,
   setOnboarded,
 } from '@/lib/client';
@@ -52,7 +51,6 @@ export default function Home() {
   const [made, setMade] = useState([]);
   const [done, setDone] = useState([]);
   const [greet, setGreet] = useState('greetDay');
-  const [recent, setRecent] = useState([]);
   const [profileName, setProfileName] = useState('');
   const recRef = useRef(null);
   const gotResult = useRef(false);
@@ -66,7 +64,6 @@ export default function Home() {
     setMyApps(getApps());
     setProfileName(getProfile().name);
     setDone(getDone());
-    setRecent(getRecent());
     const h = new Date().getHours();
     setGreet(h < 12 ? 'greetMorning' : h < 17 ? 'greetDay' : 'greetEvening');
     const reqs = getRequests();
@@ -325,7 +322,6 @@ export default function Home() {
   const orderedApps = [...mine.map((id) => APPS.find((a) => a.id === id)).filter(Boolean), ...APPS.filter((a) => !mine.includes(a.id))];
   const orderedLessons = orderedApps.flatMap((a) => lessons.filter((l) => l.app === a.id));
   const next = orderedLessons.find((l) => !done.includes(l.id) && !l.id.startsWith('gd-')) || orderedLessons.find((l) => !done.includes(l.id));
-  const recentLessons = recent.map((id) => lessons.find((l) => l.id === id)).filter(Boolean).slice(0, 3);
   const pct = Math.round((doneCount / lessons.length) * 100);
 
   return (
@@ -424,23 +420,7 @@ export default function Home() {
           </section>
         )}
 
-        {recentLessons.length > 0 ? (
-          <section className="next-card">
-            <div className="next-top">
-              <span className="eyebrow">{t.recent}</span>
-            </div>
-            {recentLessons.map((l) => (
-              <Link key={l.id} className="recent-row" href={`/lesson/${l.id}`}>
-                <AppIcon app={l.app} size={40} />
-                <span>
-                  <b>{l.title[lang]}</b>
-                  <small>{l.appName}</small>
-                </span>
-                <Icon name="chevron" size={20} />
-              </Link>
-            ))}
-          </section>
-        ) : next ? (
+        {next ? (
           <section className="next-card">
             <div className="next-top">
               <span className="eyebrow">{t.tryThis}</span>
