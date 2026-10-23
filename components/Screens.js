@@ -33,6 +33,7 @@ import { UbHome, UbSearch, UbRides, UbPickup, UbDriver, UbShare, RpHome, RpSearc
 import { YtHome, YtSearch, YtResults, YtPlayer } from './screens/YouTube';
 import { SwHome, SwSearch, SwResults, SwMenu, SwCart, SwPlaced } from './screens/Swiggy';
 import { PhoneHome } from './screens/PhoneHome';
+import GenScreen from './screens/Gen';
 import Icon from './Icons';
 import AppIcon from './AppIcon';
 
@@ -60,6 +61,8 @@ export default function Screen({ step, lesson, lang, t, values, typed }) {
       return <Intro lesson={lesson} lang={lang} t={t} />;
     case 'phone-home':
       return <PhoneHome />;
+    case 'gen':
+      return <GenScreen ui={step.ui} typed={typed} inputHere={inputHere} />;
 
     // Google Pay
     case 'gp-home':

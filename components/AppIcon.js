@@ -35,6 +35,7 @@ const STYLE = {
   ola: { bg: '#cddc39', border: '#cddc39', fg: '#1c1c1c', icon: 'car' },
   zomato: { bg: '#e23744', border: '#e23744', fg: '#ffffff', icon: 'bag' },
   amazon: { bg: '#232f3e', border: '#232f3e', fg: '#ff9900', icon: 'bag' },
+  phone: { bg: '#1e8e3e', border: '#1e8e3e', fg: '#ffffff', icon: 'phone' },
   other: { bg: '#f5f5f4', border: '#d6d3d1', fg: '#57534e', icon: 'more' },
 };
 
