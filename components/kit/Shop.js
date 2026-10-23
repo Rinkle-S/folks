@@ -451,7 +451,7 @@ export function FkOrder({ stage = 'shipped', act }) {
       <div className="k-fk-track">
         {steps.map((s, i) => (
           <div key={s} className={i < n ? 'done' : ''}>
-            <i />
+            <em className="k-fk-dot" />
             <span>
               {s}
               <small>{i < n ? ['Mon, 20 Oct', 'Tue, 21 Oct', 'Thu, 23 Oct', 'Thu, 23 Oct'][i] : i === n ? 'Expected by Sun, 26 Oct' : ''}</small>

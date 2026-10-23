@@ -656,9 +656,9 @@
 .k-fk-prod { display: flex; gap: 12px; padding: 14px; background: #fff; }
 .k-fk-track { background: #fff; margin-top: 8px; padding: 14px 18px; display: flex; flex-direction: column; }
 .k-fk-track div { display: flex; gap: 14px; position: relative; padding-bottom: 16px; }
-.k-fk-track i { width: 14px; height: 14px; border-radius: 50%; border: 2px solid #c2c2c2; background: #fff; flex: none; margin-top: 2px; z-index: 1; }
+.k-fk-dot { width: 14px; font-style: normal; height: 14px; border-radius: 50%; border: 2px solid #c2c2c2; background: #fff; flex: none; margin-top: 2px; z-index: 1; }
 .k-fk-track div:not(:last-child)::after { content: ''; position: absolute; left: 7px; top: 16px; bottom: 0; width: 2px; background: #e0e0e0; }
-.k-fk-track div.done i { background: #26a541; border-color: #26a541; }
+.k-fk-track div.done .k-fk-dot { background: #26a541; border-color: #26a541; }
 .k-fk-track div.done::after { background: #26a541 !important; }
 .k-fk-track span { display: flex; flex-direction: column; font-size: 14.5px; font-weight: 500; }
 .k-fk-track small { color: #717171; font-size: 12.5px; font-weight: 400; }
