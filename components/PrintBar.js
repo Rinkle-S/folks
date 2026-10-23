@@ -1,62 +1,32 @@
 'use client';
-// One "Print or save" button near the top of a guide, lesson, app or topic. It opens a short sheet with three choices:
-// print on paper, save as a PDF, or send the steps to family on WhatsApp. The handout itself is drawn at the end of the page
-// and only shows when printing (free, no server). Help: /help/print.
+// One "Print or save" button near the top of a guide, lesson, app or topic. Tapping it shows a one-line message, then opens the
+// phone's own print screen. The handout is drawn at the end of the page and only shows when printing (free, no server). Help: /help/print.
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import Link from 'next/link';
 import Icon from './Icons';
 import { entriesFor } from '@/lib/printable';
 import { track } from '@/lib/client';
 
 export default function PrintBar({ ids = [], entries, heading, lang, t }) {
   const [mounted, setMounted] = useState(false);
-  const [open, setOpen] = useState(false);
+  const [msg, setMsg] = useState(false);
   useEffect(() => setMounted(true), []);
   const items = entries || entriesFor(ids, lang);
   if (!items.length) return null;
 
-  const doPrint = (how) => {
-    track('print', { how, what: heading });
-    setOpen(false);
-    setTimeout(() => window.print(), 150);
-  };
-  const send = () => {
-    track('print', { how: 'whatsapp', what: heading });
-    const text = [heading, ...items.flatMap((e) => [e.title, ...e.steps.map((s, i) => `${i + 1}. ${s}`)])].join('\n');
-    window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank', 'noopener');
+  const go = () => {
+    track('print', { what: heading });
+    setMsg(true);
+    setTimeout(() => window.print(), 900);
+    setTimeout(() => setMsg(false), 4000);
   };
 
   return (
     <div className="print-bar no-print">
-      <button className="btn ghost print-open" onClick={() => setOpen(true)}>
-        <Icon name="file" size={24} /> {t.printBtn}
+      <button className="btn ghost print-open" onClick={go}>
+        <Icon name="printer" size={24} /> {t.printBtn}
       </button>
-      {open && (
-        <div className="sheet-back" onClick={() => setOpen(false)}>
-          <div className="sheet print-sheet" role="dialog" aria-label={t.printSheetTitle} onClick={(e) => e.stopPropagation()}>
-            <h2>{t.printSheetTitle}</h2>
-            <button className="print-choice" onClick={() => doPrint('paper')}>
-              <b>{t.printPaper}</b>
-              <small>{t.printPaperHint}</small>
-            </button>
-            <button className="print-choice" onClick={() => doPrint('pdf')}>
-              <b>{t.printPdf}</b>
-              <small>{t.printPdfHint}</small>
-            </button>
-            <button className="print-choice" onClick={send}>
-              <b>{t.printSend}</b>
-              <small>{t.printSendHint}</small>
-            </button>
-            <Link href="/help/print" className="link-btn">
-              {t.printHelp}
-            </Link>
-            <button className="btn ghost" onClick={() => setOpen(false)}>
-              {t.printClose}
-            </button>
-          </div>
-        </div>
-      )}
+      {msg && <div className="print-toast" role="status">{t.printToast}</div>}
       {mounted &&
         createPortal(
           <div className="print-root">
