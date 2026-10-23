@@ -422,7 +422,7 @@ export function BkAccount({ bank = 'sbi', shown, tap }) {
   const tx = sbi
     ? [
         ['Pension credit', '20 Oct', '+ ₹18,500'],
-        ['UPI/Sharma General Store', '19 Oct', '- ₹50'],
+        ['UPI/Sunrise General Store', '19 Oct', '- ₹50'],
         ['ATM withdrawal', '17 Oct', '- ₹2,000'],
       ]
     : [
@@ -846,9 +846,9 @@ export function PtPay({ typed = '', amount, keypad, proceed }) {
     <div className="app k-pt">
       <div className="k-pt-bar">
         <Icon name="back" size={22} />
-        <Av name="Sharma General Store" size={34} color="#5f6368" />
+        <Av name="Sunrise General Store" size={34} color="#5f6368" />
         <b>
-          SHARMA GENERAL STORE
+          SUNRISE GENERAL STORE
           <small>Verified merchant ✓</small>
         </b>
       </div>
@@ -871,7 +871,7 @@ export function PtDone() {
         <Icon name="check" size={52} color="#fff" stroke={3} />
       </span>
       <b>₹50</b>
-      <small>Paid to SHARMA GENERAL STORE</small>
+      <small>Paid to SUNRISE GENERAL STORE</small>
       <em>23 Oct, 10:32 am · UPI Ref No. 4521 8800 1122</em>
     </div>
   );

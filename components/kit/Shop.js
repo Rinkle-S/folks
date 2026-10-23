@@ -352,7 +352,7 @@ export function FkHome({ nav, search }) {
           <Icon name="search" size={18} /> Search for products
         </div>
       </div>
-      <div className="k-fk-banner">Big Diwali Sale · Up to 70% off</div>
+      <div className="k-fk-banner">Big Savings Sale · Up to 70% off</div>
       <div className="k-fk-grid">
         {['📱 Mobiles', '🏠 Home', '👕 Fashion', '🧴 Beauty', '🍳 Kitchen', '📺 TVs'].map((c) => (
           <span key={c}>

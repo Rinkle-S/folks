@@ -9,7 +9,7 @@ export const WA_CHATS = [
   { k: 'ramesh', name: 'Ramesh Bhaiya', msg: '✓✓ ठीक है, शाम को मिलते हैं', time: '8:40 am', color: '#ea580c' },
   { k: 'unknown', name: '+91 98xxx 41223', msg: 'Congratulations! You won ₹25 lakh…', time: '8:02 am', color: '#8696a0', unread: 1 },
   { k: 'pinky', name: 'Pinky', msg: '📷 Photo', time: 'Yesterday', color: '#db2777' },
-  { k: 'sunita', name: 'Sunita', msg: 'Kal mandir chalenge?', time: 'Yesterday', color: '#16a34a' },
+  { k: 'sunita', name: 'Sunita', msg: 'Shall we go for a walk tomorrow?', time: 'Yesterday', color: '#16a34a' },
 ];
 
 function Nav() {

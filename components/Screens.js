@@ -37,7 +37,9 @@ import GenScreen from './screens/Gen';
 import KitScreen from './kit';
 import Icon from './Icons';
 import AppIcon from './AppIcon';
+import { useLayoutEffect, useRef } from 'react';
 import { LangCtx } from './LangCtx';
+import { mlNames } from '@/lib/ml';
 
 function Intro({ lesson, lang, t }) {
   return (
@@ -53,10 +55,35 @@ function Intro({ lesson, lang, t }) {
   );
 }
 
+// Malayalam screens show Chettan and Chechi for Bhaiya and Didi. Display only: the data, tap targets and
+// the other languages keep the original names.
+function MlNames({ lang, children }) {
+  const ref = useRef(null);
+  useLayoutEffect(() => {
+    const root = ref.current;
+    if (lang !== 'ml' || !root) return;
+    const fix = () => {
+      const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+      for (let n = w.nextNode(); n; n = w.nextNode()) if (/Bhaiya|Didi/.test(n.nodeValue)) n.nodeValue = mlNames(n.nodeValue);
+    };
+    fix();
+    const mo = new MutationObserver(fix);
+    mo.observe(root, { childList: true, subtree: true, characterData: true });
+    return () => mo.disconnect();
+  });
+  return (
+    <div ref={ref} style={{ display: 'contents' }}>
+      {children}
+    </div>
+  );
+}
+
 export default function Screen(props) {
   return (
     <LangCtx.Provider value={props.lang || 'en'}>
-      <ScreenFor {...props} />
+      <MlNames lang={props.lang}>
+        <ScreenFor {...props} />
+      </MlNames>
     </LangCtx.Provider>
   );
 }

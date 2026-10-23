@@ -52,7 +52,7 @@ export function YtHomeK({ search, nav }) {
       <div className="yt-chips">
         <span className="on">All</span>
         <span>Music</span>
-        <span>Bhakti</span>
+        <span>Relaxing</span>
         <span>News</span>
         <span>Cooking</span>
       </div>
@@ -88,7 +88,7 @@ export function YtWatch({ tapVideo, controls, cc, more, captions, sub, subscribe
       <div className="yt-video k-yt-video" data-t={tapVideo ? 'video' : undefined} style={{ background: 'linear-gradient(135deg,#7a2e0e,#e0892b)' }}>
         <div className="yt-now">
           <span>🙏</span>
-          Shree Hanuman Chalisa
+          Evergreen Old Songs
         </div>
         {controls && (
           <div className="k-yt-ctl">
@@ -112,7 +112,7 @@ export function YtWatch({ tapVideo, controls, cc, more, captions, sub, subscribe
             </div>
           </div>
         )}
-        {captions && <div className="k-yt-caption">{tx('श्री गुरु चरन सरोज रज, निज मनु मुकुरु सुधारि')}</div>}
+        {captions && <div className="k-yt-caption">{tx('Every morning brings a new song')}</div>}
         <div className="yt-controls">
           <span className="yt-progress">
             <i />
@@ -126,12 +126,12 @@ export function YtWatch({ tapVideo, controls, cc, more, captions, sub, subscribe
         </div>
       </div>
       <div className="yt-below">
-        <b>Shree Hanuman Chalisa, full</b>
+        <b>Evergreen Old Songs, full</b>
         <small>3.4B views · 6 years ago</small>
         <div className="k-yt-ch">
-          <Av name="Bhakti Sagar" size={36} color="#b45309" />
+          <Av name="Music Garden" size={36} color="#b45309" />
           <span>
-            <b>Bhakti Sagar</b>
+            <b>Music Garden</b>
             <small>48.2M</small>
           </span>
           {subscribed ? (
@@ -213,7 +213,7 @@ export function YtSearchK({ mic, listening }) {
           <span className="k-yt-mic-big">
             <Icon name="mic" size={40} color="#fff" />
           </span>
-          <small>"Hanuman Chalisa"</small>
+          <small>"Old Songs"</small>
         </div>
       </div>
     );
@@ -227,7 +227,7 @@ export function YtSearchK({ mic, listening }) {
         </span>
       </div>
       <div className="yt-sugg">
-        {['bhajan', 'news in hindi', 'yoga for seniors'].map((s) => (
+        {['old songs', 'news today', 'yoga for seniors'].map((s) => (
           <div key={s}>
             <Icon name="history" size={18} />
             <b>{s}</b>
@@ -445,7 +445,7 @@ export function SpHome({ nav }) {
         <span>Podcasts</span>
       </div>
       <div className="k-sp-tiles">
-        {['Liked Songs', 'Bhakti Hits', 'Old Hindi Classics', 'Kishore Kumar Mix', 'Malayalam Melodies', 'Morning Calm'].map((t, i) => (
+        {['Liked Songs', 'Evergreen Hits', 'Old Classics', 'Evergreen Mix', 'Malayalam Melodies', 'Morning Calm'].map((t, i) => (
           <span key={t}>
             <i style={{ background: ['#5038a0', '#b45309', '#0e7490', '#be123c', '#15803d', '#1d4ed8'][i] }} />
             {t}
@@ -492,7 +492,7 @@ export function SpLibrary({ plus, empty = false }) {
         <div className="k-sp-item">
           <i style={{ background: '#b45309' }} />
           <span>
-            <b>Bhakti Hits</b>
+            <b>Evergreen Hits</b>
             <small>Playlist · Spotify</small>
           </span>
         </div>
@@ -515,7 +515,7 @@ export function SpPlaylist({ add, search, plusTap }) {
           </div>
           {[
             ['Venkateswara Suprabhatam', 'M.S. Subbulakshmi'],
-            ['Kausalya Supraja Rama', 'Bhakti Sagar'],
+            ['Morning Melodies', 'Music Garden'],
             ['Gayatri Mantra', 'Anuradha Paudwal'],
           ].map(([t, a], i) => (
             <div key={t} className="k-sp-item">
@@ -535,7 +535,7 @@ export function SpPlaylist({ add, search, plusTap }) {
           <span className="k-sp-cover">
             <Icon name="music" size={50} />
           </span>
-          <b>Morning bhajans</b>
+          <b>Morning songs</b>
           <small>Kamla Devi · 0 songs</small>
           <span className="k-sp-btn" data-t={add ? 'add-songs' : undefined}>
             Add to this playlist

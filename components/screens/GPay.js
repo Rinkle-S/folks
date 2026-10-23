@@ -140,7 +140,7 @@ export function GpScan() {
         <div className="vf-corner bl" />
         <div className="vf-corner br" />
         <div className="sticker" data-t="qr">
-          <div className="st-name">SHARMA GENERAL STORE</div>
+          <div className="st-name">SUNRISE GENERAL STORE</div>
           <FakeQR size={136} />
           <div className="st-upi">Scan &amp; pay with any UPI app</div>
         </div>
@@ -441,7 +441,7 @@ export function GpBills() {
 }
 
 const BOARDS = [
-  { t: 'board-1', name: 'Bijli Vitaran Nigam (Practice)', area: 'Your state' },
+  { t: 'board-1', name: 'State Electricity Board (Practice)', area: 'Your state' },
   { name: 'City Power Supply Ltd (Practice)', area: 'Metro cities' },
   { name: 'Gramin Vidyut Board (Practice)', area: 'Rural areas' },
   { name: 'Northern Power Co. (Practice)', area: 'North zone' },
@@ -479,7 +479,7 @@ export function GpConsumer({ typed, keypad }) {
     <div className={`app gp ${keypad ? 'compact' : ''}`}>
       <div className="gp-bar">
         <Icon name="back" size={22} />
-        <span>Bijli Vitaran Nigam</span>
+        <span>State Electricity Board</span>
       </div>
       <div className="gp-field">
         <label>Consumer number</label>
@@ -499,7 +499,7 @@ export function GpBill() {
     <div className="app gp">
       <div className="gp-bar">
         <Icon name="back" size={22} />
-        <span>Bijli Vitaran Nigam</span>
+        <span>State Electricity Board</span>
       </div>
       <div className="gp-billcard">
         <div className="gp-bill-row">
