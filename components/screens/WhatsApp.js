@@ -1,5 +1,6 @@
 // Practice look-alike of WhatsApp (Android, current design). Same layout and labels; no WhatsApp logo.
 import Icon from '../Icons';
+import { useScreenText } from '../LangCtx';
 
 const CHATS = [
   { t: 'chat-rahul', name: 'Rahul (Beta)', msg: 'Ok Mummy, call you in the evening', time: '9:30 am', color: '#2563eb', ini: 'R' },
@@ -33,6 +34,7 @@ function BottomNav({ active = 'chats' }) {
 }
 
 export function WaChats() {
+  const tx = useScreenText();
   return (
     <div className="app wa">
       <div className="wa-head">
@@ -60,7 +62,7 @@ export function WaChats() {
             </div>
             <div className="wa-mid">
               <div className="wa-name">{c.name}</div>
-              <div className="wa-msg">{c.msg}</div>
+              <div className="wa-msg">{tx(c.msg)}</div>
             </div>
             <div className="wa-right">
               <span className={c.unread ? 'green' : ''}>{c.time}</span>
@@ -98,6 +100,7 @@ const RAHUL_MSGS = [
 ];
 
 export function WaChat({ contact }) {
+  const tx = useScreenText();
   const c = contact ? { ...contact, msgs: RAHUL_MSGS } : RAMESH;
   return (
     <div className="app wa">
@@ -125,7 +128,7 @@ export function WaChat({ contact }) {
         <div className="wa-chip">Today</div>
         {c.msgs.map((m, i) => (
           <div key={i} className={`bub ${m.me ? 'me' : ''}`}>
-            {m.text}
+            {tx(m.text)}
             <span>
               {m.time} {m.me ? '✓✓' : ''}
             </span>
@@ -375,6 +378,7 @@ export function WaUpdates({ posted }) {
 const STATUS_COLORS = ['#7c3aed', '#c2410c', '#0f766e'];
 
 export function WaTextStatus({ typed, color = 0 }) {
+  const tx = useScreenText();
   return (
     <div className="app wa-ts" style={{ background: STATUS_COLORS[color % STATUS_COLORS.length] }}>
       <div className="wa-ts-top">
@@ -388,7 +392,7 @@ export function WaTextStatus({ typed, color = 0 }) {
         </span>
       </div>
       <div className="wa-ts-text" data-t="text-area">
-        {typed ? 'शुभ दीपावली 🪔 Happy Diwali!' : <span className="ph">Type a status</span>}
+        {typed ? tx('शुभ दीपावली 🪔 Happy Diwali!') : <span className="ph">Type a status</span>}
       </div>
       <div className="wa-ts-foot">
         <span className="wa-ts-priv">Status (Contacts)</span>

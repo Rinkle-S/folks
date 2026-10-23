@@ -37,6 +37,7 @@ import GenScreen from './screens/Gen';
 import KitScreen from './kit';
 import Icon from './Icons';
 import AppIcon from './AppIcon';
+import { LangCtx } from './LangCtx';
 
 function Intro({ lesson, lang, t }) {
   return (
@@ -52,7 +53,15 @@ function Intro({ lesson, lang, t }) {
   );
 }
 
-export default function Screen({ step, lesson, lang, t, values, typed }) {
+export default function Screen(props) {
+  return (
+    <LangCtx.Provider value={props.lang || 'en'}>
+      <ScreenFor {...props} />
+    </LangCtx.Provider>
+  );
+}
+
+function ScreenFor({ step, lesson, lang, t, values, typed }) {
   const payee = lesson.payee;
   const amount = values.amount || lesson.amount || '';
   const inputHere = step.kind === 'input';

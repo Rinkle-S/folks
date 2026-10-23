@@ -2,6 +2,7 @@
 // Play Store, Gallery, home-screen menus, Messages and Gmail.
 import Icon from '../Icons';
 import AppIcon from '../AppIcon';
+import { useScreenText } from '../LangCtx';
 import { Av, Status, Row, Keys, PinDots } from './ui';
 
 // ---------- Settings ----------
@@ -849,6 +850,7 @@ export function PhotoView({ e = '🙂', title = 'Today, 10:31' }) {
 
 // Font size page with a 4-stop slider. value: 0..3; tap: the stop to tap.
 export function FontSize({ value = 0, tap }) {
+  const tx = useScreenText();
   const sizes = [14, 17, 21, 26];
   return (
     <div className="app k-set">
@@ -861,7 +863,7 @@ export function FontSize({ value = 0, tap }) {
       <div className="k-set-title">Font size</div>
       <div className="k-set-card k-font-prev" style={{ fontSize: sizes[value] }}>
         <b>Preview</b>
-        <p>Namaste! This is how the words will look in your apps and messages.</p>
+        <p>{tx('Namaste! This is how the words will look in your apps and messages.')}</p>
       </div>
       <div className="k-font-slider">
         <small>A</small>

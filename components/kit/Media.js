@@ -2,6 +2,7 @@
 import Icon from '../Icons';
 import { Av, Status } from './ui';
 import { YtResults } from '../screens/YouTube';
+import { useScreenText } from '../LangCtx';
 
 export { YtResults };
 
@@ -81,6 +82,7 @@ export function YtHomeK({ search, nav }) {
 // The watch page. tapVideo: the video itself is the target. controls: buttons showing on the video.
 // cc / more: those buttons are targets. captions: words shown at the bottom. sub: 'btn' | 'bell' target; subscribed.
 export function YtWatch({ tapVideo, controls, cc, more, captions, sub, subscribed, save }) {
+  const tx = useScreenText();
   return (
     <div className="app yt">
       <div className="yt-video k-yt-video" data-t={tapVideo ? 'video' : undefined} style={{ background: 'linear-gradient(135deg,#7a2e0e,#e0892b)' }}>
@@ -110,7 +112,7 @@ export function YtWatch({ tapVideo, controls, cc, more, captions, sub, subscribe
             </div>
           </div>
         )}
-        {captions && <div className="k-yt-caption">श्री गुरु चरन सरोज रज, निज मनु मुकुरु सुधारि</div>}
+        {captions && <div className="k-yt-caption">{tx('श्री गुरु चरन सरोज रज, निज मनु मुकुरु सुधारि')}</div>}
         <div className="yt-controls">
           <span className="yt-progress">
             <i />

@@ -12,14 +12,16 @@ export default function Settings({ lang, setLang, muted, toggleMute, onClose, on
   const [tested, setTested] = useState(false);
   const [mode, setMode] = useState(getLearnMode());
   const t = T[lang] || T.en;
+  // English plus the chosen language, so a Malayalam parent never sees Hindi here.
+  const bi = (en, hi, ml) => `${en} / ${lang === 'ml' ? ml : hi}`;
   return (
     <div className="settings-wrap" onClick={onClose}>
       <div className="settings" onClick={(e) => e.stopPropagation()} role="dialog" aria-label="Settings">
         <div className="settings-h">
-          <b>Settings / सेटिंग</b>
+          <b>{bi('Settings', 'सेटिंग', 'സെറ്റിംഗ്സ്')}</b>
         </div>
         <label className="settings-row">
-          <span>Language / भाषा / ഭാഷ</span>
+          <span>{lang === 'ml' ? 'Language / ഭാഷ' : 'Language / भाषा / ഭാഷ'}</span>
           <select value={lang} onChange={(e) => setLang(e.target.value)}>
             {LANGS.map((l) => (
               <option key={l.id} value={l.id}>
@@ -44,9 +46,9 @@ export default function Settings({ lang, setLang, muted, toggleMute, onClose, on
           </select>
         </label>
         <div className="settings-row">
-          <span>Sound / आवाज़</span>
+          <span>{bi('Sound', 'आवाज़', 'ശബ്ദം')}</span>
           <button className={`toggle ${muted ? '' : 'on'}`} onClick={toggleMute} aria-pressed={!muted}>
-            {muted ? 'Off / बंद' : 'On / चालू'}
+            {muted ? bi('Off', 'बंद', 'ഓഫ്') : bi('On', 'चालू', 'ഓൺ')}
           </button>
         </div>
         <div className="settings-row">
@@ -70,7 +72,7 @@ export default function Settings({ lang, setLang, muted, toggleMute, onClose, on
         )}
         {onApps && (
           <div className="settings-row">
-            <span>My apps / मेरे ऐप</span>
+            <span>{bi('My apps', 'मेरे ऐप', 'എന്റെ ആപ്പുകൾ')}</span>
             <button className="toggle" onClick={onApps}>
               {appsLabel || 'Choose'}
             </button>
