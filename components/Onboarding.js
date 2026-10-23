@@ -1,7 +1,8 @@
 'use client';
-// First visit: what Folks is, pick a language, then pick the apps on this phone.
+// First visit: what Nook is, pick a language, then pick the apps on this phone.
 import { useState } from 'react';
 import Icon from './Icons';
+import { NookMark } from './Logo';
 import AppIcon from './AppIcon';
 import { ALL_APPS } from '@/lib/apps';
 import { T } from '@/lib/i18n';
@@ -33,11 +34,10 @@ export default function Onboarding({ lang, setLang, onDone }) {
         <>
           <div className="onboard-hero">
             <span className="brand big">
-              <span className="brand-mark" style={{ width: 52, height: 52, borderRadius: 16, fontSize: 30 }}>
-                F
-              </span>
-              Folks
+              <NookMark size={64} />
+              Nook
             </span>
+            <p className="ob-tag">{t.tagline}</p>
             <h1>{t.obWelcome}</h1>
             <p>{t.obLead}</p>
             <ul className="onboard-points">

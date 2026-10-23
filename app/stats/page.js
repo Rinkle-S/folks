@@ -2,7 +2,7 @@
 import { LESSONS, COMING_SOON } from '@/lib/lessons';
 
 export const dynamic = 'force-dynamic';
-export const metadata = { title: 'Folks live stats' };
+export const metadata = { title: 'Nook live stats' };
 
 async function loadEvents() {
   const url = process.env.SUPABASE_URL;
@@ -83,7 +83,7 @@ export default async function Stats() {
 
   return (
     <div className="stats">
-      <h1>Folks live stats</h1>
+      <h1>Nook live stats</h1>
       {!connected && (
         <p className="warn">Database not connected yet. Add SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in Vercel.</p>
       )}

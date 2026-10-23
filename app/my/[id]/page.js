@@ -37,7 +37,7 @@ export default function MyLesson({ params }) {
     return (
       <div className="page">
         <Link href="/" className="brand">
-          Folks
+          Nook
         </Link>
         <p className="card" style={{ marginTop: 20 }}>
           {t.noMatch}

@@ -25,7 +25,7 @@ import PwaBoot from '@/components/PwaBoot';
 import PhoneApp from '@/components/PhoneApp';
 
 export const metadata = {
-  title: 'Folks | Phone help for your folks',
+  title: 'Nook | Your cozy corner for everyday learning',
   description: 'Safe, voice-guided practice for everyday phone tasks. No real money, in Hindi and English.',
 };
 

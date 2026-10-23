@@ -1,10 +1,10 @@
-// Internal page: how Folks orders lessons, per app and per kind of person. Not linked from the app.
+// Internal page: how Nook orders lessons, per app and per kind of person. Not linked from the app.
 // Edit levels in lib/levels.js; the rules for moving someone up or down are in lib/adapt.js.
 import { LESSONS, APPS } from '@/lib/lessons';
 import { ALL_APPS } from '@/lib/apps';
 import { orderForFluency, levelOf, TARGET, SKILL_LESSONS, KNOWN_PENALTY } from '@/lib/levels';
 
-export const metadata = { title: 'Folks lesson order', robots: { index: false, follow: false } };
+export const metadata = { title: 'Nook lesson order', robots: { index: false, follow: false } };
 
 const LEVEL_NAME = { 1: 'Gentle first steps', 2: 'Everyday apps', 3: 'Money, bookings, careful tasks' };
 const COLS = [

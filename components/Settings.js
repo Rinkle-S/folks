@@ -1,6 +1,7 @@
 'use client';
 // Settings sheet: language and sound. Labels are bilingual so anyone can find their language.
 import { useState } from 'react';
+import Link from 'next/link';
 import useInstall from './useInstall';
 import TrustedContacts from './TrustedContacts';
 import { speak, unlockAudio, getLearnMode, setLearnMode } from '@/lib/client';
@@ -80,6 +81,12 @@ export default function Settings({ lang, setLang, muted, toggleMute, onClose, on
           </div>
         )}
         <TrustedContacts t={t} />
+        <div className="settings-row">
+          <span>{t.helpTitle}</span>
+          <Link href="/help" className="toggle on" onClick={onClose}>
+            {t.helpOpen}
+          </Link>
+        </div>
         {onPracticeInfo && (
           <div className="settings-row">
             <span>{t.practiceWhat}</span>

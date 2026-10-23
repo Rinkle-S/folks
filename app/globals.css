@@ -1,4 +1,4 @@
-/* Folks design system
+/* Nook design system
    Calm peacock green for trust, marigold for "look here" moments and celebration.
    One type family (Noto Sans + Noto Sans Devanagari) so English and Hindi feel like one product.
    Built for 55+: 19px base text, 56px+ touch targets, labels on every icon, strong contrast. */
@@ -777,3 +777,6 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; }
 .topics-tx { flex: 1; display: grid; }
 .topics-tx b { font-size: 18px; }
 .topics-tx small { font-size: 15px; color: var(--ink-2); }
+
+.brand { color: #2B2625; }
+.ob-tag { font-size: 20px; color: var(--ink-2); margin: 4px 0 14px; }

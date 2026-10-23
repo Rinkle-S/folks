@@ -1,11 +1,11 @@
-# Folks — One-page spec (v1, 22 Oct 2026)
+# Nook — One-page spec (v1, 22 Oct 2026)
 
-**Name:** Folks
+**Name:** Nook
 - **Tagline now:** "Phone help for your folks." Later: "Everything for your folks."
 - **Languages at launch:** Hindi and English. Users across India.
 
 ## Problem (idea test)
-**Parents aged 55+** struggle to **do everyday phone tasks on their own** (pay by QR, find an old WhatsApp file, send money) **because** they're afraid of pressing the wrong thing, and of losing money in payment apps especially. **Today** they call their son or daughter, who explains again (8 people in the HelloPM poll) or does it for them. **Folks** lets them **practise the task safely with fake money, with voice guidance in their language**, then do it for real alone.
+**Parents aged 55+** struggle to **do everyday phone tasks on their own** (pay by QR, find an old WhatsApp file, send money) **because** they're afraid of pressing the wrong thing, and of losing money in payment apps especially. **Today** they call their son or daughter, who explains again (8 people in the HelloPM poll) or does it for them. **Nook** lets them **practise the task safely with fake money, with voice guidance in their language**, then do it for real alone.
 
 ## User
 - **Primary:** the parent (55+, Android, Hindi or English, comfortable with WhatsApp calls, nervous about payment apps).
@@ -67,7 +67,7 @@ Recorded events:
 - payments
 
 ## Why not ChatGPT / Gemini Live?
-- They *help you do it once*. Folks *teaches you to do it yourself*, safely with fake money, with scam habits built in.
+- They *help you do it once*. Nook *teaches you to do it yourself*, safely with fake money, with scam habits built in.
 - Payment apps block screen sharing, and Google Pay tells users to close screen-sharing apps before paying.
 - It works on budget phones, with the child kept in the loop.
 
