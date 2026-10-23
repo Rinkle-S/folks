@@ -6,7 +6,6 @@ import Icon from './Icons';
 import AppIcon from './AppIcon';
 import { AppBar, BottomNav } from './AppShell';
 import { LESSONS, APPS } from '@/lib/lessons';
-import { GUIDE_LIST } from '@/lib/guides';
 import { ALL_APPS } from '@/lib/apps';
 import { T } from '@/lib/i18n';
 import { useLang, getDone } from '@/lib/client';
@@ -19,7 +18,6 @@ export default function AppLessons({ app }) {
   const t = T[lang];
   const info = APPS.find((a) => a.id === app) || ALL_APPS.find((a) => a.id === app);
   const list = Object.values(LESSONS).filter((l) => l.app === app);
-  const guides = GUIDE_LIST.filter((x) => x.app === app);
   const d = list.filter((l) => done.includes(l.id)).length;
 
   return (
@@ -56,28 +54,6 @@ export default function AppLessons({ app }) {
             );
           })}
         </div>
-
-        {guides.length > 0 && (
-          <>
-            <h2 className="guides-h">{t.quickGuide}</h2>
-            <div className="lesson-list">
-              {guides.map((x) => (
-                <Link key={x.id} href={`/guide/${x.id}`} className="lesson-card">
-                  <span className="lesson-num">
-                    <Icon name="list" size={20} />
-                  </span>
-                  <span className="lesson-main">
-                    <b>{x.title[lang]}</b>
-                    <small>{x.steps.length} {lang === 'en' ? 'steps' : lang === 'hi' ? 'कदम' : 'ഘട്ടങ്ങൾ'}</small>
-                  </span>
-                  <span className="lesson-go">
-                    <Icon name="chevron" size={22} />
-                  </span>
-                </Link>
-              ))}
-            </div>
-          </>
-        )}
 
         <Link href="/for-you" className="ask-more">
           <Icon name="heart" size={20} /> {t.askMore}

@@ -108,15 +108,15 @@ export default function Send() {
           <span>What should they learn?</span>
           <select value={item} onChange={(e) => setItem(e.target.value)}>
             <optgroup label="Practice lessons (fake screens)">
-              {Object.values(LESSONS).map((x) => (
+              {Object.values(LESSONS).filter((x) => !x.id.startsWith('gd-')).map((x) => (
                 <option key={x.id} value={`l:${x.id}`}>
                   {x.title.en}
                 </option>
               ))}
             </optgroup>
-            <optgroup label="Quick guides (steps for the real app)">
+            <optgroup label="More practice lessons">
               {GUIDE_LIST.map((x) => (
-                <option key={x.id} value={`g:${x.id}`}>
+                <option key={x.id} value={`l:gd-${x.id}`}>
                   {x.appName}: {x.title.en}
                 </option>
               ))}
