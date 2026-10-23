@@ -280,7 +280,7 @@ export function IconBoard({ done }) {
       <div className="k-icons-grid">
         {ICONS.map(([id, ic]) => (
           <div key={id} className={`k-icon-tile ${done === id ? 'ok' : ''}`} data-t={id}>
-            <Icon name={ic} size={44} stroke={2} />
+            <Icon name={ic} size={36} stroke={2} />
           </div>
         ))}
       </div>
