@@ -80,6 +80,12 @@ export default function GuideView({ id }) {
       </div>
       {guide.ai && <p className="ai-badge">{t.aiMade}</p>}
 
+      {!guide.ai && GUIDES[id] && (
+        <Link className="btn primary" href={`/lesson/gd-${id}`}>
+          <Icon name="hand" size={20} /> {lang === 'en' ? 'Practise on a fake screen' : lang === 'hi' ? 'नकली स्क्रीन पर अभ्यास करें' : 'ഡമ്മി സ്ക്രീനിൽ പരിശീലിക്കാം'}
+        </Link>
+      )}
+
       {showOpen && (
         <button className="btn ghost" onClick={() => openRealApp(guide.app)}>
           <Icon name="play" size={20} /> {t.openRealApp(guide.appName || guide.app)}
