@@ -17,7 +17,7 @@ const picsOn = () => {
   }
 };
 
-export default function LessonPrint({ lesson, lang, t, variant = 'icon', onSkip }) {
+export default function LessonPrint({ lesson, lang, t, variant = 'icon' }) {
   const [job, setJob] = useState(null); // { pics } once asked
   const [msg, setMsg] = useState(false);
 
@@ -46,17 +46,11 @@ export default function LessonPrint({ lesson, lang, t, variant = 'icon', onSkip 
         <button className="ptop-btn no-print" onClick={go} aria-label={t.printBtn}>
           <Icon name="printer" size={26} />
         </button>
-      ) : (
-        <div className="print-ask no-print">
-          <p>{t.printAsk}</p>
-          <button className="btn ghost" onClick={go}>
-            <Icon name="printer" size={24} /> {t.printBtn}
-          </button>
-          <button className="link-btn" onClick={onSkip}>
-            {t.printNo}
-          </button>
-        </div>
-      )}
+      ) : variant === 'link' ? (
+        <button className="link-btn no-print" onClick={go}>
+          <Icon name="printer" size={20} /> {t.printBtn}
+        </button>
+      ) : null}
       {msg && (
         <div className="print-toast no-print" role="status">
           {t.printToast}

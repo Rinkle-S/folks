@@ -50,6 +50,7 @@ export default function Home() {
   const [serverStt, setServerStt] = useState(false);
   const [myApps, setMyApps] = useState(undefined);
   const [showApps, setShowApps] = useState(false);
+  const [showTopics, setShowTopics] = useState(false);
   const [moreApps, setMoreApps] = useState(false);
   const [reviewIds, setReviewIds] = useState([]);
   const [made, setMade] = useState([]);
@@ -442,25 +443,18 @@ export default function Home() {
         )}
 
         <section className="home-topics">
-          <div className="section-h">
-            <span>{t.themesTitle}</span>
-          </div>
-          <ThemeList lang={lang} t={t} done={done} grouped={false} />
-          <Link href="/themes" className="btn ghost">
-            {t.seeAllTopics}
-          </Link>
+          <button className="topics-toggle" onClick={() => setShowTopics(!showTopics)} aria-expanded={showTopics}>
+            <span className="topics-ic">
+              <Icon name="library" size={24} />
+            </span>
+            <span className="topics-tx">
+              <b>{t.themesTitle}</b>
+              <small>{t.homeThemesSub}</small>
+            </span>
+            <Icon name={showTopics ? 'up' : 'down'} size={22} />
+          </button>
+          {showTopics && <ThemeList lang={lang} t={t} done={done} />}
         </section>
-
-        <Link href="/scams" className="feature-card dark">
-          <span className="feature-ic">
-            <Icon name="shieldCheck" size={28} />
-          </span>
-          <div>
-            <b>{t.scamCardTitle}</b>
-            <span>{t.safetySub}</span>
-          </div>
-          <Icon name="chevron" size={24} />
-        </Link>
 
         {readyMade.length > 0 && (
           <Link href="/for-you" className="feature-card">
