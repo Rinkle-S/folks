@@ -46,6 +46,7 @@ export default function Home() {
   const [inApp, setInApp] = useState(false);
   const [asked, setAsked] = useState(false);
   const [fluency, setFluency] = useState('');
+  const [skills, setSkills] = useState([]);
   const [guideId, setGuideId] = useState(null); // a quick guide we wrote that fits
   const [ai, setAi] = useState({ s: 'idle', guide: null }); // idle | loading | ok | none
   const [showSettings, setShowSettings] = useState(false);
@@ -68,6 +69,7 @@ export default function Home() {
     setMyApps(getApps());
     setProfileName(getProfile().name);
     setFluency(effectiveFluency(getProfile().fluency));
+    setSkills(getProfile().skills || []);
     setDone(getDone());
     const h = new Date().getHours();
     setGreet(h < 12 ? 'greetMorning' : h < 17 ? 'greetDay' : 'greetEvening');
@@ -90,6 +92,7 @@ export default function Home() {
         setLang={setLang}
         onDone={(apps) => {
           setFluency(effectiveFluency(getProfile().fluency));
+    setSkills(getProfile().skills || []);
           setProfileName(getProfile().name);
           if (apps) {
             saveApps(apps);
@@ -327,7 +330,7 @@ export default function Home() {
   const readyMade = made.filter(isReady);
   const mine = myApps || [];
   const orderedApps = [...mine.map((id) => APPS.find((a) => a.id === id)).filter(Boolean), ...APPS.filter((a) => !mine.includes(a.id))];
-  const orderedLessons = orderedApps.flatMap((a) => orderForFluency(lessons.filter((l) => l.app === a.id), fluency));
+  const orderedLessons = orderedApps.flatMap((a) => orderForFluency(lessons.filter((l) => l.app === a.id), fluency, skills));
   const next = orderedLessons.find((l) => !done.includes(l.id) && !l.id.startsWith('gd-')) || orderedLessons.find((l) => !done.includes(l.id));
   const pct = Math.round((doneCount / lessons.length) * 100);
 

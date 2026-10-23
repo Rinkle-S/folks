@@ -700,3 +700,8 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; }
 .is-quiz .screen-wrap { flex: 0 0 clamp(236px, 40dvh, 320px); }
 .is-quiz .coach { flex: 1 1 auto; max-height: none; min-height: 0; overflow-y: auto; }
 .is-quiz .options .btn.primary { position: sticky; bottom: 0; }
+
+.lv { border-collapse: collapse; font-size: 14px; min-width: 560px; }
+.lv th, .lv td { border-bottom: 1px solid var(--line); padding: 5px 8px; text-align: left; vertical-align: top; }
+.lv td:nth-child(n+2), .lv th:nth-child(n+2) { text-align: center; }
+.lv td.moved { background: var(--marigold-soft); font-weight: 700; }
