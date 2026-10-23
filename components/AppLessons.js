@@ -5,6 +5,8 @@ import Link from 'next/link';
 import Icon from './Icons';
 import AppIcon from './AppIcon';
 import { AppBar, BottomNav } from './AppShell';
+import PrintBar from './PrintBar';
+import { idsForApp } from '@/lib/printable';
 import { LESSONS, APPS } from '@/lib/lessons';
 import { ALL_APPS } from '@/lib/apps';
 import { T } from '@/lib/i18n';
@@ -64,6 +66,7 @@ export default function AppLessons({ app }) {
           })}
         </div>
 
+        <PrintBar lang={lang} t={t} ids={idsForApp(app)} heading={info.name} />
         <Link href="/for-you" className="ask-more">
           <Icon name="heart" size={20} /> {t.askMore}
         </Link>

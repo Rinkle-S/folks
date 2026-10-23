@@ -2,7 +2,6 @@
 // Home: ask by voice or typing, see progress, practise scam-spotting, and pick a lesson by app.
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import Settings from './Settings';
 import AppIcon from './AppIcon';
 import AppsPicker from './AppsPicker';
@@ -17,6 +16,7 @@ import { T } from '@/lib/i18n';
 import { langCode } from '@/lib/langs';
 import { askSomeone, loadMade, isReady } from '@/lib/ask';
 import AskWho from './AskWho';
+import ThemeList from './ThemeList';
 import { orderForFluency } from '@/lib/levels';
 import { effectiveFluency, reviewDueIds } from '@/lib/adapt';
 import {
@@ -24,7 +24,6 @@ import {
   useMute,
   speak,
   track,
-  deviceId,
   getApps,
   saveApps,
   getRequests,
@@ -34,7 +33,6 @@ import {
 } from '@/lib/client';
 
 export default function Home() {
-  const router = useRouter();
   const [lang, setLang] = useLang();
   const [muted, toggleMute] = useMute();
   const [onboarded, setOb] = useState(undefined);
@@ -48,7 +46,6 @@ export default function Home() {
   const [fluency, setFluency] = useState('');
   const [skills, setSkills] = useState([]);
   const [guideId, setGuideId] = useState(null); // a quick guide we wrote that fits
-  const [ai, setAi] = useState({ s: 'idle', guide: null }); // idle | loading | ok | none
   const [showSettings, setShowSettings] = useState(false);
   const [serverStt, setServerStt] = useState(false);
   const [myApps, setMyApps] = useState(undefined);
@@ -128,44 +125,9 @@ export default function Home() {
     setGuideId(gm ? gm.id : null);
     setResult(lessonWins ? m : null);
     if (lessonWins) {
-      setAi({ s: 'idle', guide: null });
       speak([t.confirmQ, LESSONS[m.id].title[lang]], lang);
-    } else if (gm) {
-      setAi({ s: 'idle', guide: null });
-    } else {
-      askAi(q);
-    }
-  }
-
-  // No lesson of ours fits: ask the server to build a guide (saved answer first, then AI).
-  async function askAi(q) {
-    setAi({ s: 'loading', guide: null });
-    let phone = '';
-    try {
-      phone = localStorage.getItem('folks_phone') || '';
-    } catch {}
-    try {
-      const r = await fetch('/api/ask', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ q, lang, phone, device: deviceId() }),
-      });
-      const j = await r.json().catch(() => ({ status: 'error', detail: `server answered ${r.status} without a result` }));
-      if (j.status === 'ok' && j.guide) {
-        try {
-          localStorage.setItem('folks_ai_guide', JSON.stringify(j.guide));
-        } catch {}
-        setAi({ s: 'ok', guide: j.guide });
-        router.push('/guide/ai');
-        track('ai_guide', { meta: { q: q.slice(0, 200), cached: !!j.cached, lang } });
-      } else {
-        setAi({ s: 'none', guide: null });
-        track('ai_guide_none', { meta: { q: q.slice(0, 200), why: j.status || 'error', detail: j.detail || '', lang } });
-        setAi({ s: 'none', guide: null, why: j.status || 'error', detail: j.detail || '' });
-        speak(t.noMatch, lang);
-      }
-    } catch (e) {
-      setAi({ s: 'none', guide: null, why: 'error', detail: `could not reach the server (${(e && e.message) || 'network'})` });
+    } else if (!gm) {
+      speak(t.noMatch, lang); // nothing fits: offer to ask someone, or browse the topics
     }
   }
 
@@ -415,19 +377,14 @@ export default function Home() {
                   {t.noOther}
                 </button>
               </div>
-            ) : ai.s === 'loading' ? (
-              <div className="card">
-                <p>
-                  <b>{t.aiLooking}</b>
-                </p>
-                <p className="muted">{t.aiLookingSub}</p>
-              </div>
             ) : (
               <div className="card">
                 <p>{t.noMatch}</p>
-                {ai.why && <p className="muted small">({ai.why}{ai.detail ? `: ${ai.detail}` : ""})</p>}
                 <AskWho t={t} label={t.askChild} onAsk={(c) => askChild(query, c)} />
                 {asked && <p className="thanks">{t.thanks}</p>}
+                <Link className="btn ghost" href="/themes">
+                  {t.themesTitle}
+                </Link>
                 <button className="btn ghost" onClick={() => setState('idle')}>
                   {t.tryAgain}
                 </button>
@@ -484,16 +441,15 @@ export default function Home() {
           </button>
         )}
 
-        <Link href="/themes" className="feature-card">
-          <span className="feature-ic soft">
-            <Icon name="library" size={26} />
-          </span>
-          <div>
-            <b>{t.themesTitle}</b>
-            <span>{t.homeThemesSub}</span>
+        <section className="home-topics">
+          <div className="section-h">
+            <span>{t.themesTitle}</span>
           </div>
-          <Icon name="chevron" size={24} />
-        </Link>
+          <ThemeList lang={lang} t={t} done={done} grouped={false} />
+          <Link href="/themes" className="btn ghost">
+            {t.seeAllTopics}
+          </Link>
+        </section>
 
         <Link href="/scams" className="feature-card dark">
           <span className="feature-ic">
