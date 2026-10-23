@@ -75,6 +75,13 @@ export default function GuideView({ id }) {
         </button>
       )}
 
+      <PrintBar
+        lang={lang}
+        t={t}
+        heading={guide.title}
+        entries={[{ id, title: guide.title, app: guide.appName, steps: guide.steps.map((s) => s.text), caution: guide.caution }]}
+      />
+
       <button className="link-btn" onClick={() => setAll(!all)}>
         {all ? t.oneByOne : t.allSteps}
       </button>
@@ -122,12 +129,6 @@ export default function GuideView({ id }) {
         </div>
       )}
       {all && guide.caution && <p className="ai-caution">⚠️ {guide.caution}</p>}
-      <PrintBar
-        lang={lang}
-        t={t}
-        heading={guide.title}
-        entries={[{ id, title: guide.title, app: guide.appName, steps: guide.steps.map((s) => s.text), caution: guide.caution }]}
-      />
     </div>
   );
 }
