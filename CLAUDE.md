@@ -24,6 +24,10 @@ do not build it.
 **If a request is outside this:** do not build it. Add it to `docs/PARKING-LOT.md` with the criterion it helps and what it
 would delay, and ask for confirmation first.
 
+## Design for older users
+The users are 55+. Big fonts (body text 18px or more), big buttons and tap areas (at least 56px high), easy-to-understand
+design, calm colours (no flashy or neon colours, no blinking). One clear action per screen. Plain words, no jargon.
+
 ## Hard rules
 - Do not turn Sarvam on (`SARVAM_TTS` and `SARVAM_STT` stay `off`). Do not test audio.
 - Do not push to `main`. Work on a branch and open a PR. The owner merges.

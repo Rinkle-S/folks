@@ -31,7 +31,6 @@ export default function PhonePick({ lang, value, onChange }) {
           <p>
             <b>{t.phoneDetected(brandName(value.brand))}</b>
           </p>
-          {value.model && <p className="muted small">{value.model}</p>}
           <button className={`btn ghost choice ${confirmed ? 'on' : ''}`} onClick={() => { setConfirmed(true); setChoosing(false); }} aria-pressed={confirmed}>
             {confirmed ? '✓ ' : ''}
             {t.phoneYes}
@@ -56,12 +55,6 @@ export default function PhonePick({ lang, value, onChange }) {
               </button>
             ))}
           </div>
-          {value.brand && (
-            <label className="field">
-              <span>{t.phoneModelPh}</span>
-              <input value={value.model} onChange={(e) => onChange({ brand: value.brand, model: e.target.value })} maxLength={40} placeholder={value.brand === 'iphone' ? 'iPhone 13' : ''} />
-            </label>
-          )}
           <p className="muted small">{t.phoneWhy}</p>
         </>
       )}

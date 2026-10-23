@@ -1,5 +1,5 @@
 'use client';
-// A quick guide on its own page: either one we wrote (id = guide id) or the last AI-made guide (id = "ai").
+// A quick guide on its own page (id = guide id).
 // Steps are shown one at a time in big text, or all together. No voice yet: scripts are reviewed first.
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -7,30 +7,14 @@ import AppIcon from './AppIcon';
 import Icon from './Icons';
 import { T } from '@/lib/i18n';
 import { useLang, track } from '@/lib/client';
+import PrintBar from './PrintBar';
 import { GUIDES } from '@/lib/guides';
 import { canOpenApp, openRealApp } from '@/lib/openApp';
 
 function load(id, lang) {
-  if (id === 'ai') {
-    try {
-      const a = JSON.parse(localStorage.getItem('folks_ai_guide') || 'null');
-      if (!a || !a.steps) return null;
-      return {
-        ai: true,
-        app: '',
-        appName: a.app || '',
-        title: a.title,
-        steps: a.steps.map((s) => ({ text: s.say, look: s.look })),
-        caution: a.caution || '',
-      };
-    } catch {
-      return null;
-    }
-  }
   const g = GUIDES[id];
   if (!g) return null;
   return {
-    ai: false,
     app: g.app,
     appName: g.appName,
     title: g.title[lang],
@@ -72,15 +56,14 @@ export default function GuideView({ id }) {
         <Link href="/" className="guide-back" aria-label={t.home}>
           <Icon name="back" size={26} />
         </Link>
-        <span className="guide-tag">{guide.ai ? `✨ ${t.aiMade.split('.')[0]}` : t.quickGuide}</span>
+        <span className="guide-tag">{t.quickGuide}</span>
       </div>
       <div className="guide-head">
         {guide.app && <AppIcon app={guide.app} size={52} />}
         <h1>{guide.title}</h1>
       </div>
-      {guide.ai && <p className="ai-badge">{t.aiMade}</p>}
 
-      {!guide.ai && GUIDES[id] && (
+      {GUIDES[id] && (
         <Link className="btn primary" href={`/lesson/gd-${id}`}>
           <Icon name="hand" size={20} /> {lang === 'en' ? 'Practise on a fake screen' : lang === 'hi' ? 'नकली स्क्रीन पर अभ्यास करें' : 'ഡമ്മി സ്ക്രീനിൽ പരിശീലിക്കാം'}
         </Link>
@@ -139,6 +122,12 @@ export default function GuideView({ id }) {
         </div>
       )}
       {all && guide.caution && <p className="ai-caution">⚠️ {guide.caution}</p>}
+      <PrintBar
+        lang={lang}
+        t={t}
+        heading={guide.title}
+        entries={[{ id, title: guide.title, app: guide.appName, steps: guide.steps.map((s) => s.text), caution: guide.caution }]}
+      />
     </div>
   );
 }
