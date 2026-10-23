@@ -98,20 +98,22 @@ async function askGemini(q, lang, phone) {
   };
   const started = Date.now();
   let last;
+  const errs = [];
   for (const model of models) {
     for (const withSearch of [true, false]) {
-      if (Date.now() - started > 42000) throw last || new Error('took too long');
+      if (Date.now() - started > 42000) throw new Error(errs.join(' || ') || 'took too long');
       try {
         return await call(model, withSearch, withSearch ? 16000 : 12000);
       } catch (e) {
         last = e;
+        errs.push(String(e.message).replace(/\s+/g, ' ').slice(0, 170));
         // Search not allowed on this model: retry the same model without it. Anything else (busy, retired, slow): next model.
         const searchRefused = withSearch && (e.status === 400 || e.status === 403);
         if (!searchRefused) break;
       }
     }
   }
-  throw last || new Error('no model answered');
+  throw new Error(errs.join(' || ') || 'no model answered');
 }
 
 async function askClaude(q, lang, phone) {
@@ -195,6 +197,6 @@ export async function POST(req) {
     return NextResponse.json({ status: 'ok', cached: false, guide });
   } catch (e) {
     console.error('ask failed', e && e.message);
-    return NextResponse.json({ status: 'error', detail: String((e && e.message) || e).slice(0, 220) });
+    return NextResponse.json({ status: 'error', detail: String((e && e.message) || e).slice(0, 700) });
   }
 }
