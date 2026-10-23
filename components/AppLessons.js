@@ -11,6 +11,7 @@ import { T } from '@/lib/i18n';
 import { useLang, getDone } from '@/lib/client';
 import { getProfile } from '@/lib/profile';
 import { orderForFluency } from '@/lib/levels';
+import { effectiveFluency } from '@/lib/adapt';
 
 export default function AppLessons({ app }) {
   const [lang] = useLang();
@@ -18,7 +19,7 @@ export default function AppLessons({ app }) {
   const [fluency, setFluency] = useState('');
   useEffect(() => {
     setDone(getDone());
-    setFluency(getProfile().fluency || '');
+    setFluency(effectiveFluency(getProfile().fluency));
   }, []);
   if (!lang) return <div className="page" />;
   const t = T[lang];

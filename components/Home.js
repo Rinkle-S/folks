@@ -18,6 +18,7 @@ import { langCode } from '@/lib/langs';
 import { askSomeone, loadMade, isReady } from '@/lib/ask';
 import AskWho from './AskWho';
 import { orderForFluency } from '@/lib/levels';
+import { effectiveFluency } from '@/lib/adapt';
 import {
   useLang,
   useMute,
@@ -66,7 +67,7 @@ export default function Home() {
     setOb(isOnboarded());
     setMyApps(getApps());
     setProfileName(getProfile().name);
-    setFluency(getProfile().fluency || '');
+    setFluency(effectiveFluency(getProfile().fluency));
     setDone(getDone());
     const h = new Date().getHours();
     setGreet(h < 12 ? 'greetMorning' : h < 17 ? 'greetDay' : 'greetEvening');
@@ -88,7 +89,7 @@ export default function Home() {
         lang={lang}
         setLang={setLang}
         onDone={(apps) => {
-          setFluency(getProfile().fluency || '');
+          setFluency(effectiveFluency(getProfile().fluency));
           setProfileName(getProfile().name);
           if (apps) {
             saveApps(apps);
