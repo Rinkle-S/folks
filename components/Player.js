@@ -98,7 +98,13 @@ export default function Player({ id }) {
       sel = `[data-t="${step.target}"]`;
       label = tt.tapHere;
     }
-    if (step.kind === 'input') {
+    if (step.kind === 'input' && step.anyDigits) {
+      const left = step.expected.length - typed.length;
+      if (left > 0) {
+        sel = '[data-key]:not([data-key="back"])';
+        label = tt.pressAny(left);
+      }
+    } else if (step.kind === 'input') {
       const k = step.expected[typed.length];
       if (k) {
         sel = `[data-key="${k}"]`;
@@ -117,7 +123,8 @@ export default function Player({ id }) {
       const r = el.getBoundingClientRect();
       const R = root.getBoundingClientRect();
       if (!r.width) return;
-      const x = Math.min(Math.max(r.left - R.left + r.width / 2, 64), R.width - 64);
+      const half = Math.min(R.width / 2 - 8, Math.max(64, String(label).length * 4.8));
+      const x = Math.min(Math.max(r.left - R.left + r.width / 2, half), R.width - half);
       const above = r.top - R.top > 52;
       setBubble({ x, y: above ? r.top - R.top - 10 : r.bottom - R.top + 10, below: !above, label });
     };
@@ -254,6 +261,17 @@ export default function Player({ id }) {
       const k = key.dataset.key;
       if (k === 'back') {
         setTyped(typed.slice(0, -1));
+        return;
+      }
+      if (step.anyDigits) {
+        // Any digits are fine, and nothing typed is kept: only dots are drawn.
+        if (!/^\d$/.test(k)) return;
+        const nextTyped = typed + k;
+        setTyped(nextTyped);
+        if (nextTyped.length === step.expected.length) {
+          setValues({ ...values, [step.field]: '•'.repeat(nextTyped.length) });
+          correct();
+        }
         return;
       }
       if (step.expected[typed.length] === k) {
