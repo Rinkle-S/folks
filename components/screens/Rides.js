@@ -253,7 +253,7 @@ export function UbDriver({ shared, cancel, focus }) {
             <Icon name="close" size={20} />
             <p>
               <b>Cancel trip</b>
-              <small>A fee may apply after 3 minutes</small>
+              <small>A small fee may apply</small>
             </p>
           </div>
         )}
