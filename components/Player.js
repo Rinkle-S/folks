@@ -9,12 +9,15 @@ import Link from 'next/link';
 import Screen from './Screens';
 import PracticeIntro from './PracticeIntro';
 import { watchPersona } from '@/lib/persona';
+import { recordPerf } from '@/lib/adapt';
+import { levelOf } from '@/lib/levels';
+import { sentences } from '@/lib/sentences';
 import Settings from './Settings';
 import FollowView from './FollowView';
 import Icon from './Icons';
 import { LESSONS } from '@/lib/lessons';
 import { T } from '@/lib/i18n';
-import { useLang, useMute, speak, stopSpeaking, prefetchSpeech, onSpeaking, track, getFrom, whatsappLink, markDone, vibrate, getLearnMode, addRecent, isPracticeSeen, setPracticeSeen } from '@/lib/client';
+import { useLang, useMute, speak, stopSpeaking, prefetchSpeech, onSpeaking, track, getFrom, whatsappLink, markDone, vibrate, getLearnMode, addRecent, isPracticeSeen, setPracticeSeen, onSpeechProgress } from '@/lib/client';
 
 // Shows the user's own name and trusted contact instead of the demo persona (see lib/persona.js).
 export default function Player({ id }) {
@@ -57,6 +60,9 @@ function PlayerInner({ id }) {
   const startedRef = useRef(false);
   const lockRef = useRef(false);
   const timers = useRef([]);
+  const wrongRef = useRef(0); // wrong taps this run, for the quiet level estimate (lib/adapt.js)
+  const helpRef = useRef(0); // Help presses this run
+  const [spoken, setSpoken] = useState({ text: null, index: -1 }); // the sentence being spoken now
 
   const step = lesson.steps[idx];
   const t = T[lang || 'en'];
@@ -64,6 +70,11 @@ function PlayerInner({ id }) {
   const watching = mode === 'watch';
 
   useEffect(() => setFrom(getFrom()), []);
+  useEffect(() => onSpeechProgress(setSpoken), []);
+  useEffect(() => {
+    const el = document.querySelector('.coach-text .say-now');
+    if (el) el.scrollIntoView({ block: 'nearest' }); // keep the sentence being spoken in view
+  }, [spoken]);
   useEffect(() => setShowIntro(!isPracticeSeen()), []);
 
   // Allow links that open straight into a mode (?mode=watch|follow|practice).
@@ -245,6 +256,7 @@ function PlayerInner({ id }) {
     clearTimers();
     track('lesson_complete', { lesson: id, meta: { mode } });
     markDone(id);
+    if (mode === 'practice') recordPerf({ id, level: levelOf(lesson), wrong: wrongRef.current, hints: helpRef.current, steps: total });
   }
 
   function correct() {
@@ -259,6 +271,7 @@ function PlayerInner({ id }) {
   }
 
   function wrong(meta = {}) {
+    wrongRef.current++;
     track('wrong_tap', { lesson: id, step: idx, meta: { id: step.id, ...meta } });
     vibrate([40, 60, 40]);
     setShake(true);
@@ -306,6 +319,7 @@ function PlayerInner({ id }) {
   }
 
   function askHelp() {
+    helpRef.current++;
     track('hint', { lesson: id, step: idx, meta: { id: step.id } });
     setShowHint(true);
     speak((step.hint || step.say)[lang], lang);
@@ -314,13 +328,18 @@ function PlayerInner({ id }) {
   function pickOption(o) {
     if (quiz && quiz.correct) return;
     if (o.correct) track('step_done', { lesson: id, step: idx, meta: { id: step.id } });
-    else track('wrong_tap', { lesson: id, step: idx, meta: { id: step.id, quiz: true } });
+    else {
+      wrongRef.current++;
+      track('wrong_tap', { lesson: id, step: idx, meta: { id: step.id, quiz: true } });
+    }
     setQuiz({ correct: o.correct, why: o.why[lang] });
     speak(o.why[lang], lang);
   }
 
   function restart(m = 'practice') {
     clearTimers();
+    wrongRef.current = 0;
+    helpRef.current = 0;
     setValues({});
     setTyped('');
     setQuiz(null);
@@ -554,7 +573,15 @@ function PlayerInner({ id }) {
       </div>
 
       <div className={`coach ${showHint ? 'hinting' : ''}`} ref={coachRef}>
-        <p className="coach-text">{coachText}</p>
+        <p className="coach-text">
+          {spoken.text === coachText && sentences(coachText).length > 1
+            ? sentences(coachText).map((s, i) => (
+                <span key={i} className={i === spoken.index ? 'say-now' : undefined}>
+                  {s}{' '}
+                </span>
+              ))
+            : coachText}
+        </p>
 
         {choosing && (
           <div className="modes">
