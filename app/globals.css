@@ -602,3 +602,16 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; }
 .order-row b { flex: 1; font-size: 17px; }
 .order-row .mv { min-width: 56px; min-height: 44px; border-radius: 12px; border: 1px solid var(--line); background: #fff; font-size: 15px; font-weight: 700; }
 .order-row .mv:disabled { opacity: 0.35; }
+
+/* Quick guide page */
+.guide-page { padding: 16px; max-width: 520px; margin: 0 auto; }
+.guide-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.guide-back { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 14px; background: var(--surface); color: var(--ink); }
+.guide-tag { font-size: 14px; font-weight: 700; color: var(--ink-2); }
+.guide-head { display: flex; align-items: center; gap: 12px; margin: 8px 0 12px; }
+.guide-head h1 { font-size: 24px; line-height: 1.25; margin: 0; }
+.guide-step { text-align: left; margin-top: 12px; }
+.guide-all { padding-left: 24px; font-size: 20px; line-height: 1.45; display: flex; flex-direction: column; gap: 12px; }
+.guide-all small { color: var(--ink-2); }
+.guide-found { text-align: left; }
+.guide-found b { font-size: 20px; }
