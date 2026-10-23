@@ -30,7 +30,7 @@ design, calm colours (no flashy or neon colours, no blinking). One clear action 
 
 ## Hard rules
 - Do not turn Sarvam on (`SARVAM_TTS` and `SARVAM_STT` stay `off`). Do not test audio.
-- Do not push to `main`. Work on a branch and open a PR. The owner merges.
+- Pushing to `main` is allowed (the owner said so). Keep each push small and run the build and `npm run check:ml` first. Branches and PRs are optional.
 - No API keys in the repo. Keys live only in Vercel environment variables.
 - Free tier only. No em dashes in app text. "Ask someone" wording. English is the default language.
 - Never ask for or accept a real PIN on any practice screen (any digits are accepted, and nothing typed is stored).
