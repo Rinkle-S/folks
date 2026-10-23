@@ -7,6 +7,7 @@ import { ALL_APPS } from '@/lib/apps';
 import { T } from '@/lib/i18n';
 import { LANGS } from '@/lib/langs';
 import PhonePick from './PhonePick';
+import FluencyPick from './FluencyPick';
 import { saveProfile } from '@/lib/profile';
 
 export default function Onboarding({ lang, setLang, onDone }) {
@@ -14,6 +15,7 @@ export default function Onboarding({ lang, setLang, onDone }) {
   const [apps, setApps] = useState([]);
   const [name, setName] = useState('');
   const [phone, setPhone] = useState({ brand: '', model: '' });
+  const [fluency, setFluency] = useState('');
   const t = T[lang];
   const toggle = (id) => setApps(apps.includes(id) ? apps.filter((x) => x !== id) : [...apps, id]);
 
@@ -24,6 +26,7 @@ export default function Onboarding({ lang, setLang, onDone }) {
         <span className={step === 1 ? 'on' : ''} />
         <span className={step === 2 ? 'on' : ''} />
         <span className={step === 3 ? 'on' : ''} />
+        <span className={step === 4 ? 'on' : ''} />
       </div>
 
       {step === 0 ? (
@@ -108,6 +111,26 @@ export default function Onboarding({ lang, setLang, onDone }) {
               setStep(3);
             }}
           >
+            {t.obSkip}
+          </button>
+        </>
+      ) : step === 3 ? (
+        <>
+          <div className="onboard-hero">
+            <h1>{t.obFluencyQ}</h1>
+            <p>{t.obFluencySub}</p>
+            <FluencyPick lang={lang} value={fluency} onChange={setFluency} />
+          </div>
+          <button
+            className="btn primary"
+            onClick={() => {
+              saveProfile({ fluency });
+              setStep(4);
+            }}
+          >
+            {t.obNext}
+          </button>
+          <button className="btn ghost" onClick={() => setStep(4)}>
             {t.obSkip}
           </button>
         </>

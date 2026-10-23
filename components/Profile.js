@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { AppBar, BottomNav } from './AppShell';
 import AppsPicker from './AppsPicker';
 import PhonePick from './PhonePick';
+import FluencyPick from './FluencyPick';
 import { T } from '@/lib/i18n';
 import { LANGS } from '@/lib/langs';
 import { useLang, getApps, saveApps, track } from '@/lib/client';
@@ -54,6 +55,11 @@ export default function Profile() {
               save(next);
             }}
           />
+        </div>
+
+        <div className="field">
+          <span>{t.obFluencyQ}</span>
+          <FluencyPick lang={lang} value={p.fluency || ''} onChange={(v) => save({ ...p, fluency: v })} />
         </div>
 
         <label className="field">

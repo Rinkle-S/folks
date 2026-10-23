@@ -25,18 +25,3 @@ button names every few months. A feasible plan, cheapest first:
 6. **Later:** AI-assisted compare. Upload a real screenshot, flag which template differs and what moved.
 Rule: label practice screens as "look-alike" (done), so a small difference is expected, and the lesson text names buttons
 the way the app shows them.
-
-## Lesson difficulty and tech fluency (idea, not built)
-- Give each lesson a hidden `level` (1 easy to 3 harder). Never show the level to the user, so nobody feels
-  graded or discouraged.
-- Ask one gentle question in setup, for example "How comfortable are you with your phone?" with three friendly
-  answers ("I am just starting", "I manage the basics", "I am quite comfortable"). No score, and it can be changed
-  later in Profile.
-- Use the answer only to order lessons: comfortable users see the next-step lessons first, beginners see the
-  basics first. Everything stays available.
-- Revisit the order from behaviour: lessons finished without hints can nudge the order too.
-
-## Personal details on practice screens (idea, not built)
-The demo persona (Kamala Nair, 63, and her son Rahul Nair) is for the prototype and the demo login. For real users,
-their own name and trusted contact (Settings) should appear on the practice screens instead, so the screen feels like
-their phone. The Malayalam names layer (`components/Screens.js`) is the place to extend.
