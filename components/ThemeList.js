@@ -1,11 +1,11 @@
 'use client';
-// The topics (short courses) as big, calm cards, grouped by level. Used on the home screen and on /themes.
+// The topics (short courses) as big, calm cards in one list, easiest first. Used on the home screen and on /themes.
 import Link from 'next/link';
 import Icon from './Icons';
-import { LEVELS, THEMES } from '@/lib/themes';
+import { THEMES } from '@/lib/themes';
 import { LESSONS } from '@/lib/lessons';
 
-export default function ThemeList({ lang, t, done, grouped = true }) {
+export default function ThemeList({ lang, t, done }) {
   const card = (th) => {
     const ids = th.lessons.filter((id) => LESSONS[id]);
     const d = ids.filter((id) => done.includes(id)).length;
@@ -26,20 +26,7 @@ export default function ThemeList({ lang, t, done, grouped = true }) {
   };
   return (
     <div className="theme-list">
-      {grouped ? (
-        LEVELS.map((lv) => (
-          <section key={lv.id}>
-            <div className="section-h">
-              <span>
-                {lv.title[lang]} <small className="muted">{lv.sub[lang]}</small>
-              </span>
-            </div>
-            <div className="lesson-list">{THEMES.filter((x) => x.level === lv.id).map(card)}</div>
-          </section>
-        ))
-      ) : (
-        <div className="lesson-list">{THEMES.map(card)}</div>
-      )}
+      <div className="lesson-list">{THEMES.map(card)}</div>
       <div className="lesson-card topic-card is-soon" aria-disabled="true">
         <span className="lesson-num theme-ic">🎙️</span>
         <span className="lesson-main">

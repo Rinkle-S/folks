@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Icon from './Icons';
 
 // The real app icons, exactly as they appear on the Play Store (and so on the parent's phone).
@@ -105,32 +105,37 @@ function Glyph({ app }) {
 }
 
 export default function AppIcon({ app, size = 34 }) {
-  const [failed, setFailed] = useState(false);
-  if (REAL[app] && !failed) {
-    const px = size <= 48 ? 96 : 192;
-    return (
-      <img
-        className="app-icon real"
-        src={`${PLAY}${REAL[app]}=s${px}`}
-        width={size}
-        height={size}
-        alt=""
-        aria-hidden="true"
-        loading="lazy"
-        referrerPolicy="no-referrer"
-        onError={() => setFailed(true)}
-      />
-    );
-  }
+  const [state, setState] = useState('loading'); // loading | loaded | failed
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (el && el.complete && el.naturalWidth > 0) setState('loaded'); // already cached before the page came alive
+  }, []);
   const s = STYLE[app] || STYLE.other;
   const custom = !s.icon;
+  const px = size <= 48 ? 96 : 192;
   return (
     <span
       className="app-icon"
-      style={{ width: size, height: size, background: s.bg, borderColor: s.border, color: s.fg, fontSize: size }}
+      style={{ width: size, height: size, background: s.bg, borderColor: s.border, color: s.fg, fontSize: size, position: 'relative', overflow: 'hidden' }}
       aria-hidden="true"
     >
       {custom ? <Glyph app={app} /> : <Icon name={s.icon} size={size * 0.58} stroke={2.2} />}
+      {REAL[app] && state !== 'failed' && (
+        <img
+          ref={ref}
+          className="app-img"
+          src={`${PLAY}${REAL[app]}=s${px}`}
+          width={size}
+          height={size}
+          alt=""
+          loading="lazy"
+          referrerPolicy="no-referrer"
+          style={{ opacity: state === 'loaded' ? 1 : 0 }}
+          onLoad={() => setState('loaded')}
+          onError={() => setState('failed')}
+        />
+      )}
     </span>
   );
 }

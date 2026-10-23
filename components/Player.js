@@ -6,6 +6,7 @@
 import { canOpenApp, openRealApp } from '@/lib/openApp';
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import Screen from './Screens';
 import PracticeIntro from './PracticeIntro';
 import { watchPersona, personalise } from '@/lib/persona';
@@ -46,7 +47,6 @@ function PlayerInner({ id }) {
   const [showHint, setShowHint] = useState(false);
   const [quiz, setQuiz] = useState(null); // { correct, why }
   const [done, setDone] = useState(false);
-  const [hidePrint, setHidePrint] = useState(false);
   const [flash, setFlash] = useState(false);
   const [shake, setShake] = useState(false);
   const [tapFx, setTapFx] = useState(false);
@@ -58,6 +58,12 @@ function PlayerInner({ id }) {
   const [realTry, setRealTry] = useState(false);
   const [from, setFrom] = useState('');
   const [bubble, setBubble] = useState(null);
+  const router = useRouter();
+  const stepWrongRef = useRef(0);
+  const [leaveOpen, setLeaveOpen] = useState(false);
+  useEffect(() => {
+    stepWrongRef.current = 0;
+  }, [idx]);
   const [showSettings, setShowSettings] = useState(false);
   const [showIntro, setShowIntro] = useState(false);
   const [talking, setTalking] = useState(false);
@@ -182,6 +188,11 @@ function PlayerInner({ id }) {
       const half = Math.min(R.width / 2 - 8, Math.max(64, String(label).length * 4.8));
       const x = Math.min(Math.max(r.left - R.left + r.width / 2, half), R.width - half);
       const above = r.top - R.top > 52;
+      if (step.kind === 'tap') {
+        // A small hand on the corner of the button: it never covers a neighbouring icon or its name.
+        setBubble({ compact: true, x: Math.min(r.right - R.left - 8, R.width - 22), y: Math.min(r.bottom - R.top - 6, R.height - 22), label });
+        return;
+      }
       setBubble({ x, y: above ? r.top - R.top - 10 : r.bottom - R.top + 10, below: !above, label });
     };
     const raf = requestAnimationFrame(place);
@@ -302,14 +313,19 @@ function PlayerInner({ id }) {
     }, 450);
   }
 
+  // Only a tap on the wrong button or key counts. A tap on blank space is free. The spoken hint starts with the second wrong tap.
   function wrong(meta = {}) {
+    if (meta.tapped === null) return;
     wrongRef.current++;
+    stepWrongRef.current++;
     track('wrong_tap', { lesson: id, step: idx, meta: { id: step.id, ...meta } });
     vibrate([40, 60, 40]);
     setShake(true);
     setTimeout(() => setShake(false), 400);
-    setShowHint(true);
-    if (step.hint) speak(step.hint[lang], lang);
+    if (stepWrongRef.current >= 2) {
+      setShowHint(true);
+      if (step.hint) speak(step.hint[lang], lang);
+    }
   }
 
   function onScreenClick(e) {
@@ -408,6 +424,29 @@ function PlayerInner({ id }) {
     track('mode_pick', { lesson: id, meta: { mode: 'practice', from: 'watch' } });
   }
 
+  // Leaving with some progress asks first, so one slip of the thumb does not lose the lesson.
+  const askLeave = () => {
+    if (mode && mode !== 'follow' && idx > 1) setLeaveOpen(true);
+    else {
+      stopSpeaking();
+      router.push('/');
+    }
+  };
+  const leaveDialog = leaveOpen && (
+    <div className="pi-wrap" role="dialog" aria-modal="true">
+      <div className="pi-card">
+        <h2>{t.leaveTitle}</h2>
+        <p>{t.leaveSub}</p>
+        <button className="btn primary" onClick={() => setLeaveOpen(false)}>
+          {t.leaveStay}
+        </button>
+        <Link href="/" className="btn ghost" onClick={() => stopSpeaking()}>
+          {t.leaveGo}
+        </Link>
+      </div>
+    </div>
+  );
+
   const settings = showSettings && (
     <Settings lang={lang} setLang={setLang} muted={muted} toggleMute={toggleMute} onClose={() => setShowSettings(false)} onPracticeInfo={() => { setShowSettings(false); setShowIntro(true); }} />
   );
@@ -438,23 +477,22 @@ function PlayerInner({ id }) {
           ))}
         </ul>
 
-        {!hidePrint && <LessonPrint lesson={lesson} lang={lang} t={t} variant="card" onSkip={() => setHidePrint(true)} />}
-
-        {mode !== 'practice' && (
+        {mode !== 'practice' ? (
           <button className="btn primary" onClick={() => restart('practice')}>
             <Icon name="hand" size={22} /> {t.nowPractise}
           </button>
-        )}
-        {mode === 'practice' && (
-          <button
-            className="btn primary"
-            onClick={() => {
-              setRealTry(true);
-              track('real_try', { lesson: id });
-            }}
-          >
-            <Icon name="recharge" size={22} /> {t.tryReal}
-          </button>
+        ) : (
+          !realTry && (
+            <button
+              className="btn primary"
+              onClick={() => {
+                setRealTry(true);
+                track('real_try', { lesson: id });
+              }}
+            >
+              <Icon name="recharge" size={22} /> {t.tryReal}
+            </button>
+          )
         )}
         {realTry && (
           <>
@@ -476,25 +514,15 @@ function PlayerInner({ id }) {
           </>
         )}
 
-        <a
-          className="btn wa-btn"
-          href={whatsappLink(shareText)}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={() => track('share', { lesson: id })}
-        >
-          <Icon name="share" size={22} /> {t.tellChild(from)}
-        </a>
-
         <div className="feedback">
           <p>{t.howWasIt}</p>
-          {feedback && (feedback === 'easy' || fbSent) ? (
+          {feedback && (feedback !== 'hard' || fbSent) ? (
             <p className="thanks">{t.thanks}</p>
           ) : feedback ? (
             <div className="fb-more">
               <p>{t.fbWhy}</p>
               <div className="fb-reasons">
-                {['stuck', 'mismatch', 'words', 'voice', 'other'].map((k) => (
+                {['stuck', 'mismatch', 'words', 'other'].map((k) => (
                   <button
                     key={k}
                     className={`chip ${fbReasons.includes(k) ? 'talking' : ''}`}
@@ -505,11 +533,10 @@ function PlayerInner({ id }) {
                   </button>
                 ))}
               </div>
-              <textarea value={fbNote} onChange={(e) => setFbNote(e.target.value)} placeholder={t.fbNote} maxLength={300} rows={2} aria-label={t.fbNote} />
               <button
                 className="btn primary"
                 onClick={() => {
-                  track('feedback_detail', { lesson: id, meta: { v: feedback, reasons: fbReasons, note: fbNote.trim(), lang, mode, steps: total } });
+                  track('feedback_detail', { lesson: id, meta: { v: feedback, reasons: fbReasons, note: '', lang, mode, steps: total } });
                   setFbSent(true);
                 }}
               >
@@ -539,13 +566,17 @@ function PlayerInner({ id }) {
           )}
         </div>
 
-        <div className="done-links">
-          <button className="btn ghost" onClick={() => restart(mode || 'practice')}>
+        <Link className="btn ghost" href="/">
+          {t.otherLessons}
+        </Link>
+        <div className="done-quiet">
+          <LessonPrint lesson={lesson} lang={lang} t={t} variant="link" />
+          <a className="link-btn" href={whatsappLink(shareText)} target="_blank" rel="noopener noreferrer" onClick={() => track('share', { lesson: id })}>
+            {t.tellChild(from)}
+          </a>
+          <button className="link-btn" onClick={() => restart(mode || 'practice')}>
             {t.practiceAgain}
           </button>
-          <Link className="btn ghost" href="/">
-            {t.otherLessons}
-          </Link>
         </div>
       </div>
     );
@@ -555,9 +586,9 @@ function PlayerInner({ id }) {
     return (
       <div className="player reading">
         <div className="ptop">
-          <Link href="/" className="ptop-btn" onClick={() => stopSpeaking()} aria-label={t.exit}>
-            <Icon name="close" size={24} />
-          </Link>
+          <button className="ptop-leave" onClick={askLeave}>
+            <Icon name="close" size={20} /> {t.leaveBtn}
+          </button>
           <div className="progress" />
           <LessonPrint lesson={lesson} lang={lang} t={t} variant="icon" />
           <button className="ptop-btn" onClick={() => setShowSettings(true)} aria-label="Settings">
@@ -567,6 +598,7 @@ function PlayerInner({ id }) {
         <FollowView lesson={lesson} lang={lang} t={t} onDone={finish} onPractice={() => restart('practice')} />
         {settings}
         {intro}
+        {leaveDialog}
       </div>
     );
   }
@@ -577,9 +609,9 @@ function PlayerInner({ id }) {
   return (
     <div className={`player stage ${step.kind === 'quiz' ? 'is-quiz' : ''}`}>
       <div className="ptop">
-        <Link href="/" className="ptop-btn" onClick={() => stopSpeaking()} aria-label={t.exit}>
-          <Icon name="close" size={24} />
-        </Link>
+        <button className="ptop-leave" onClick={askLeave}>
+          <Icon name="close" size={20} /> {t.leaveBtn}
+        </button>
         <div className="progress">
           <div className="bar">
             <span style={{ width: `${(idx / total) * 100}%` }} />
@@ -601,9 +633,15 @@ function PlayerInner({ id }) {
       >
         <Screen step={step} lesson={lesson} lang={lang} t={t} values={values} typed={typed} />
         {bubble && (
-          <div className={`tap-bubble ${bubble.below ? 'below' : ''}`} style={{ left: bubble.x, top: bubble.y }}>
-            👆 {bubble.label}
-          </div>
+          bubble.compact ? (
+            <div className="tap-hand" style={{ left: bubble.x, top: bubble.y }} aria-hidden="true">
+              👆
+            </div>
+          ) : (
+            <div className={`tap-bubble ${bubble.below ? 'below' : ''}`} style={{ left: bubble.x, top: bubble.y }}>
+              👆 {bubble.label}
+            </div>
+          )
         )}
       </div>
       </div>
@@ -688,6 +726,20 @@ function PlayerInner({ id }) {
             <button className={`chip ${talking ? 'talking' : ''}`} onClick={() => speak(coachText, lang, { force: true })}>
               <Icon name="volume" size={20} /> {talking ? t.speakingNow : t.listen}
             </button>
+            {mode === 'practice' && idx > 1 && (
+              <button
+                className="chip"
+                onClick={() => {
+                  clearTimers();
+                  setQuiz(null);
+                  setTyped('');
+                  setShowHint(false);
+                  setIdx((i) => Math.max(1, i - 1));
+                }}
+              >
+                <Icon name="prev" size={18} /> {t.prevStep}
+              </button>
+            )}
             {mode === 'practice' && (step.kind === 'tap' || step.kind === 'input') && (
               <button className="chip" onClick={askHelp}>
                 <Icon name="bulb" size={20} /> {t.help}
@@ -698,6 +750,7 @@ function PlayerInner({ id }) {
       </div>
       {settings}
       {intro}
+      {leaveDialog}
     </div>
   );
 }

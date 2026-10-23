@@ -1,6 +1,6 @@
 'use client';
 // "Which apps are on your phone?" A website can't see installed apps, so the parent (or child) taps them once.
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import AppIcon from './AppIcon';
 import { ALL_APPS } from '@/lib/apps';
 
@@ -17,20 +17,39 @@ export default function AppsPicker({ t, initial = [], onSave, onClose }) {
   };
   const listRef = useRef(null);
   const [drag, setDrag] = useState(null); // index of the app being dragged
-  const onMove = (e) => {
-    if (drag === null || !listRef.current) return;
-    const rows = [...listRef.current.children];
-    const j = rows.findIndex((r) => {
-      const b = r.getBoundingClientRect();
-      return e.clientY >= b.top && e.clientY <= b.bottom;
-    });
-    if (j < 0 || j === drag) return;
-    const a = [...sel];
-    const [it] = a.splice(drag, 1);
-    a.splice(j, 0, it);
-    setSel(a);
-    setDrag(j);
-  };
+  // While a handle is held, follow the finger anywhere on the page. Listening on the window (not the handle) keeps the drag alive
+  // when the row moves in the list, which can drop a touch that is tied to the handle itself.
+  const selRef = useRef(sel);
+  selRef.current = sel;
+  const dragRef = useRef(null);
+  dragRef.current = drag;
+  useEffect(() => {
+    if (drag === null) return;
+    const onMove = (e) => {
+      if (!listRef.current || dragRef.current === null) return;
+      const rows = [...listRef.current.children];
+      const j = rows.findIndex((r) => {
+        const b = r.getBoundingClientRect();
+        return e.clientY >= b.top && e.clientY <= b.bottom;
+      });
+      if (j < 0 || j === dragRef.current) return;
+      const a = [...selRef.current];
+      const [it] = a.splice(dragRef.current, 1);
+      a.splice(j, 0, it);
+      dragRef.current = j;
+      setSel(a);
+      setDrag(j);
+    };
+    const end = () => setDrag(null);
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', end);
+    window.addEventListener('pointercancel', end);
+    return () => {
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', end);
+      window.removeEventListener('pointercancel', end);
+    };
+  }, [drag === null]); // eslint-disable-line react-hooks/exhaustive-deps
   const toggle = (id) => setSel(sel.includes(id) ? sel.filter((x) => x !== id) : [...sel, id]);
   return (
     <div className="settings-wrap" onClick={onClose}>
@@ -62,13 +81,7 @@ export default function AppsPicker({ t, initial = [], onSave, onClose }) {
                     className="drag-handle"
                     role="button"
                     aria-label={`${nameOf(id)} ${t.moveUp} / ${t.moveDown}`}
-                    onPointerDown={(e) => {
-                      e.currentTarget.setPointerCapture(e.pointerId);
-                      setDrag(i);
-                    }}
-                    onPointerMove={onMove}
-                    onPointerUp={() => setDrag(null)}
-                    onPointerCancel={() => setDrag(null)}
+                    onPointerDown={() => setDrag(i)}
                   >
                     ⠿
                   </span>
