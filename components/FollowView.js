@@ -7,6 +7,7 @@ import AppIcon from './AppIcon';
 import { REAL, FOLLOW_SKIP } from '@/lib/lessons';
 import { speak, track } from '@/lib/client';
 import Icon from './Icons';
+import PrintBar from './PrintBar';
 
 function Picture({ card, lesson, lang, t }) {
   const ref = useRef(null);
@@ -121,6 +122,12 @@ export default function FollowView({ lesson, lang, t, onDone, onPractice }) {
         </div>
       )}
 
+      <PrintBar
+        lang={lang}
+        t={t}
+        heading={lesson.title[lang]}
+        entries={[{ id: lesson.id, title: lesson.title[lang], app: lesson.appName, steps: steps.map((c) => c.text), caution: tips.map((c) => c.text).join(' ') }]}
+      />
       <button className="btn primary" onClick={onDone}>
         <Icon name="check" size={22} stroke={3} /> {t.followFinish}
       </button>

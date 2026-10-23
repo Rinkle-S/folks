@@ -267,7 +267,7 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; }
 .all-done { display: block; font-size: 21px; }
 
 .section-h .link-btn { margin-left: auto; }
-.link-btn { border: none; background: none; color: var(--peacock-deep); font-weight: 700; font-size: 16px; padding: 8px 4px; text-decoration: underline; text-underline-offset: 3px; }
+.link-btn { border: none; background: none; color: var(--peacock-deep); font-weight: 700; padding: 8px 8px; min-height: 48px; font-size: 17px; text-decoration: underline; text-underline-offset: 3px; }
 .app-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 .app-tile { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 4px; padding: 16px 6px 14px; background: var(--surface); border-radius: var(--r-group); box-shadow: var(--shadow-1); text-decoration: none; color: var(--ink); transition: transform 0.08s; }
 .app-tile:active { transform: scale(0.97); }
@@ -720,19 +720,29 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; }
 .theme-card { background: var(--surface); border-radius: 16px; padding: 12px 16px; box-shadow: var(--shadow-1); }
 .theme-card b { font-size: 18px; }
 .theme-card p { margin: 4px 0 0; font-size: 17px; line-height: 1.45; color: var(--ink-2); }
-.print-how { margin: 8px 0 0; padding-left: 22px; font-size: 17px; line-height: 1.5; }
-.print-head { display: none; }
-.print-guide { margin: 18px 0; padding: 14px 16px; background: var(--surface); border-radius: 16px; box-shadow: var(--shadow-1); }
-.print-guide h2 { margin: 0; font-size: 20px; }
-.print-guide small { color: var(--ink-3); }
-.print-guide ol { margin: 8px 0 0; padding-left: 24px; font-size: 18px; line-height: 1.5; }
-.print-caution { margin: 10px 0 0; padding: 8px 12px; border-radius: 10px; background: var(--marigold-soft); font-size: 16px; }
+
+.print-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 14px 0; }
+.print-bar .btn { width: auto; }
+.faq { display: grid; gap: 10px; margin: 14px 0; }
+.faq details { background: var(--surface); border-radius: 16px; padding: 4px 16px; box-shadow: var(--shadow-1); }
+.faq summary { cursor: pointer; font-size: 19px; font-weight: 700; padding: 14px 0; }
+.faq p { margin: 0 0 14px; font-size: 18px; line-height: 1.5; color: var(--ink-2); }
+.print-root { display: none; }
 @media print {
-  .no-print, .shell > .bottom-nav, nav, .appbar { display: none !important; }
-  body, .shell { background: #fff !important; }
-  .shell-main { padding: 0 !important; max-width: none !important; }
-  .print-head { display: block; font-size: 14px; color: #555; border-bottom: 1px solid #ccc; padding-bottom: 6px; margin-bottom: 8px; }
-  .print-guide { break-inside: avoid; page-break-inside: avoid; box-shadow: none; border: 1px solid #ccc; margin: 0 0 14px; }
-  .print-guide ol { font-size: 15pt; }
-  .print-guide h2 { font-size: 17pt; }
+  body > *:not(.print-root) { display: none !important; }
+  .print-root { display: block; font-family: Arial, sans-serif; color: #000; }
+  .print-head { font-size: 12pt; color: #555; border-bottom: 1px solid #ccc; padding-bottom: 6px; margin-bottom: 12px; }
+  .print-guide { break-inside: avoid; page-break-inside: avoid; border: 1px solid #bbb; border-radius: 6px; padding: 12px 16px; margin: 0 0 14px; }
+  .print-guide h2 { font-size: 20pt; margin: 0 0 2px; }
+  .print-guide small { font-size: 12pt; color: #555; }
+  .print-guide ol { font-size: 16pt; line-height: 1.5; margin: 10px 0 0; padding-left: 28px; }
+  .print-caution { font-size: 14pt; margin: 12px 0 0; padding: 8px 12px; border: 1px solid #999; }
 }
+
+/* Topic cards: big text and a big tap area for older eyes and thumbs */
+.topic-card { min-height: 76px; padding: 14px 16px; }
+.topic-card b { font-size: 20px; line-height: 1.3; }
+.topic-card small { font-size: 16px; }
+.topic-card.is-soon { opacity: 0.75; background: transparent; border: 2px dashed var(--line, #cfd8d4); box-shadow: none; }
+.home-topics { display: grid; gap: 10px; }
+.home-topics .btn { width: 100%; }

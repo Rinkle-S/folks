@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Icon from '@/components/Icons';
 import AppIcon from '@/components/AppIcon';
 import { AppBar, BottomNav } from '@/components/AppShell';
+import PrintBar from '@/components/PrintBar';
 import { T } from '@/lib/i18n';
 import { useLang, getDone } from '@/lib/client';
 import { THEMES } from '@/lib/themes';
@@ -79,9 +80,7 @@ export default function Theme({ params }) {
             </Link>
           ))}
         </div>
-        <Link href={`/print?theme=${th.id}`} className="ask-more">
-          <Icon name="file" size={20} /> {t.printTopic}
-        </Link>
+        <PrintBar lang={lang} t={t} ids={th.lessons} heading={th.title[lang]} />
       </main>
       <BottomNav active="learn" t={t} />
     </div>

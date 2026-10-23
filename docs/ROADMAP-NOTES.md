@@ -44,3 +44,11 @@ Still to write, from the workshop outlines (each becomes lessons or a topic):
 - **Icons:** a wider icon set (share, download, bell, heart, edit, trash, refresh, plus, filter) and a "which icon means
   what" practice drawn from other senior guides.
 - Writing every lesson in Hindi and Malayalam needs a native read before launch.
+
+## AI helper (removed, parked)
+The "ask anything" helper was taken out so Folks is not read as a chatbot wrapper and no raw AI errors reach a parent.
+What was removed: the `/api/ask` route (Gemini free tier, with a safe-answer prompt), the `AiGuide` view, the "ask" card on the
+no-match screen, and the phone model field that only fed it. Home now says voice assistants and AI helpers are coming soon
+(topic "Video calls and talking to your phone"). To bring it back: restore those files from git history (the commit before
+this change), add `GEMINI_API_KEY` in Vercel only (never in the repo), show it only after a lesson match fails, keep answers
+to five short steps, and never let it ask for an OTP or PIN.
