@@ -766,7 +766,7 @@ export function ACall({ name = '1930', sub = 'Cyber Crime Helpline', time = '00:
 }
 
 // A web page in Chrome.
-export function AWeb({ url = 'cybercrime.gov.in', title, lines = [], button }) {
+export function AWeb({ url = 'cybercrime.gov.in', gov = 'National Cyber Crime Reporting Portal', title, lines = [], button }) {
   return (
     <div className="app k-web">
       <Status />
@@ -779,7 +779,7 @@ export function AWeb({ url = 'cybercrime.gov.in', title, lines = [], button }) {
         <Icon name="more" size={20} />
       </div>
       <div className="k-web-page">
-        <div className="k-web-gov">National Cyber Crime Reporting Portal</div>
+        <div className="k-web-gov">{gov}</div>
         <h3>{title}</h3>
         {lines.map((l) => (
           <p key={l}>{l}</p>
