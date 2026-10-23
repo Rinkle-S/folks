@@ -129,7 +129,8 @@ export default function Home() {
         track('ai_guide', { meta: { q: q.slice(0, 200), cached: !!j.cached, lang } });
       } else {
         setAi({ s: 'none', guide: null });
-        track('ai_guide_none', { meta: { q: q.slice(0, 200), why: j.status || 'error', lang } });
+        track('ai_guide_none', { meta: { q: q.slice(0, 200), why: j.status || 'error', detail: j.detail || '', lang } });
+        setAi({ s: 'none', guide: null, why: j.status || 'error', detail: j.detail || '' });
         speak(t.noMatch, lang);
       }
     } catch {
@@ -371,6 +372,7 @@ export default function Home() {
             ) : (
               <div className="card">
                 <p>{t.noMatch}</p>
+                {ai.why && <p className="muted small">({ai.why}{ai.detail ? `: ${ai.detail}` : ""})</p>}
                 <button className="btn wa-btn" onClick={() => askChild(query)}>
                   <Icon name="share" size={22} /> {t.askChild}
                 </button>

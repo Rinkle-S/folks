@@ -129,6 +129,11 @@ function clean(g) {
   return { title: String(g.title || '').trim().slice(0, 120), app: String(g.app || '').trim().slice(0, 40), steps, caution: String(g.caution || '').trim().slice(0, 240) };
 }
 
+// Open /api/ask in a browser to see which helpers are switched on (never shows the keys).
+export async function GET() {
+  return NextResponse.json({ gemini: !!process.env.GEMINI_API_KEY, anthropic: !!process.env.ANTHROPIC_API_KEY, supabase: !!sb() });
+}
+
 export async function POST(req) {
   let b;
   try {
@@ -161,11 +166,11 @@ export async function POST(req) {
 
   try {
     const guide = clean(process.env.GEMINI_API_KEY ? await askGemini(q, lang, phone) : await askClaude(q, lang, phone));
-    if (!guide) return NextResponse.json({ status: 'refused' });
+    if (!guide) return NextResponse.json({ status: 'refused', detail: 'The AI answer had fewer than 2 usable steps.' });
     await saveCache(db, { id, question: q, lang, phone: phone || null, title: guide.title, app: guide.app, steps: guide.steps, caution: guide.caution });
     return NextResponse.json({ status: 'ok', cached: false, guide });
   } catch (e) {
     console.error('ask failed', e && e.message);
-    return NextResponse.json({ status: 'error' }, { status: 502 });
+    return NextResponse.json({ status: 'error', detail: String((e && e.message) || e).slice(0, 220) });
   }
 }
