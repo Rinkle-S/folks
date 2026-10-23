@@ -19,6 +19,10 @@ import { LESSONS } from '@/lib/lessons';
 import { T } from '@/lib/i18n';
 import { useLang, useMute, speak, stopSpeaking, prefetchSpeech, onSpeaking, track, getFrom, whatsappLink, markDone, vibrate, getLearnMode, addRecent, isPracticeSeen, setPracticeSeen, onSpeechProgress } from '@/lib/client';
 
+// Watch-first pacing (milliseconds). Slower than before: older viewers need time to see the screen, then the pointer,
+// then the tap. Research on older listeners favours clear speech (about 140 words a minute or less) and pauses.
+const WATCH = { settle: 900, beforeTap: 1400, tapHold: 1800, rest: 1500, perKey: 900 };
+
 // Shows the user's own name and trusted contact instead of the demo persona (see lib/persona.js).
 export default function Player({ id }) {
   const ref = useRef(null);
@@ -204,38 +208,43 @@ function PlayerInner({ id }) {
     const nxt = lesson.steps[idx + 1];
     if (nxt) prefetchSpeech(nxt.say[lang], lang);
     (async () => {
+      await wait(WATCH.settle); // a moment to see the new screen before anything is said
+      if (cancelled) return;
       if (s.kind === 'info') {
-        await wait(1200);
+        await speak(s.say[lang], lang);
+        await wait(WATCH.rest);
         if (!cancelled) advance();
         return;
       }
       await speak(s.say[lang], lang);
       if (cancelled) return;
       if (s.kind === 'tap') {
-        await wait(400);
+        await wait(WATCH.beforeTap); // look at the glowing spot
         if (cancelled) return;
         setTapFx(true);
-        await wait(700);
+        await wait(WATCH.tapHold);
         if (cancelled) return;
         setTapFx(false);
+        await wait(WATCH.rest);
+        if (cancelled) return;
         advance();
       } else if (s.kind === 'input') {
         for (let k = 0; k < s.expected.length; k++) {
-          await wait(550);
+          await wait(WATCH.perKey);
           if (cancelled) return;
           setTyped(s.expected.slice(0, k + 1));
         }
-        await wait(700);
+        await wait(WATCH.rest);
         if (cancelled) return;
         setValues((v) => ({ ...v, [s.field]: s.expected }));
         advance();
       } else if (s.kind === 'quiz') {
         const right = s.options.find((o) => o.correct);
-        await wait(500);
+        await wait(WATCH.beforeTap);
         if (cancelled) return;
         setQuiz({ correct: true, why: right.why[lang] });
         await speak(right.why[lang], lang);
-        await wait(800);
+        await wait(WATCH.rest);
         if (!cancelled) advance();
       }
     })();

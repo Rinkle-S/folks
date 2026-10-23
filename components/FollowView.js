@@ -31,6 +31,19 @@ function Picture({ card, lesson, lang, t }) {
 
 export default function FollowView({ lesson, lang, t, onDone, onPractice }) {
   const [open, setOpen] = useState({});
+  const [pics, setPics] = useState(true); // pictures are shown by default; one switch hides them all
+  useEffect(() => {
+    try {
+      if (localStorage.getItem('folks_pics') === '0') setPics(false);
+    } catch {}
+  }, []);
+  const togglePics = () => {
+    setPics(!pics);
+    setOpen({});
+    try {
+      localStorage.setItem('folks_pics', pics ? '0' : '1');
+    } catch {}
+  };
 
   const cards = useMemo(() => {
     const skip = FOLLOW_SKIP[lesson.id] || [];
@@ -74,6 +87,9 @@ export default function FollowView({ lesson, lang, t, onDone, onPractice }) {
         </button>
       </div>
 
+      <button className="chip pics-toggle" onClick={togglePics} aria-pressed={pics}>
+        <Icon name="image" size={20} /> {pics ? t.hideAllPics : t.showAllPics}
+      </button>
       <ol className="read-list">
         {steps.map((c, i) => (
           <li key={c.step.id} className="read-step">
@@ -84,11 +100,11 @@ export default function FollowView({ lesson, lang, t, onDone, onPractice }) {
                 <button className="chip" onClick={() => speak(c.text, lang, { force: true })}>
                   <Icon name="volume" size={20} /> {t.listen}
                 </button>
-                <button className="chip" onClick={() => setOpen({ ...open, [i]: !open[i] })}>
-                  <Icon name="image" size={20} /> {open[i] ? t.hidePicture : t.showPicture}
+                <button className="chip" onClick={() => setOpen({ ...open, [i]: !(open[i] ?? pics) })}>
+                  <Icon name="image" size={20} /> {open[i] ?? pics ? t.hidePicture : t.showPicture}
                 </button>
               </div>
-              {open[i] && <Picture card={c} lesson={lesson} lang={lang} t={t} />}
+              {(open[i] ?? pics) && <Picture card={c} lesson={lesson} lang={lang} t={t} />}
             </div>
           </li>
         ))}
