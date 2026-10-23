@@ -632,3 +632,4 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; }
 .brand-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 10px 0; }
 .brand-grid button { min-height: 56px; border-radius: 16px; border: 2px solid var(--line); background: #fff; font: inherit; font-size: 18px; font-weight: 700; color: var(--ink); }
 .brand-grid button.on { border-color: var(--peacock); background: #e3f3ef; }
+.guides-h{margin:22px 0 10px;font-size:1.15rem}
