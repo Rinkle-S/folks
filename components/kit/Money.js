@@ -54,7 +54,7 @@ export function GpProfile({ tap }) {
       <GpBar title="" more={false} />
       <div className="k-gp-prof">
         <span className="gp-me lg">K</span>
-        <b>Kamla Devi</b>
+        <b>Kamala Nair</b>
         <small>kamla.devi@okaxis</small>
         <span className="k-gp-qr">
           <Icon name="scan" size={18} /> Your QR code
@@ -550,7 +550,7 @@ export function BkLogin({ bank = 'sbi', filled = 3 }) {
         <AppIcon app={bank === 'sbi' ? 'yono' : 'icici'} size={64} />
         <b>{b.name}</b>
       </div>
-      <small>Welcome back, Kamla</small>
+      <small>Welcome back, Kamala</small>
       <div className="k-bk-pinlabel">Enter your 6-digit MPIN</div>
       <PinDots n={6} filled={filled} color="#fff" />
       <div className="k-bk-alt">

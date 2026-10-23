@@ -330,9 +330,9 @@ export function WaSettings() {
         <Icon name="search" size={21} />
       </div>
       <div className="wa-row wa-me" data-t="profile">
-        <Av name="Kamla Devi" size={60} color="#00a884" />
+        <Av name="Kamala Nair" size={60} color="#00a884" />
         <div className="wa-mid">
-          <div className="wa-name big">Kamla Devi</div>
+          <div className="wa-name big">Kamala Nair</div>
           <div className="wa-msg">Hey there! I am using WhatsApp.</div>
         </div>
       </div>
@@ -366,14 +366,14 @@ export function WaProfile({ photo }) {
       </div>
       <div className="wa-prof">
         <span className="wa-prof-pic">
-          {photo ? <span className="wa-prof-img">{photo}</span> : <Av name="Kamla Devi" size={130} color="#00a884" />}
+          {photo ? <span className="wa-prof-img">{photo}</span> : <Av name="Kamala Nair" size={130} color="#00a884" />}
           <i data-t="camera">
             <Icon name="camera" size={20} color="#fff" />
           </i>
         </span>
       </div>
       {[
-        ['user', 'Name', 'Kamla Devi'],
+        ['user', 'Name', 'Kamala Nair'],
         ['info', 'About', 'Hey there! I am using WhatsApp.'],
         ['phone', 'Phone', '+91 98450 12345'],
       ].map(([ic, l, v]) => (

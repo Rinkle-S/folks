@@ -110,7 +110,7 @@ export function FkAddressPick({ tap }) {
       </div>
       {STEPS3(1)}
       <div className="k-fk-addr sel">
-        <b>Kamla Devi</b>
+        <b>Kamala Nair</b>
         <small>12B, MG Road, Ernakulam, Kochi 682016</small>
         <small>98450 12345</small>
       </div>
@@ -214,7 +214,7 @@ export function IgPost({ tap, liked, comment }) {
       </div>
       <div className="k-ig-ph">
         <Av name="rahul" size={32} />
-        <b>rahul_sharma</b>
+        <b>rahul_nair</b>
         <Icon name="more" size={20} />
       </div>
       <div className="k-ig-img">👨‍👩‍👧</div>
@@ -230,7 +230,7 @@ export function IgPost({ tap, liked, comment }) {
       <div className="k-ig-cap">
         <b>{liked ? '43 likes' : '42 likes'}</b>
         <span>
-          <b>rahul_sharma</b> Sunday with the family ❤️
+          <b>rahul_nair</b> Sunday with the family ❤️
         </span>
         {comment && (
           <span>
@@ -245,7 +245,7 @@ export function IgPost({ tap, liked, comment }) {
           <Icon name="plusCircle" size={25} />
         </span>
         <Icon name="video" size={25} />
-        <Av name="Kamla" size={26} color="#c13584" />
+        <Av name="Kamala" size={26} color="#c13584" />
       </div>
     </div>
   );
@@ -261,14 +261,14 @@ export function IgComments({ post }) {
       <div className="k-ig-res">
         <Av name="rahul" size={36} />
         <span>
-          <b>rahul_sharma</b>
+          <b>rahul_nair</b>
           <small>Sunday with the family ❤️</small>
         </span>
       </div>
       <div style={{ flex: 1 }} />
       <div className="k-ig-emoji">❤️ 🙌 🔥 👏 😢 😍 😮 😂</div>
       <div className="k-ig-input">
-        <Av name="Kamla" size={32} color="#c13584" />
+        <Av name="Kamala" size={32} color="#c13584" />
         <span>Very nice! Take care, beta</span>
         <b data-t={t(post, 'send-c')}>Post</b>
       </div>
@@ -479,7 +479,7 @@ export function BkLoginTyped({ bank = 'sbi', n = 6, typed = '' }) {
         <AppIcon app={bank === 'sbi' ? 'yono' : 'icici'} size={64} />
         <b>{bank === 'sbi' ? 'YONO SBI' : 'iMobile Pay'}</b>
       </div>
-      <small>Welcome back, Kamla</small>
+      <small>Welcome back, Kamala</small>
       <div className="k-bk-pinlabel">{n === 6 ? 'Enter your 6-digit MPIN' : 'Enter your 4-digit login PIN'}</div>
       <PinDots n={n} filled={(typed || '').length} color="#fff" />
       <div className="k-bk-alt">
@@ -757,7 +757,7 @@ export function IrPassenger() {
       <div className="k-ir-form">
         <div>
           <small>Name · Age · Gender</small>
-          <b>Kamla Devi · 62 · Female</b>
+          <b>Kamala Nair · 63 · Female</b>
         </div>
         <small>Berth preference</small>
         <div className="k-bk-chips">

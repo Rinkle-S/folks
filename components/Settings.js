@@ -2,6 +2,7 @@
 // Settings sheet: language and sound. Labels are bilingual so anyone can find their language.
 import { useState } from 'react';
 import useInstall from './useInstall';
+import TrustedContacts from './TrustedContacts';
 import { speak, unlockAudio, getLearnMode, setLearnMode } from '@/lib/client';
 import { voiceStatus } from '@/lib/voice';
 import { T } from '@/lib/i18n';
@@ -78,6 +79,7 @@ export default function Settings({ lang, setLang, muted, toggleMute, onClose, on
             </button>
           </div>
         )}
+        <TrustedContacts t={t} />
         {onPracticeInfo && (
           <div className="settings-row">
             <span>{t.practiceWhat}</span>

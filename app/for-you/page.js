@@ -6,6 +6,7 @@ import Icon from '@/components/Icons';
 import { AppBar, BottomNav } from '@/components/AppShell';
 import { T } from '@/lib/i18n';
 import { askSomeone, loadMade, isReady } from '@/lib/ask';
+import AskWho from '@/components/AskWho';
 import { useLang, getRequests } from '@/lib/client';
 
 export default function ForYou() {
@@ -23,11 +24,11 @@ export default function ForYou() {
   if (!lang) return <div className="page" />;
   const t = T[lang];
 
-  function ask(e) {
-    e.preventDefault();
+  function ask(e, contact) {
+    if (e) e.preventDefault();
     const text = q.trim();
     if (!text) return;
-    const id = askSomeone(text, lang, t);
+    const id = askSomeone(text, lang, t, contact);
     setMade([{ id, question: text, status: 'asked' }, ...made]);
     setQ('');
     setSent(true);
@@ -45,9 +46,7 @@ export default function ForYou() {
             <span>{t.forYouAsk}</span>
             <input value={q} onChange={(e) => setQ(e.target.value)} placeholder={t.typePlaceholder} maxLength={200} />
           </label>
-          <button className="btn wa-btn" type="submit">
-            <Icon name="share" size={22} /> {t.forYouSend}
-          </button>
+          <AskWho t={t} label={t.forYouSend} type="submit" onAsk={(c) => ask(null, c)} />
           {sent && <p className="thanks">{t.thanks}</p>}
         </form>
 
