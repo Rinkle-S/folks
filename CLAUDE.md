@@ -24,6 +24,12 @@ do not build it.
 **If a request is outside this:** do not build it. Add it to `docs/PARKING-LOT.md` with the criterion it helps and what it
 would delay, and ask for confirmation first.
 
+## Deck (remove the scorecard before submitting)
+The buildathon deck is a Slides artifact ("Nook Buildathon Deck", https://claude.ai/artifact/FCdHYQL667NKxk3EiYqmj8). It has one
+INTERNAL slide, `scorecard`, with a self-estimated score per criterion. **Claude: before the deck is submitted or shared, delete
+`project/slides/scorecard.html` and remove `scorecard` from `order` in `project/deck.json`, and remind the owner.** Fill the
+bracketed placeholders (user story, testers, first 10 users, live link) only with real facts from the owner. Never invent evidence.
+
 ## Design for older users
 The users are 55+. Big fonts (body text 18px or more), big buttons and tap areas (at least 56px high), easy-to-understand
 design, calm colours (no flashy or neon colours, no blinking). One clear action per screen. Plain words, no jargon.
