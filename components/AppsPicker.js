@@ -1,6 +1,6 @@
 'use client';
 // "Which apps are on your phone?" A website can't see installed apps, so the parent (or child) taps them once.
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import AppIcon from './AppIcon';
 import { ALL_APPS } from '@/lib/apps';
 
@@ -14,6 +14,22 @@ export default function AppsPicker({ t, initial = [], onSave, onClose }) {
     const a = [...sel];
     [a[i], a[j]] = [a[j], a[i]];
     setSel(a);
+  };
+  const listRef = useRef(null);
+  const [drag, setDrag] = useState(null); // index of the app being dragged
+  const onMove = (e) => {
+    if (drag === null || !listRef.current) return;
+    const rows = [...listRef.current.children];
+    const j = rows.findIndex((r) => {
+      const b = r.getBoundingClientRect();
+      return e.clientY >= b.top && e.clientY <= b.bottom;
+    });
+    if (j < 0 || j === drag) return;
+    const a = [...sel];
+    const [it] = a.splice(drag, 1);
+    a.splice(j, 0, it);
+    setSel(a);
+    setDrag(j);
   };
   const toggle = (id) => setSel(sel.includes(id) ? sel.filter((x) => x !== id) : [...sel, id]);
   return (
@@ -38,9 +54,24 @@ export default function AppsPicker({ t, initial = [], onSave, onClose }) {
               <b>↕️ {t.orderTitle}</b>
             </div>
             <p className="muted small">{t.orderSub}</p>
-            <div className="order-list">
+            <p className="muted small">{t.dragHint}</p>
+            <div className="order-list" ref={listRef}>
               {sel.map((id, i) => (
-                <div className="order-row" key={id}>
+                <div className={`order-row ${drag === i ? 'dragging' : ''}`} key={id}>
+                  <span
+                    className="drag-handle"
+                    role="button"
+                    aria-label={`${nameOf(id)} ${t.moveUp} / ${t.moveDown}`}
+                    onPointerDown={(e) => {
+                      e.currentTarget.setPointerCapture(e.pointerId);
+                      setDrag(i);
+                    }}
+                    onPointerMove={onMove}
+                    onPointerUp={() => setDrag(null)}
+                    onPointerCancel={() => setDrag(null)}
+                  >
+                    ⠿
+                  </span>
                   <AppIcon app={id} size={36} />
                   <b>{nameOf(id)}</b>
                   <button className="mv" onClick={() => move(i, -1)} disabled={i === 0} aria-label={`${nameOf(id)} ${t.moveUp}`}>

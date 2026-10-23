@@ -705,3 +705,10 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; }
 .lv th, .lv td { border-bottom: 1px solid var(--line); padding: 5px 8px; text-align: left; vertical-align: top; }
 .lv td:nth-child(n+2), .lv th:nth-child(n+2) { text-align: center; }
 .lv td.moved { background: var(--marigold-soft); font-weight: 700; }
+
+.pics-toggle { margin: 6px 0 10px; }
+
+/* Watch first: the spot to tap is shaded and outlined more strongly, so it is easy to follow */
+.screen.watching .hl { outline-width: 6px !important; outline-offset: 3px; background-color: rgba(242, 163, 58, 0.42) !important; }
+.drag-handle { touch-action: none; cursor: grab; font-size: 26px; line-height: 1; padding: 8px 10px; user-select: none; color: var(--ink-2); }
+.order-row.dragging { background: var(--marigold-soft); box-shadow: 0 0 0 2px var(--marigold) inset; border-radius: 14px; }

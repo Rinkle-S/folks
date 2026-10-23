@@ -18,7 +18,7 @@ import { langCode } from '@/lib/langs';
 import { askSomeone, loadMade, isReady } from '@/lib/ask';
 import AskWho from './AskWho';
 import { orderForFluency } from '@/lib/levels';
-import { effectiveFluency } from '@/lib/adapt';
+import { effectiveFluency, reviewDueIds } from '@/lib/adapt';
 import {
   useLang,
   useMute,
@@ -53,6 +53,8 @@ export default function Home() {
   const [serverStt, setServerStt] = useState(false);
   const [myApps, setMyApps] = useState(undefined);
   const [showApps, setShowApps] = useState(false);
+  const [moreApps, setMoreApps] = useState(false);
+  const [reviewIds, setReviewIds] = useState([]);
   const [made, setMade] = useState([]);
   const [done, setDone] = useState([]);
   const [greet, setGreet] = useState('greetDay');
@@ -70,6 +72,7 @@ export default function Home() {
     setProfileName(getProfile().name);
     setFluency(effectiveFluency(getProfile().fluency));
     setSkills(getProfile().skills || []);
+    setReviewIds(reviewDueIds());
     setDone(getDone());
     const h = new Date().getHours();
     setGreet(h < 12 ? 'greetMorning' : h < 17 ? 'greetDay' : 'greetEvening');
@@ -330,8 +333,13 @@ export default function Home() {
   const readyMade = made.filter(isReady);
   const mine = myApps || [];
   const orderedApps = [...mine.map((id) => APPS.find((a) => a.id === id)).filter(Boolean), ...APPS.filter((a) => !mine.includes(a.id))];
+  // Apps they picked come first; the rest stay one tap away so they can still be discovered.
+  const shownApps = mine.length && !moreApps ? orderedApps.filter((a) => mine.includes(a.id)) : orderedApps;
+  const hiddenCount = orderedApps.length - shownApps.length;
   const orderedLessons = orderedApps.flatMap((a) => orderForFluency(lessons.filter((l) => l.app === a.id), fluency, skills));
-  const next = orderedLessons.find((l) => !done.includes(l.id) && !l.id.startsWith('gd-')) || orderedLessons.find((l) => !done.includes(l.id));
+  // Never suggest something already learned, except a lesson they struggled with a few days ago.
+  const review = orderedLessons.find((l) => reviewIds.includes(l.id));
+  const next = review || orderedLessons.find((l) => !done.includes(l.id) && !l.id.startsWith('gd-')) || orderedLessons.find((l) => !done.includes(l.id));
   const pct = Math.round((doneCount / lessons.length) * 100);
 
   return (
@@ -431,7 +439,7 @@ export default function Home() {
         {next ? (
           <section className="next-card">
             <div className="next-top">
-              <span className="eyebrow">{t.tryThis}</span>
+              <span className="eyebrow">{review ? t.practiceAgainTitle : t.tryThis}</span>
             </div>
             <div className="next-body">
               <AppIcon app={next.app} size={60} />
@@ -455,14 +463,13 @@ export default function Home() {
           </button>
         </div>
         <div className="app-grid">
-          {orderedApps.map((app) => {
+          {shownApps.map((app) => {
             const list = lessons.filter((l) => l.app === app.id);
             const gn = GUIDE_LIST.filter((x) => x.app === app.id).length;
             if (!list.length && !gn) return null;
             const d = list.filter((l) => done.includes(l.id)).length;
             return (
               <Link key={app.id} href={`/app/${app.id}`} className="app-tile">
-                {mine.includes(app.id) && <span className="app-tag">{t.onMyPhone}</span>}
                 <AppIcon app={app.id} size={56} />
                 <b>{app.name}</b>
                 <small>{!list.length ? `${gn} ${t.quickGuide}` : d === list.length ? `✓ ${t.learned}` : t.lessonsN(list.length)}</small>
@@ -470,6 +477,12 @@ export default function Home() {
             );
           })}
         </div>
+
+        {mine.length > 0 && (hiddenCount > 0 || moreApps) && (
+          <button className="btn ghost" onClick={() => setMoreApps(!moreApps)} aria-expanded={moreApps}>
+            {moreApps ? t.fewerApps : t.moreApps(hiddenCount)}
+          </button>
+        )}
 
         <Link href="/scams" className="feature-card dark">
           <span className="feature-ic">
