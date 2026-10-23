@@ -12,7 +12,7 @@ import FollowView from './FollowView';
 import Icon from './Icons';
 import { LESSONS } from '@/lib/lessons';
 import { T } from '@/lib/i18n';
-import { useLang, useMute, speak, stopSpeaking, prefetchSpeech, onSpeaking, track, getFrom, whatsappLink, markDone, vibrate } from '@/lib/client';
+import { useLang, useMute, speak, stopSpeaking, prefetchSpeech, onSpeaking, track, getFrom, whatsappLink, markDone, vibrate, getLearnMode, addRecent } from '@/lib/client';
 
 export default function Player({ id }) {
   const lesson = LESSONS[id];
@@ -53,7 +53,12 @@ export default function Player({ id }) {
     try {
       const m = new URLSearchParams(window.location.search).get('mode');
       if (m === 'watch' || m === 'follow' || m === 'practice') chooseMode(m);
+      else {
+        const pref = getLearnMode();
+        if (pref !== 'ask') chooseMode(pref);
+      }
     } catch {}
+    addRecent(id);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
@@ -477,17 +482,23 @@ export default function Player({ id }) {
 
         {choosing && (
           <div className="modes">
-            <button className="btn primary" onClick={() => chooseMode('practice')}>
-              <Icon name="hand" size={24} /> {t.modePractice}
-            </button>
-            <div className="mode-row">
-              <button className="btn ghost" onClick={() => chooseMode('watch')}>
-                <Icon name="play" size={18} /> {t.modeWatch}
+            <b className="modes-h">{t.modeTitle}</b>
+            {[
+              ['practice', 'hand', t.modePractice, t.modePracticeSub],
+              ['watch', 'play', t.modeWatch, t.modeWatchSub],
+              ['follow', 'list', t.modeFollow, t.modeFollowSub],
+            ].map(([m, ic, title, sub]) => (
+              <button key={m} className={`mode-card ${m === 'practice' ? 'main' : ''}`} onClick={() => chooseMode(m)}>
+                <span className="mode-ic">
+                  <Icon name={ic} size={24} />
+                </span>
+                <span className="mode-tx">
+                  <b>{title}</b>
+                  <small>{sub}</small>
+                </span>
+                <Icon name="chevron" size={20} />
               </button>
-              <button className="btn ghost" onClick={() => chooseMode('follow')}>
-                <Icon name="list" size={20} /> {t.modeFollow}
-              </button>
-            </div>
+            ))}
           </div>
         )}
 

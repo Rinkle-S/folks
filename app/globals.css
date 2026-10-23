@@ -633,3 +633,16 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; }
 .brand-grid button { min-height: 56px; border-radius: 16px; border: 2px solid var(--line); background: #fff; font: inherit; font-size: 18px; font-weight: 700; color: var(--ink); }
 .brand-grid button.on { border-color: var(--peacock); background: #e3f3ef; }
 .guides-h{margin:22px 0 10px;font-size:1.15rem}
+
+.modes{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.modes-h{font-size:1.05rem}
+.mode-card{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:14px;border-radius:16px;border:2px solid var(--line,#e3e6ea);background:#fff;color:inherit;font:inherit;cursor:pointer}
+.mode-card.main{border-color:var(--brand,#1a73e8);background:#eef4ff}
+.mode-ic{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:#e8f0fe;flex:none}
+.mode-card.main .mode-ic{background:var(--brand,#1a73e8);color:#fff}
+.mode-tx{display:flex;flex-direction:column;flex:1;gap:2px}
+.mode-tx b{font-size:1.05rem}
+.mode-tx small{opacity:.75;font-size:.9rem}
+.recent-row{display:flex;align-items:center;gap:12px;padding:10px 0;text-decoration:none;color:inherit;border-top:1px solid rgba(0,0,0,.07)}
+.recent-row span{flex:1;display:flex;flex-direction:column}
+.recent-row small{opacity:.7}
