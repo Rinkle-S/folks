@@ -108,7 +108,7 @@ async function askGemini(q, lang, phone) {
         last = e;
         errs.push(String(e.message).replace(/\s+/g, ' ').slice(0, 170));
         // Search not allowed on this model: retry the same model without it. Anything else (busy, retired, slow): next model.
-        const searchRefused = withSearch && (e.status === 400 || e.status === 403);
+        const searchRefused = withSearch && (e.status === 400 || e.status === 403 || e.status === 429);
         if (!searchRefused) break;
       }
     }
