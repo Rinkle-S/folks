@@ -88,6 +88,13 @@ export default function FollowView({ lesson, lang, t, onDone, onPractice }) {
         </button>
       </div>
 
+      <PrintBar
+        lang={lang}
+        t={t}
+        heading={lesson.title[lang]}
+        entries={[{ id: lesson.id, title: lesson.title[lang], app: lesson.appName, steps: steps.map((c) => c.text), caution: tips.map((c) => c.text).join(' ') }]}
+      />
+
       <button className="chip pics-toggle" onClick={togglePics} aria-pressed={pics}>
         <Icon name="image" size={20} /> {pics ? t.hideAllPics : t.showAllPics}
       </button>
@@ -122,12 +129,6 @@ export default function FollowView({ lesson, lang, t, onDone, onPractice }) {
         </div>
       )}
 
-      <PrintBar
-        lang={lang}
-        t={t}
-        heading={lesson.title[lang]}
-        entries={[{ id: lesson.id, title: lesson.title[lang], app: lesson.appName, steps: steps.map((c) => c.text), caution: tips.map((c) => c.text).join(' ') }]}
-      />
       <button className="btn primary" onClick={onDone}>
         <Icon name="check" size={22} stroke={3} /> {t.followFinish}
       </button>

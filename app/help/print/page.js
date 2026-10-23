@@ -1,9 +1,10 @@
 'use client';
-// Help: how to print a guide or save it as a PDF, in question and answer form.
-import Link from 'next/link';
+// Help: printing and saving, in question and answer form.
 import { AppBar, BottomNav } from '@/components/AppShell';
+import HelpList from '@/components/HelpList';
 import { T } from '@/lib/i18n';
 import { useLang } from '@/lib/client';
+import Link from 'next/link';
 
 export default function PrintHelp() {
   const [lang] = useLang();
@@ -14,17 +15,9 @@ export default function PrintHelp() {
       <AppBar back="/" />
       <main className="shell-main">
         <h1 className="page-h">{t.printFaqTitle}</h1>
-        <p className="muted">{t.printFaqLead}</p>
-        <div className="faq">
-          {t.printFaq.map(([q, a], i) => (
-            <details key={i} open={i === 0}>
-              <summary>{q}</summary>
-              <p>{a}</p>
-            </details>
-          ))}
-        </div>
-        <Link href="/themes" className="btn primary">
-          {t.themesTitle}
+        <HelpList lang={lang} only="print" />
+        <Link href="/help" className="btn ghost">
+          {t.helpTitle}
         </Link>
       </main>
       <BottomNav active="learn" t={t} />

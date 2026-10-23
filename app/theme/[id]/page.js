@@ -31,6 +31,7 @@ export default function Theme({ params }) {
             <p className="muted">{th.lead[lang]}</p>
           </div>
         </header>
+        <PrintBar lang={lang} t={t} ids={th.lessons} heading={th.title[lang]} />
 
         <div className="section-h">
           <span>{t.goodToKnow}</span>
@@ -80,7 +81,6 @@ export default function Theme({ params }) {
             </Link>
           ))}
         </div>
-        <PrintBar lang={lang} t={t} ids={th.lessons} heading={th.title[lang]} />
       </main>
       <BottomNav active="learn" t={t} />
     </div>

@@ -44,6 +44,7 @@ export default function AppLessons({ app }) {
             </p>
           </div>
         </header>
+        <PrintBar lang={lang} t={t} ids={idsForApp(app)} heading={info.name} />
 
         <div className="lesson-list">
           {list.map((l, i) => {
@@ -66,7 +67,6 @@ export default function AppLessons({ app }) {
           })}
         </div>
 
-        <PrintBar lang={lang} t={t} ids={idsForApp(app)} heading={info.name} />
         <Link href="/for-you" className="ask-more">
           <Icon name="heart" size={20} /> {t.askMore}
         </Link>

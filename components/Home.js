@@ -476,6 +476,7 @@ export default function Home() {
         )}
 
         <footer className="home-foot">
+          <Link href="/help">{t.helpLink}</Link>
           <Link href="/send">{t.childLink}</Link>
         </footer>
       </main>
