@@ -1,5 +1,5 @@
 'use client';
-// Lets any screen offer "Add Folks to home screen" once Chrome says the app can be installed.
+// Lets any screen offer "Add Nook to home screen" once Chrome says the app can be installed.
 import { useEffect, useState } from 'react';
 
 export default function useInstall() {

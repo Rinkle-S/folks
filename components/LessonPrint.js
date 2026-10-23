@@ -59,7 +59,7 @@ export default function LessonPrint({ lesson, lang, t, variant = 'icon' }) {
       {job &&
         createPortal(
           <div className="print-root">
-            <div className="print-head">Folks · {lesson.title[lang]}</div>
+            <div className="print-head">Nook · {lesson.title[lang]}</div>
             <h2 className="print-title">{lesson.title[lang]}</h2>
             <small className="print-app">{lesson.appName}</small>
             {steps.map((c, i) => (

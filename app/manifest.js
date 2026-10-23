@@ -1,7 +1,7 @@
 export default function manifest() {
   return {
-    name: 'Folks: phone help for your folks',
-    short_name: 'Folks',
+    name: 'Nook: your cozy corner for everyday learning',
+    short_name: 'Nook',
     description: 'Practise everyday phone tasks safely, with voice guidance, in English and Hindi.',
     start_url: '/',
     scope: '/',

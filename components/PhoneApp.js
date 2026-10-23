@@ -1,5 +1,5 @@
 'use client';
-// Wide screens only: a small card beside the app with a QR code to open Folks on a phone.
+// Wide screens only: a small card beside the app with a QR code to open Nook on a phone.
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import QRCode from 'qrcode';

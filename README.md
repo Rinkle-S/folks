@@ -1,4 +1,4 @@
-# Folks — phone help for your folks
+# Nook — phone help for your folks
 
 Safe, voice-guided practice for everyday phone tasks for parents aged 55+. They practise with fake money, in Hindi or English, and then do it for real on their own.
 
@@ -34,11 +34,11 @@ Step 1 of each lesson is a practice Android home screen: the parent finds the ap
 
 ## On a computer
 
-Folks is a phone app. On a wide screen it shows the same phone layout, centred, with a QR code beside it to open it on a phone.
+Nook is a phone app. On a wide screen it shows the same phone layout, centred, with a QR code beside it to open it on a phone.
 
 ## Installs like an app
 
-Folks is a Progressive Web App. On an Android phone in Chrome, open the link, then use **Settings → Add Folks to home screen** (or Chrome's menu → *Install app*). It gets its own icon and opens full screen, without the browser bar. It could later be wrapped for the Play Store (Trusted Web Activity) without rewriting anything. A native Android app is only needed for things a website can't do, like guiding on top of other apps or reading which apps are installed.
+Nook is a Progressive Web App. On an Android phone in Chrome, open the link, then use **Settings → Add Nook to home screen** (or Chrome's menu → *Install app*). It gets its own icon and opens full screen, without the browser bar. It could later be wrapped for the Play Store (Trusted Web Activity) without rewriting anything. A native Android app is only needed for things a website can't do, like guiding on top of other apps or reading which apps are installed.
 
 ## Run locally
 

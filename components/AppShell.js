@@ -1,7 +1,8 @@
 'use client';
-// App frame: top bar with the Folks name and settings, and a labelled bottom navigation (like an Android app).
+// App frame: top bar with the Nook name and settings, and a labelled bottom navigation (like an Android app).
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { NookMark } from './Logo';
 import { getProfile } from '@/lib/profile';
 import Icon from './Icons';
 
@@ -26,9 +27,9 @@ export function AppBar({ onSettings, back }) {
           <Icon name="back" size={24} />
         </Link>
       ) : (
-        <Link href="/" className="brand" aria-label="Folks home">
-          <span className="brand-mark">F</span>
-          Folks
+        <Link href="/" className="brand" aria-label="Nook home">
+          <NookMark size={38} />
+          Nook
         </Link>
       )}
       <span className="appbar-right">

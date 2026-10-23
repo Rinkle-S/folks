@@ -46,9 +46,21 @@ Still to write, from the workshop outlines (each becomes lessons or a topic):
 - Writing every lesson in Hindi and Malayalam needs a native read before launch.
 
 ## AI helper (removed, parked)
-The "ask anything" helper was taken out so Folks is not read as a chatbot wrapper and no raw AI errors reach a parent.
+The "ask anything" helper was taken out so Nook is not read as a chatbot wrapper and no raw AI errors reach a parent.
 What was removed: the `/api/ask` route (Gemini free tier, with a safe-answer prompt), the `AiGuide` view, the "ask" card on the
 no-match screen, and the phone model field that only fed it. Home now says voice assistants and AI helpers are coming soon
 (topic "Video calls and talking to your phone"). To bring it back: restore those files from git history (the commit before
 this change), add `GEMINI_API_KEY` in Vercel only (never in the repo), show it only after a lesson match fails, keep answers
 to five short steps, and never let it ask for an OTP or PIN.
+
+## Beyond the phone: laptop tasks (roadmap)
+Once the phone journey is solid, Nook grows the same way (safe practice screen, a voice, scam traps, then do it yourself) to
+everyday laptop tasks for the same parents:
+- **Documents:** Word (write and save a letter, print it), Excel (a simple household budget, sums, saving and finding the file),
+  PowerPoint (a family photo slideshow), PDF forms (fill and sign).
+- **Everyday computer use:** email on a laptop, video calls (Meet and Zoom) on a screen, finding and organising files and
+  photos, printing and scanning, safe browsing and downloads, online banking and government sites (with extra scam practice).
+- **Same product, new screens:** a laptop practice frame next to the phone frame, lessons written once and shown per device,
+  and a "do the same on your laptop" lesson after the phone lesson.
+- **Community (long term):** interest groups, peer conversations and live learning sessions, under the Nook name ("a reading
+  nook, a fireside chat").

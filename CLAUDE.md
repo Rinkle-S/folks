@@ -1,4 +1,4 @@
-# Folks: standing rules for every session
+# Nook: standing rules for every session
 
 ## Buildathon focus (deadline: Mon 26 Oct 2026, afternoon)
 Judging is 35 points, seven criteria at 5 each:

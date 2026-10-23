@@ -30,7 +30,7 @@ export default function PrintBar({ ids = [], entries, heading, lang, t }) {
       {mounted &&
         createPortal(
           <div className="print-root">
-            <div className="print-head">Folks · {heading}</div>
+            <div className="print-head">Nook · {heading}</div>
             {items.map((e) => (
               <section key={e.id} className="print-guide">
                 <h2>{e.title}</h2>
