@@ -585,3 +585,20 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; }
 .chip.talking { box-shadow: 0 0 0 2px var(--peacock) inset; color: var(--peacock-deep); background: var(--peacock-soft); }
 .chip.talking svg { animation: talk 0.9s ease-in-out infinite; }
 @keyframes talk { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.18); } }
+
+/* AI-made guide */
+.ai-guide { text-align: left; }
+.ai-badge { font-size: 14px; color: var(--ink-2); background: var(--surface-2, #f3efe6); border-radius: 12px; padding: 8px 12px; margin: 0 0 12px; }
+.ai-title { font-size: 22px; margin: 0 0 10px; }
+.ai-count { font-size: 15px; color: var(--ink-2); margin: 4px 0; }
+.ai-say { font-size: 22px; line-height: 1.4; font-weight: 600; margin: 8px 0 12px; }
+.ai-look { font-size: 17px; color: var(--ink-2); margin: 0 0 12px; }
+.ai-caution { font-size: 16px; background: #fff4d6; border-radius: 12px; padding: 10px 12px; margin: 0 0 12px; }
+.ai-nav { display: flex; gap: 10px; }
+.ai-nav .btn { flex: 1; }
+.app-tag { position: absolute; top: 8px; right: 8px; font-size: 11px; font-weight: 700; color: var(--ink); background: var(--marigold); border-radius: 999px; padding: 2px 8px; }
+.order-list { display: flex; flex-direction: column; gap: 8px; margin: 10px 0; }
+.order-row { display: flex; align-items: center; gap: 10px; background: var(--surface); border-radius: 14px; padding: 8px 10px; }
+.order-row b { flex: 1; font-size: 17px; }
+.order-row .mv { min-width: 56px; min-height: 44px; border-radius: 12px; border: 1px solid var(--line); background: #fff; font-size: 15px; font-weight: 700; }
+.order-row .mv:disabled { opacity: 0.35; }

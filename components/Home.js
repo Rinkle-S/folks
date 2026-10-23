@@ -9,6 +9,7 @@ import Icon from './Icons';
 import Onboarding from './Onboarding';
 import { AppBar, BottomNav } from './AppShell';
 import { LESSONS, APPS, findLesson } from '@/lib/lessons';
+import AiGuide from './AiGuide';
 import { matchLesson } from '@/lib/match';
 import { T } from '@/lib/i18n';
 import { langCode } from '@/lib/langs';
@@ -18,6 +19,7 @@ import {
   useMute,
   speak,
   track,
+  deviceId,
   getApps,
   saveApps,
   getRequests,
@@ -37,6 +39,7 @@ export default function Home() {
   const [micMsg, setMicMsg] = useState('');
   const [inApp, setInApp] = useState(false);
   const [asked, setAsked] = useState(false);
+  const [ai, setAi] = useState({ s: 'idle', guide: null }); // idle | loading | ok | none
   const [showSettings, setShowSettings] = useState(false);
   const [serverStt, setServerStt] = useState(false);
   const [myApps, setMyApps] = useState(undefined);
@@ -99,8 +102,39 @@ export default function Home() {
     track('voice_search', {
       meta: { q: q.slice(0, 200), via, match: m ? m.id : null, lang },
     });
-    if (m && m.kind === 'lesson') speak([t.confirmQ, LESSONS[m.id].title[lang]], lang);
-    else speak(t.noMatch, lang);
+    if (m && m.kind === 'lesson') {
+      setAi({ s: 'idle', guide: null });
+      speak([t.confirmQ, LESSONS[m.id].title[lang]], lang);
+    } else {
+      askAi(q);
+    }
+  }
+
+  // No lesson of ours fits: ask the server to build a guide (saved answer first, then AI).
+  async function askAi(q) {
+    setAi({ s: 'loading', guide: null });
+    let phone = '';
+    try {
+      phone = localStorage.getItem('folks_phone') || '';
+    } catch {}
+    try {
+      const r = await fetch('/api/ask', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ q, lang, phone, device: deviceId() }),
+      });
+      const j = await r.json().catch(() => ({}));
+      if (j.status === 'ok' && j.guide) {
+        setAi({ s: 'ok', guide: j.guide });
+        track('ai_guide', { meta: { q: q.slice(0, 200), cached: !!j.cached, lang } });
+      } else {
+        setAi({ s: 'none', guide: null });
+        track('ai_guide_none', { meta: { q: q.slice(0, 200), why: j.status || 'error', lang } });
+        speak(t.noMatch, lang);
+      }
+    } catch {
+      setAi({ s: 'none', guide: null });
+    }
   }
 
   // Record with the phone mic and send to the server for transcription (Sarvam). Works in any browser
@@ -266,7 +300,7 @@ export default function Home() {
   const doneCount = lessons.filter((l) => done.includes(l.id)).length;
   const readyMade = made.filter(isReady);
   const mine = myApps || [];
-  const orderedApps = [...APPS.filter((a) => mine.includes(a.id)), ...APPS.filter((a) => !mine.includes(a.id))];
+  const orderedApps = [...mine.map((id) => APPS.find((a) => a.id === id)).filter(Boolean), ...APPS.filter((a) => !mine.includes(a.id))];
   const orderedLessons = orderedApps.flatMap((a) => lessons.filter((l) => l.app === a.id));
   const next = orderedLessons.find((l) => !done.includes(l.id));
   const pct = Math.round((doneCount / lessons.length) * 100);
@@ -325,6 +359,15 @@ export default function Home() {
                   {t.noOther}
                 </button>
               </div>
+            ) : ai.s === 'loading' ? (
+              <div className="card">
+                <p>
+                  <b>{t.aiLooking}</b>
+                </p>
+                <p className="muted">{t.aiLookingSub}</p>
+              </div>
+            ) : ai.s === 'ok' && ai.guide ? (
+              <AiGuide guide={ai.guide} t={t} onClose={() => setState('idle')} />
             ) : (
               <div className="card">
                 <p>{t.noMatch}</p>
@@ -382,7 +425,7 @@ export default function Home() {
             const d = list.filter((l) => done.includes(l.id)).length;
             return (
               <Link key={app.id} href={`/app/${app.id}`} className="app-tile">
-                {mine.includes(app.id) && <span className="mine-dot" aria-label={t.yourApps} />}
+                {mine.includes(app.id) && <span className="app-tag">{t.onMyPhone}</span>}
                 <AppIcon app={app.id} size={56} />
                 <b>{app.name}</b>
                 <small>{d === list.length ? `✓ ${t.learned}` : t.lessonsN(list.length)}</small>
