@@ -8,6 +8,7 @@ export default function PhonePick({ lang, value, onChange }) {
   const t = T[lang];
   const [guess, setGuess] = useState(undefined); // undefined = looking, null = could not tell
   const [choosing, setChoosing] = useState(false);
+  const [confirmed, setConfirmed] = useState(false); // the parent pressed "Yes, that is right"
 
   useEffect(() => {
     let live = true;
@@ -31,16 +32,22 @@ export default function PhonePick({ lang, value, onChange }) {
             <b>{t.phoneDetected(brandName(value.brand))}</b>
           </p>
           {value.model && <p className="muted small">{value.model}</p>}
-          <button className="btn primary" onClick={() => setChoosing(false)} aria-pressed="true">
+          <button className={`btn ghost choice ${confirmed ? 'on' : ''}`} onClick={() => { setConfirmed(true); setChoosing(false); }} aria-pressed={confirmed}>
+            {confirmed ? '✓ ' : ''}
             {t.phoneYes}
           </button>
-          <button className="btn ghost" onClick={() => setChoosing(true)}>
+          <button className="btn ghost choice" onClick={() => { setConfirmed(false); setChoosing(true); }} aria-pressed={false}>
             {t.phoneNo}
           </button>
         </div>
       )}
       {showList && (
         <>
+          {guess && guess.brand && (
+            <button className="btn ghost choice" onClick={() => setChoosing(false)}>
+              ← {t.phoneBack}
+            </button>
+          )}
           <p className="muted">{guess === undefined ? '…' : t.phoneChoose}</p>
           <div className="brand-grid">
             {BRANDS.map(([id, name]) => (

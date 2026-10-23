@@ -27,6 +27,27 @@ function Message({ c, lang, t }) {
   );
 }
 
+// What to do after being cheated: the national helpline and the NCRP portal.
+function Cheated({ t }) {
+  return (
+    <section className="cheated">
+      <h2 className="section-h">{t.cheatedTitle}</h2>
+      <p className="muted">{t.cheatedLead}</p>
+      <ol className="takeaways">
+        {t.cheatedSteps.map((r, k) => (
+          <li key={k}>{r}</li>
+        ))}
+      </ol>
+      <a className="btn primary" href="tel:1930" onClick={() => track('cheated_call')}>
+        <Icon name="phone" size={22} /> {t.cheatedCall}
+      </a>
+      <a className="btn ghost" href="https://cybercrime.gov.in" target="_blank" rel="noopener noreferrer" onClick={() => track('cheated_portal')}>
+        {t.cheatedPortal}
+      </a>
+    </section>
+  );
+}
+
 export default function Scams() {
   const [lang] = useLang();
   const [started, setStarted] = useState(false);
@@ -68,6 +89,7 @@ export default function Scams() {
               <li key={k}>{r}</li>
             ))}
           </ul>
+          <Cheated t={t} />
         </main>
         <BottomNav active="safe" t={t} />
       </div>
@@ -111,6 +133,7 @@ export default function Scams() {
             <li key={k}>{r}</li>
           ))}
         </ul>
+        <Cheated t={t} />
         <a
           className="btn wa-btn"
           href={whatsappLink(t.scamShare(score, SCAMS.length) + '\n' + window.location.origin + '/scams')}
