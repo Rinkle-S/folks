@@ -267,7 +267,7 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; }
 .all-done { display: block; font-size: 21px; }
 
 .section-h .link-btn { margin-left: auto; }
-.link-btn { border: none; background: none; color: var(--peacock-deep); font-weight: 700; font-size: 16px; padding: 8px 4px; text-decoration: underline; text-underline-offset: 3px; }
+.link-btn { border: none; background: none; color: var(--peacock-deep); font-weight: 700; padding: 8px 8px; min-height: 48px; font-size: 17px; text-decoration: underline; text-underline-offset: 3px; }
 .app-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 .app-tile { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 4px; padding: 16px 6px 14px; background: var(--surface); border-radius: var(--r-group); box-shadow: var(--shadow-1); text-decoration: none; color: var(--ink); transition: transform 0.08s; }
 .app-tile:active { transform: scale(0.97); }
