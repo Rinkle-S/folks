@@ -2,7 +2,7 @@
 // Settings sheet: language and sound. Labels are bilingual so anyone can find their language.
 import { useState } from 'react';
 import useInstall from './useInstall';
-import { speak, unlockAudio } from '@/lib/client';
+import { speak, unlockAudio, getLearnMode, setLearnMode } from '@/lib/client';
 import { voiceStatus } from '@/lib/voice';
 import { T } from '@/lib/i18n';
 import { LANGS } from '@/lib/langs';
@@ -10,6 +10,7 @@ import { LANGS } from '@/lib/langs';
 export default function Settings({ lang, setLang, muted, toggleMute, onClose, onApps, appsLabel }) {
   const [canInstall, install] = useInstall();
   const [tested, setTested] = useState(false);
+  const [mode, setMode] = useState(getLearnMode());
   const t = T[lang] || T.en;
   return (
     <div className="settings-wrap" onClick={onClose}>
@@ -25,6 +26,21 @@ export default function Settings({ lang, setLang, muted, toggleMute, onClose, on
                 {l.name ? `${l.label} (${l.name})` : l.label}
               </option>
             ))}
+          </select>
+        </label>
+        <label className="settings-row">
+          <span>{t.learnHow}</span>
+          <select
+            value={mode}
+            onChange={(e) => {
+              setMode(e.target.value);
+              setLearnMode(e.target.value);
+            }}
+          >
+            <option value="ask">{t.modeAsk}</option>
+            <option value="practice">{t.modePractice}</option>
+            <option value="watch">{t.modeWatch}</option>
+            <option value="follow">{t.modeFollow}</option>
           </select>
         </label>
         <div className="settings-row">

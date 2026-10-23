@@ -26,6 +26,7 @@ import {
   saveApps,
   getRequests,
   getDone,
+  getRecent,
   isOnboarded,
   setOnboarded,
 } from '@/lib/client';
@@ -51,6 +52,7 @@ export default function Home() {
   const [made, setMade] = useState([]);
   const [done, setDone] = useState([]);
   const [greet, setGreet] = useState('greetDay');
+  const [recent, setRecent] = useState([]);
   const [profileName, setProfileName] = useState('');
   const recRef = useRef(null);
   const gotResult = useRef(false);
@@ -64,6 +66,7 @@ export default function Home() {
     setMyApps(getApps());
     setProfileName(getProfile().name);
     setDone(getDone());
+    setRecent(getRecent());
     const h = new Date().getHours();
     setGreet(h < 12 ? 'greetMorning' : h < 17 ? 'greetDay' : 'greetEvening');
     const reqs = getRequests();
@@ -321,7 +324,8 @@ export default function Home() {
   const mine = myApps || [];
   const orderedApps = [...mine.map((id) => APPS.find((a) => a.id === id)).filter(Boolean), ...APPS.filter((a) => !mine.includes(a.id))];
   const orderedLessons = orderedApps.flatMap((a) => lessons.filter((l) => l.app === a.id));
-  const next = orderedLessons.find((l) => !done.includes(l.id));
+  const next = orderedLessons.find((l) => !done.includes(l.id) && !l.id.startsWith('gd-')) || orderedLessons.find((l) => !done.includes(l.id));
+  const recentLessons = recent.map((id) => lessons.find((l) => l.id === id)).filter(Boolean).slice(0, 3);
   const pct = Math.round((doneCount / lessons.length) * 100);
 
   return (
@@ -420,14 +424,26 @@ export default function Home() {
           </section>
         )}
 
-        {next ? (
+        {recentLessons.length > 0 ? (
           <section className="next-card">
             <div className="next-top">
-              <span className="eyebrow">{doneCount ? t.upNextMore : t.upNext}</span>
-              <span className="next-progress">{t.learnedOf(doneCount, lessons.length)}</span>
+              <span className="eyebrow">{t.recent}</span>
             </div>
-            <div className="meter" aria-hidden="true">
-              <span style={{ width: `${Math.max(pct, 2)}%` }} />
+            {recentLessons.map((l) => (
+              <Link key={l.id} className="recent-row" href={`/lesson/${l.id}`}>
+                <AppIcon app={l.app} size={40} />
+                <span>
+                  <b>{l.title[lang]}</b>
+                  <small>{l.appName}</small>
+                </span>
+                <Icon name="chevron" size={20} />
+              </Link>
+            ))}
+          </section>
+        ) : next ? (
+          <section className="next-card">
+            <div className="next-top">
+              <span className="eyebrow">{t.tryThis}</span>
             </div>
             <div className="next-body">
               <AppIcon app={next.app} size={60} />
@@ -442,12 +458,7 @@ export default function Home() {
               <Icon name="play" size={18} /> {t.startNow}
             </Link>
           </section>
-        ) : (
-          <section className="next-card">
-            <b className="all-done">{t.allDoneTitle}</b>
-            <small className="muted">{t.allDoneSub}</small>
-          </section>
-        )}
+        ) : null}
 
         <div className="section-h">
           <span>{t.pickApp}</span>
