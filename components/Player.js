@@ -3,6 +3,7 @@
 //  practice: the parent taps through practice screens themselves (default)
 //  watch:    plays by itself like a video, with voice and glowing taps
 //  follow:   one step at a time, worded for the real app, so they can do it on their own phone
+import { canOpenApp, openRealApp } from '@/lib/openApp';
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import Screen from './Screens';
@@ -351,6 +352,17 @@ export default function Player({ id }) {
         {realTry && (
           <>
             <p className="note">{lesson.realTry[lang]}</p>
+            {canOpenApp(lesson.app) && (
+              <button
+                className="btn primary"
+                onClick={() => {
+                  track('open_real_app', { lesson: id, meta: { app: lesson.app } });
+                  openRealApp(lesson.app);
+                }}
+              >
+                <Icon name="play" size={22} /> {t.openRealApp(lesson.appName || lesson.app)}
+              </button>
+            )}
             <button className="btn ghost" onClick={() => restart('follow')}>
               <Icon name="list" size={22} /> {t.modeFollow}
             </button>
