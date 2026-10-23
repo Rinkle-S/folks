@@ -11,6 +11,7 @@ import { AppBar, BottomNav } from './AppShell';
 import { LESSONS, APPS, findLesson } from '@/lib/lessons';
 import { matchLesson } from '@/lib/match';
 import { T } from '@/lib/i18n';
+import { langCode } from '@/lib/langs';
 import { askSomeone, loadMade, isReady } from '@/lib/ask';
 import {
   useLang,
@@ -204,7 +205,7 @@ export default function Home() {
     }
     try {
       const rec = new SR();
-      rec.lang = lang === 'hi' ? 'hi-IN' : 'en-IN';
+      rec.lang = langCode(lang);
       rec.interimResults = false;
       rec.continuous = false;
       rec.maxAlternatives = 1;

@@ -5,6 +5,7 @@ import Icon from './Icons';
 import AppIcon from './AppIcon';
 import { ALL_APPS } from '@/lib/apps';
 import { T } from '@/lib/i18n';
+import { LANGS } from '@/lib/langs';
 
 export default function Onboarding({ lang, setLang, onDone }) {
   const [step, setStep] = useState(0);
@@ -51,15 +52,14 @@ export default function Onboarding({ lang, setLang, onDone }) {
               </li>
             </ul>
             <p style={{ marginTop: 22, fontWeight: 700, color: 'var(--ink)' }}>
-              Choose your language / अपनी भाषा चुनिए
+              Choose your language / अपनी भाषा चुनिए / ഭാഷ തിരഞ്ഞെടുക്കൂ
             </p>
             <div className="lang-pick">
-              <button className={lang === 'en' ? 'on' : ''} onClick={() => setLang('en')} aria-pressed={lang === 'en'}>
-                English
-              </button>
-              <button className={lang === 'hi' ? 'on' : ''} onClick={() => setLang('hi')} aria-pressed={lang === 'hi'}>
-                हिंदी
-              </button>
+              {LANGS.map((l) => (
+                <button key={l.id} className={lang === l.id ? 'on' : ''} onClick={() => setLang(l.id)} aria-pressed={lang === l.id}>
+                  {l.label}
+                </button>
+              ))}
             </div>
           </div>
           <button className="btn primary" onClick={() => setStep(1)}>

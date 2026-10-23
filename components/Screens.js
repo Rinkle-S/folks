@@ -32,6 +32,7 @@ import { DriveHome, DriveNew, DriveScanner, DriveReview, DriveSave } from './scr
 import { UbHome, UbSearch, UbRides, UbPickup, UbDriver, UbShare, RpHome, RpSearch, RpRides, RpCaptain, RpEnd } from './screens/Rides';
 import { YtHome, YtSearch, YtResults, YtPlayer } from './screens/YouTube';
 import { SwHome, SwSearch, SwResults, SwMenu, SwCart, SwPlaced } from './screens/Swiggy';
+import { PhoneHome } from './screens/PhoneHome';
 import Icon from './Icons';
 import AppIcon from './AppIcon';
 
@@ -57,6 +58,8 @@ export default function Screen({ step, lesson, lang, t, values, typed }) {
   switch (step.screen) {
     case 'intro':
       return <Intro lesson={lesson} lang={lang} t={t} />;
+    case 'phone-home':
+      return <PhoneHome />;
 
     // Google Pay
     case 'gp-home':

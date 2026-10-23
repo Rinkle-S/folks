@@ -4,12 +4,17 @@
 import { NextResponse } from 'next/server';
 import { speechTexts } from '@/lib/speechText';
 import { sb } from '@/lib/supabase';
+import { isLang, langCode } from '@/lib/langs';
 
 export const dynamic = 'force-dynamic';
 
 const MODEL = () => process.env.SARVAM_TTS_MODEL || 'bulbul:v3';
 const SPEAKER = (lang) =>
-  lang === 'hi' ? process.env.SARVAM_TTS_SPEAKER_HI || 'priya' : process.env.SARVAM_TTS_SPEAKER_EN || 'ishita';
+  lang === 'hi'
+    ? process.env.SARVAM_TTS_SPEAKER_HI || 'priya'
+    : lang === 'ml'
+      ? process.env.SARVAM_TTS_SPEAKER_ML || 'kavitha'
+      : process.env.SARVAM_TTS_SPEAKER_EN || 'ishita';
 const enabled = () => !!process.env.SARVAM_API_KEY && process.env.SARVAM_TTS !== 'off';
 
 const CACHE = 'public, max-age=31536000, s-maxage=31536000, immutable';
@@ -20,7 +25,8 @@ export async function GET(req) {
   if (!enabled()) return NextResponse.json({ error: 'disabled' }, { status: 501 });
 
   const id = u.searchParams.get('h') || '';
-  const lang = u.searchParams.get('l') === 'hi' ? 'hi' : 'en';
+  const l = u.searchParams.get('l');
+  const lang = isLang(l) ? l : 'en';
   const text = speechTexts().get(id);
   if (!text) return NextResponse.json({ error: 'unknown text' }, { status: 404 });
 
@@ -46,7 +52,7 @@ export async function GET(req) {
       headers: { 'api-subscription-key': process.env.SARVAM_API_KEY, 'Content-Type': 'application/json' },
       body: JSON.stringify({
         text,
-        language_code: lang === 'hi' ? 'hi-IN' : 'en-IN',
+        language_code: langCode(lang),
         model: MODEL(),
         speaker: SPEAKER(lang),
         pace: 0.9,

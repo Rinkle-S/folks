@@ -24,6 +24,14 @@ The three ways to learn each lesson:
 
 All lesson content lives in `lib/lessons.js` and `lib/lessonsMore.js` (and scam cards in `lib/scams.js`), so a new lesson gets all three ways automatically.
 
+## Languages
+
+English, Hindi and Malayalam. Lesson files are written in English and Hindi; Malayalam is filled in from `lib/mlContent1.js` and `lib/mlContent2.js` (keyed by the English sentence) and `lib/i18nMl.js` for the interface. Bank SMS in the scam practice stay in English, as they arrive that way on real phones. Sarvam supports 11 languages for voice and mic (English, Hindi, Bengali, Tamil, Telugu, Kannada, Malayalam, Marathi, Gujarati, Punjabi, Odia); adding one means a line in `lib/langs.js` plus its words. Malayalam voice uses the `kavitha` speaker (`SARVAM_TTS_SPEAKER_ML` to change).
+
+## Every lesson starts on the phone's home screen
+
+Step 1 of each lesson is a practice Android home screen: the parent finds the app's icon, guided by its colour, shape and the name written under it.
+
 ## On a computer
 
 Folks is a phone app. On a wide screen it shows the same phone layout, centred, with a QR code beside it to open it on a phone.

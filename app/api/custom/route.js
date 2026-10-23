@@ -49,7 +49,7 @@ export async function POST(req) {
 
   const row = { id: b.id };
   if (b.question) row.question = clip(b.question, 300);
-  if (b.lang) row.lang = b.lang === 'hi' ? 'hi' : 'en';
+  if (b.lang) row.lang = ['hi', 'ml'].includes(b.lang) ? b.lang : 'en';
   if (b.app) row.app = clip(b.app, 40);
   if (b.author) row.author = clip(b.author, 40);
   if (Array.isArray(b.media)) {

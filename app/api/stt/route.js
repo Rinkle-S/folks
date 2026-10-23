@@ -2,6 +2,7 @@
 // On whenever SARVAM_API_KEY is set (about ₹0.04 per 5-second search). To switch it off, set SARVAM_STT=off.
 // The browser's own free speech recognition is used only when this is off.
 import { NextResponse } from 'next/server';
+import { langCode } from '@/lib/langs';
 
 export const dynamic = 'force-dynamic';
 
@@ -22,7 +23,7 @@ export async function POST(req) {
     return NextResponse.json({ error: 'bad form' }, { status: 400 });
   }
   const file = form.get('file');
-  const lang = form.get('lang') === 'hi' ? 'hi-IN' : 'en-IN';
+  const lang = langCode(form.get('lang'));
   if (!file || typeof file === 'string') return NextResponse.json({ error: 'no audio' }, { status: 400 });
   if (file.size > 2_000_000) return NextResponse.json({ error: 'too long' }, { status: 413 });
 

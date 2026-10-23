@@ -5,6 +5,7 @@ import useInstall from './useInstall';
 import { speak, unlockAudio } from '@/lib/client';
 import { voiceStatus } from '@/lib/voice';
 import { T } from '@/lib/i18n';
+import { LANGS } from '@/lib/langs';
 
 export default function Settings({ lang, setLang, muted, toggleMute, onClose, onApps, appsLabel }) {
   const [canInstall, install] = useInstall();
@@ -17,10 +18,13 @@ export default function Settings({ lang, setLang, muted, toggleMute, onClose, on
           <b>Settings / सेटिंग</b>
         </div>
         <label className="settings-row">
-          <span>Language / भाषा</span>
+          <span>Language / भाषा / ഭാഷ</span>
           <select value={lang} onChange={(e) => setLang(e.target.value)}>
-            <option value="en">English</option>
-            <option value="hi">हिंदी (Hindi)</option>
+            {LANGS.map((l) => (
+              <option key={l.id} value={l.id}>
+                {l.name ? `${l.label} (${l.name})` : l.label}
+              </option>
+            ))}
           </select>
         </label>
         <div className="settings-row">
@@ -58,14 +62,14 @@ export default function Settings({ lang, setLang, muted, toggleMute, onClose, on
         )}
         {canInstall && (
           <div className="settings-row">
-            <span>{lang === 'hi' ? 'फ़ोन पर ऐप की तरह जोड़ें' : 'Add Folks to home screen'}</span>
+            <span>{T[lang].installApp}</span>
             <button className="toggle on" onClick={install}>
-              {lang === 'hi' ? 'जोड़ें' : 'Add'}
+              {T[lang].install}
             </button>
           </div>
         )}
         <button className="btn primary" onClick={onClose}>
-          {lang === 'hi' ? 'ठीक है' : 'Done'}
+          {T[lang].appsSave}
         </button>
       </div>
     </div>

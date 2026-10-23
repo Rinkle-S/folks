@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { LESSONS } from '@/lib/lessons';
 import { track, whatsappLink } from '@/lib/client';
+import { LANGS } from '@/lib/langs';
 
 export default function Send() {
   const [name, setName] = useState('');
@@ -20,7 +21,9 @@ export default function Send() {
   const link = `${origin}/lesson/${lesson}?${params.toString()}`;
   const sign = name.trim() ? `\n${name.trim()}` : '';
   const message =
-    lang === 'hi'
+    lang === 'ml'
+      ? `🙏 നിങ്ങൾക്കായി ഒരു ചെറിയ പരിശീലന പാഠം: "${l.title.ml}". ഇത് പരിശീലനം മാത്രമാണ്, യഥാർത്ഥ പണം പോകില്ല. സാവധാനം പഠിക്കൂ, ഈ ലിങ്ക് അമർത്തൂ:\n${link}${sign}`
+      : lang === 'hi'
       ? `🙏 आपके लिए एक छोटा सा अभ्यास: "${l.title.hi}"। यह सिर्फ़ प्रैक्टिस है, असली पैसे नहीं कटेंगे। आराम से सीखिए, यह लिंक दबाइए:\n${link}${sign}`
       : `🙏 A short practice lesson for you: "${l.title.en}". It's only practice, no real money is used. Take your time, just tap this link:\n${link}${sign}`;
 
@@ -54,12 +57,11 @@ export default function Send() {
       <div className="field">
         <span>Their language</span>
         <div className="seg">
-          <button className={lang === 'en' ? 'on' : ''} onClick={() => setLang('en')}>
-            English
-          </button>
-          <button className={lang === 'hi' ? 'on' : ''} onClick={() => setLang('hi')}>
-            हिंदी
-          </button>
+          {LANGS.map((x) => (
+            <button key={x.id} className={lang === x.id ? 'on' : ''} onClick={() => setLang(x.id)}>
+              {x.label}
+            </button>
+          ))}
         </div>
       </div>
 
