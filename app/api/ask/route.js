@@ -71,23 +71,36 @@ Reply with ONLY this JSON, nothing else:
 
 // Free option: Google Gemini (free tier, with Google Search to look up the current steps).
 async function askGemini(q, lang, phone) {
-  const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
-  const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
-    method: 'POST',
-    headers: { 'x-goog-api-key': process.env.GEMINI_API_KEY, 'content-type': 'application/json' },
-    body: JSON.stringify({
-      systemInstruction: { parts: [{ text: systemPrompt(lang, phone) }] },
-      contents: [{ role: 'user', parts: [{ text: `The parent asked: "${q}"` }] }],
-      tools: [{ google_search: {} }],
-      generationConfig: { maxOutputTokens: 2000, temperature: 0.3 },
-    }),
-  });
-  if (!r.ok) throw new Error(`gemini ${r.status} ${(await r.text()).slice(0, 200)}`);
-  const j = await r.json();
-  const text = ((j.candidates || [])[0]?.content?.parts || []).map((p) => p.text || '').join('\n');
-  const m = text.match(/\{[\s\S]*\}/);
-  if (!m) throw new Error('no json');
-  return JSON.parse(m[0]);
+  const model = process.env.GEMINI_MODEL || 'gemini-3.8-flash';
+  const call = async (withSearch) => {
+    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+      method: 'POST',
+      headers: { 'x-goog-api-key': process.env.GEMINI_API_KEY, 'content-type': 'application/json' },
+      body: JSON.stringify({
+        systemInstruction: { parts: [{ text: systemPrompt(lang, phone) }] },
+        contents: [{ role: 'user', parts: [{ text: `The parent asked: "${q}"` }] }],
+        ...(withSearch ? { tools: [{ google_search: {} }] } : {}),
+        generationConfig: { maxOutputTokens: 2000, temperature: 0.3 },
+      }),
+    });
+    if (!r.ok) {
+      const e = new Error(`gemini ${r.status} ${(await r.text()).slice(0, 200)}`);
+      e.status = r.status;
+      throw e;
+    }
+    const j = await r.json();
+    const text = ((j.candidates || [])[0]?.content?.parts || []).map((p) => p.text || '').join('\n');
+    const m = text.match(/\{[\s\S]*\}/);
+    if (!m) throw new Error('no json');
+    return JSON.parse(m[0]);
+  };
+  try {
+    return await call(true);
+  } catch (e) {
+    // Newer models may not allow free Google Search lookups. Fall back to the model's own knowledge (less current).
+    if (e.status === 400 || e.status === 403 || e.status === 429) return await call(false);
+    throw e;
+  }
 }
 
 async function askClaude(q, lang, phone) {
