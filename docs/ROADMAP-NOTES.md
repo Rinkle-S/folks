@@ -15,6 +15,9 @@ the owner could check against real screenshots. Everything below is paused, not 
   lessons (bigger text, Wi-Fi, save a contact, speaker on a call, block a number, emergency SOS, alarm, silent mode,
   flashlight, what common icons mean). Hidden from Phone basics: hotspot, selfie, screenshot, Bluetooth, airplane mode,
   battery saver, Do Not Disturb, remove an app, share a photo on WhatsApp.
+- Third round (24 Oct): Google Pay pay your electricity bill; WhatsApp delete a message; Uber rate your ride, report a lost item,
+  pay your ride by UPI; Google Maps save Home; IRCTC cancel a ticket. Kept on purpose: past payments, bank balance (both now go
+  through the Money tab, built from the owner's screenshot), pay a QR from your photos, use maps offline.
 - Added: **Zomato** has one lesson, "Order food on Zomato" (`zomato-order` in `lib/guides/apps.js`). It was written from general
   knowledge of the app with generic practice screens, and has NOT been checked against real Zomato screenshots. Check its button
   names (ADD, View cart, the place-order button) when screenshots arrive.

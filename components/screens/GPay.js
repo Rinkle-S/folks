@@ -174,7 +174,7 @@ function SecHead({ title, link }) {
   );
 }
 
-export function GpHome({ request, links, me }) {
+export function GpHome({ request, links, me, tab }) {
   return (
     <div className={`app gp g2 ${request ? 'stack' : ''}`}>
       <div className="g2-scroll">
@@ -267,7 +267,7 @@ export function GpHome({ request, links, me }) {
           </div>
         </div>
       </div>
-      <GpTabs on="home" />
+      <GpTabs on="home" tap={tab} />
 
       {request && (
         <>
@@ -290,6 +290,94 @@ export function GpHome({ request, links, me }) {
           </div>
         </>
       )}
+    </div>
+  );
+}
+
+
+// ---------- Money tab ----------
+
+const MONEY_TXNS = [
+  { n: 'Sunrise General Store', d: '23 October', a: '₹50', c: '#5f6368' },
+  { n: 'Ramesh Bhaiya', d: '21 October', a: '₹500', c: '#1e8e3e' },
+  { n: 'Gupta Medical', d: '20 October', a: '₹320', c: '#16a34a' },
+  { n: 'Sunita Didi', d: '19 October', a: '+ ₹200', c: '#e8710a', inn: true },
+  { n: 'State Electricity Board', d: '15 October', a: '₹1,240', c: '#b06000' },
+];
+
+// The "Money" tab: bank accounts with "Check balance", a score, offers, and Transaction history with "See all".
+// tap: 'sbi' makes "Check balance" next to the first bank the button to tap; 'history' makes "See all" the button.
+export function GpMoney({ tap }) {
+  return (
+    <div className="app gp g2">
+      <div className="g2-scroll">
+        <div className="g2-money-hero">
+          <Status />
+          <span className="g2-ic g2-money-more">
+            <Icon name="more" size={24} />
+          </span>
+          <b>Money</b>
+        </div>
+        {BANKS.map((b, i) => (
+          <div key={b.k} className="g2-row">
+            <BankBadge bank={b} size={44} />
+            <div className="g2-row-t">
+              <b>
+                {b.name} ••••{b.last4}
+              </b>
+              <small>Savings account</small>
+            </div>
+            <span className="g2-link" data-t={i === 0 && tap === 'sbi' ? 'bank-sbi' : undefined}>
+              Check balance
+            </span>
+          </div>
+        ))}
+        <div className="g2-row">
+          <span className="g2-round dark">
+            <Icon name="gauge" size={22} color="#fff" />
+          </span>
+          <div className="g2-row-t">
+            <b>CIBIL score</b>
+            <small>Tap for full report</small>
+          </div>
+          <span className="g2-score">
+            742<small>Good</small>
+          </span>
+        </div>
+        <SecHead title="Credits for you" />
+        <div className="g2-offers">
+          <div>
+            <span className="g2-offer-ic">💰</span>
+            <b>Personal loan</b>
+            <span>Up to 10 lakh, instant approval</span>
+            <i>Apply</i>
+          </div>
+          <div>
+            <span className="g2-offer-ic">💳</span>
+            <em>₹0 joining fee</em>
+            <b>Credit card</b>
+            <span>Save up to ₹12,000 yearly</span>
+            <i>Apply</i>
+          </div>
+        </div>
+        <div className="g2-sec-h">
+          <b>Transaction history</b>
+          <span data-t={tap === 'history' ? 'history' : undefined}>
+            See all <Icon name="chevron" size={16} />
+          </span>
+        </div>
+        {MONEY_TXNS.map((t) => (
+          <div key={t.n} className="g2-row">
+            <GpAv name={t.n} color={t.c} />
+            <div className="g2-row-t">
+              <b>{t.n}</b>
+              <small>{t.d}</small>
+            </div>
+            <b className={t.inn ? 'k-green' : ''}>{t.a}</b>
+          </div>
+        ))}
+      </div>
+      <GpTabs on="money" />
     </div>
   );
 }

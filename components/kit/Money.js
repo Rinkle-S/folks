@@ -3,9 +3,9 @@
 import Icon from '../Icons';
 import AppIcon from '../AppIcon';
 import { Av, Status, Keys, PinDots } from './ui';
-import { GpHome, GpAmount, GpPin, GpSuccess, GpScan, GpPayAnyone, GpTop, GpAv, BankBadge, BANKS, ME } from '../screens/GPay';
+import { GpHome, GpAmount, GpPin, GpSuccess, GpScan, GpPayAnyone, GpMoney, GpTop, GpAv, BankBadge, BANKS, ME } from '../screens/GPay';
 
-export { GpHome, GpAmount, GpPin, GpSuccess };
+export { GpHome, GpAmount, GpPin, GpSuccess, GpMoney };
 
 // Choose a bank account (balance check, reset PIN).
 export function GpBanks({ title = 'Select bank account', tap }) {
