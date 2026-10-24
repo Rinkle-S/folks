@@ -4,6 +4,7 @@
 // 2) Set up Nook for a parent: language and apps are filled in from the link, so the parent just opens it.
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { NookLogo } from '@/components/Logo';
 import { LESSONS } from '@/lib/lessons';
 import { GUIDE_LIST } from '@/lib/guides';
 import { ALL_APPS } from '@/lib/apps';
@@ -69,8 +70,7 @@ export default function Send() {
   return (
     <div className="page send">
       <Link href="/" className="brand">
-        <span className="brand-mark">F</span>
-        Nook
+        <NookLogo height={40} />
       </Link>
       <h1>Help your parent with Nook</h1>
       <p className="muted">

@@ -2,6 +2,7 @@
 // A lesson made for this parent by someone close: their voice note, video, screenshots and written steps.
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { NookLogo } from '@/components/Logo';
 import AppIcon from '@/components/AppIcon';
 import Icon from '@/components/Icons';
 import { T } from '@/lib/i18n';
@@ -36,8 +37,8 @@ export default function MyLesson({ params }) {
   if (!lesson) {
     return (
       <div className="page">
-        <Link href="/" className="brand">
-          Nook
+        <Link href="/" className="brand" aria-label="Nook home">
+          <NookLogo height={40} />
         </Link>
         <p className="card" style={{ marginTop: 20 }}>
           {t.noMatch}
