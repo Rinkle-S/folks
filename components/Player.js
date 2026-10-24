@@ -496,7 +496,7 @@ function PlayerInner({ id }) {
   );
 
   const settings = showSettings && (
-    <Settings lang={lang} setLang={setLang} muted={muted} toggleMute={toggleMute} onClose={() => setShowSettings(false)} onPracticeInfo={() => { setShowSettings(false); setShowIntro(true); }} />
+    <Settings lang={lang} setLang={setLang} muted={muted} toggleMute={toggleMute} onClose={() => setShowSettings(false)} onPracticeInfo={() => { setShowSettings(false); setShowIntro(true); }} onMismatch={() => track('screen_mismatch', { lesson: id, step: idx, meta: { id: step.id, screen: step.screen, kit: step.kit || null, lang, mode } })} />
   );
 
   const intro = showIntro && (
@@ -676,6 +676,9 @@ function PlayerInner({ id }) {
         onClick={onScreenClick}
       >
         <Screen step={step} lesson={lesson} lang={lang} t={t} values={values} typed={typed} />
+        <div className="practice-mark" aria-hidden="true">
+          <span>{t.practiceMark}</span>
+        </div>
         {bubble && bubble.edge && (
           <div className="tap-hand edge" style={{ left: bubble.x, top: bubble.y }} aria-hidden="true">
             {bubble.edge === 'up' ? '👆' : '👇'}

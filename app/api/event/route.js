@@ -33,6 +33,7 @@ const ALLOWED = new Set([
   'open_real_app',
   'profile_set',
   'lesson_request',
+  'screen_mismatch',
 ]);
 
 const clip = (v, n) => (typeof v === 'string' ? v.slice(0, n) : null);
