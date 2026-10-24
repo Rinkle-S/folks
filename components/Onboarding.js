@@ -2,7 +2,7 @@
 // First visit: what Nook is, pick a language, then pick the apps on this phone.
 import { useState } from 'react';
 import Icon from './Icons';
-import { NookMark } from './Logo';
+import { NookLogo } from './Logo';
 import AppIcon from './AppIcon';
 import { ALL_APPS } from '@/lib/apps';
 import { T } from '@/lib/i18n';
@@ -31,8 +31,7 @@ export default function Onboarding({ lang, setLang, onDone }) {
         <>
           <div className="onboard-hero">
             <span className="brand big">
-              <NookMark size={64} />
-              Nook
+              <NookLogo height={76} />
             </span>
             <p className="ob-tag">{t.tagline}</p>
             <h1>{t.obWelcome}</h1>

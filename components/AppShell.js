@@ -2,7 +2,7 @@
 // App frame: top bar with the Nook name and settings, and a labelled bottom navigation (like an Android app).
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { NookMark } from './Logo';
+import { NookLogo } from './Logo';
 import { getProfile } from '@/lib/profile';
 import Icon from './Icons';
 
@@ -28,8 +28,7 @@ export function AppBar({ onSettings, back }) {
         </Link>
       ) : (
         <Link href="/" className="brand" aria-label="Nook home">
-          <NookMark size={38} />
-          Nook
+          <NookLogo height={40} />
         </Link>
       )}
       <span className="appbar-right">

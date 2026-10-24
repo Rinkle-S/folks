@@ -9,3 +9,25 @@ export function NookMark({ size = 36 }) {
     </svg>
   );
 }
+
+// The full Nook logo: the mark, then the name drawn as shapes. The N and k are dark, the first o is terracotta and the
+// second is amber, side by side like a parent and a child. Not a font, so it looks the same everywhere.
+export function NookLogo({ height = 40, label = 'Nook' }) {
+  const rect = { fill: 'none', strokeWidth: 24, strokeLinecap: 'round', strokeLinejoin: 'round' };
+  return (
+    <svg viewBox="12 12 580 176" height={height} width={(height * 580) / 176} role="img" aria-label={label} style={{ flex: 'none', display: 'block' }}>
+      <g transform="translate(24,24) scale(0.296875)">
+        <rect width="512" height="512" rx="112" fill="#FFFDF9" />
+        <rect x="16" y="16" width="480" height="480" rx="96" fill="none" stroke="#E8CDB5" strokeWidth="12" />
+        <path d="M 352 176 H 224 C 184 176 152 208 152 248 V 376" fill="none" stroke="#D95D39" strokeWidth="56" strokeLinecap="round" strokeLinejoin="round" />
+        <circle cx="312" cy="312" r="52" fill="#F4A261" />
+      </g>
+      <g transform="translate(200,0)">
+        <path d="M12 158 V32 L90 158 V32" stroke="#2B2625" {...rect} />
+        <circle cx="160" cy="124" r="34" stroke="#D95D39" {...rect} />
+        <circle cx="234" cy="124" r="34" stroke="#F4A261" {...rect} />
+        <path d="M304 158 V32 M304 124 L358 76 M326 106 L366 158" stroke="#2B2625" {...rect} />
+      </g>
+    </svg>
+  );
+}

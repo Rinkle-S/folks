@@ -3,6 +3,7 @@
 // Type the steps, record a voice note, and/or add a screen recording or screenshots.
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { NookLogo } from '@/components/Logo';
 import AppIcon from '@/components/AppIcon';
 import { ALL_APPS } from '@/lib/apps';
 import { track, whatsappLink } from '@/lib/client';
@@ -125,8 +126,7 @@ export default function AddLesson({ params }) {
     return (
       <div className="page send">
         <Link href="/" className="brand">
-          <span className="brand-mark">F</span>
-          Nook
+          <NookLogo height={40} />
         </Link>
         
         <h1>Lesson ready!</h1>
@@ -141,8 +141,7 @@ export default function AddLesson({ params }) {
   return (
     <div className="page send">
       <Link href="/" className="brand">
-        <span className="brand-mark">F</span>
-        Nook
+        <NookLogo height={40} />
       </Link>
       <h1>Make a lesson for them</h1>
       <div className="ask-q">
