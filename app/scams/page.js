@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Icon from '@/components/Icons';
 import { AppBar, BottomNav } from '@/components/AppShell';
 import { SCAMS } from '@/lib/scams';
+import { GUIDES } from '@/lib/guides';
 import { T } from '@/lib/i18n';
 import { useLang, speak, stopSpeaking, track, whatsappLink, vibrate } from '@/lib/client';
 
@@ -153,6 +154,11 @@ export default function Scams() {
             ))}
           </ul>
           <Signs t={t} />
+          {GUIDES['open-link-safe'] && (
+            <Link className="btn ghost" href="/guide/open-link-safe">
+              <Icon name="shieldCheck" size={22} /> {t.quickGuide}: {GUIDES['open-link-safe'].title[lang]}
+            </Link>
+          )}
           <Cheated t={t} />
         </main>
         <BottomNav active="safe" t={t} />

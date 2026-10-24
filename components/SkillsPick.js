@@ -6,7 +6,7 @@ import { T } from '@/lib/i18n';
 const SKILLS = [
   ['call', ['whatsapp']],
   ['photo', ['whatsapp']],
-  ['pay', ['gpay', 'phonepe']],
+  ['pay', ['gpay']],
   ['install', null],
   ['wifi', null],
 ];

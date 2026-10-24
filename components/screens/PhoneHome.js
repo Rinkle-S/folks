@@ -1,4 +1,5 @@
 // Practice Android home screen: the first step of every lesson is finding the app's icon.
+import { HIDDEN_APPS } from '@/lib/hidden';
 import Icon from '../Icons';
 import AppIcon from '../AppIcon';
 
@@ -21,7 +22,7 @@ const BRAND = {
   irctc: 'IRCTC',
   maps: 'Maps',
 };
-const POOL = Object.keys(BRAND);
+const POOL = Object.keys(BRAND).filter((id) => !HIDDEN_APPS.has(id));
 
 // Same phone, but the app being taught sits in a different place each time, like on a real phone.
 function layout(app) {

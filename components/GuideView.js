@@ -65,7 +65,7 @@ export default function GuideView({ id }) {
         <h1>{guide.title}</h1>
       </div>
 
-      {GUIDES[id] && (
+      {GUIDES[id] && LESSONS['gd-' + id] && (
         <Link className="btn primary" href={`/lesson/gd-${id}`}>
           <Icon name="hand" size={20} /> {lang === 'en' ? 'Practise on a fake screen' : lang === 'hi' ? 'नकली स्क्रीन पर अभ्यास करें' : 'ഡമ്മി സ്ക്രീനിൽ പരിശീലിക്കാം'}
         </Link>

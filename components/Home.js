@@ -391,7 +391,7 @@ export default function Home() {
                   <AppIcon app={GUIDES[guideId].app} size={52} />
                   {GUIDES[guideId].title[lang]}
                 </div>
-                <Link className="btn primary" href={`/lesson/gd-${guideId}`}>
+                <Link className="btn primary" href={LESSONS['gd-' + guideId] ? `/lesson/gd-${guideId}` : `/guide/${guideId}`}>
                   {t.showGuide}
                 </Link>
                 <button className="btn ghost" onClick={() => setState('idle')}>
