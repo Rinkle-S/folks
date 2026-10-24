@@ -903,3 +903,8 @@
 .g2-prof { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 6px 16px 16px; text-align: center; }
 .g2-prof b { font-size: 22px; font-weight: 400; margin-top: 8px; }
 .g2-prof small { color: #444746; font-size: 14px; }
+
+/* Google Pay: share sheet */
+.g2-share { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 6px 0 10px; }
+.g2-share > div { display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 13px; text-align: center; color: #1f1f1f; padding: 4px 0; }
+.g2-sh-ic { width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; }
