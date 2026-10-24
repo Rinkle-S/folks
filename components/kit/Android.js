@@ -100,13 +100,13 @@ const QS = [
   { k: 'rotate', icon: 'rotate', label: 'Auto-rotate', sub: 'On' },
   { k: 'hotspot', icon: 'wifi', label: 'Hotspot', sub: 'Off' },
 ];
-export function QuickSettings({ on = ['wifi', 'rotate'], note, sound }) {
+export function QuickSettings({ on = ['wifi', 'rotate'], note, sound, bright = 80, brightTap }) {
   return (
     <div className="app k-qs">
       <Status dark />
-      <div className="k-qs-bright">
+      <div className="k-qs-bright" data-t={brightTap ? 'qs-bright' : undefined}>
         <Icon name="sun" size={18} />
-        <i />
+        <i style={{ width: `${bright}%` }} />
       </div>
       <div className="k-qs-grid">
         {sound && (

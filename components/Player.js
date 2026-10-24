@@ -178,20 +178,39 @@ function PlayerInner({ id }) {
     els.forEach((el) => el.classList.add('hl'));
     const el = els[0];
     if (!el) return;
-    try {
-      el.scrollIntoView({ block: 'nearest' });
-    } catch {}
+    // Bring the button to tap into view inside the practice screen: centre it in whatever part of the screen scrolls.
+    const bringIntoView = () => {
+      let sc = el.parentElement;
+      while (sc && sc !== root) {
+        if (sc.scrollHeight > sc.clientHeight + 4 && /(auto|scroll)/.test(getComputedStyle(sc).overflowY)) break;
+        sc = sc.parentElement;
+      }
+      if (!sc || sc === root) return;
+      const er = el.getBoundingClientRect();
+      const sr = sc.getBoundingClientRect();
+      if (er.top < sr.top + 8 || er.bottom > sr.bottom - 8) sc.scrollTop += er.top - sr.top - (sr.height - er.height) / 2;
+    };
+    bringIntoView();
     const place = () => {
-      const r = el.getBoundingClientRect();
+      let r = el.getBoundingClientRect();
       const R = root.getBoundingClientRect();
       if (!r.width) return;
+      if (r.bottom < R.top + 4 || r.top > R.bottom - 4) {
+        bringIntoView();
+        r = el.getBoundingClientRect();
+      }
       const half = Math.min(R.width / 2 - 8, Math.max(64, String(label).length * 4.8));
       const x = Math.min(Math.max(r.left - R.left + r.width / 2, half), R.width - half);
       const above = r.top - R.top > 52;
       if (step.kind === 'tap') {
         // A small hand on the corner of the button: it never covers a neighbouring icon or its name.
-        const off = r.bottom < R.top + 6 ? 'up' : r.top > R.bottom - 6 ? 'down' : null; // the target is scrolled out of view
-        setBubble({ compact: true, off, x: Math.min(Math.max(r.right - R.left - 8, 22), R.width - 22), y: Math.min(Math.max(r.bottom - R.top - 6, 22), R.height - 22), label });
+        setBubble({
+          compact: true,
+          box: { x: r.left - R.left, y: r.top - R.top, w: r.width, h: r.height },
+          x: Math.min(Math.max(r.right - R.left - 8, 22), R.width - 22),
+          y: Math.min(Math.max(r.bottom - R.top - 6, 22), R.height - 22),
+          label,
+        });
         return;
       }
       setBubble({ x, y: above ? r.top - R.top - 10 : r.bottom - R.top + 10, below: !above, label });
@@ -631,15 +650,12 @@ function PlayerInner({ id }) {
         <Screen step={step} lesson={lesson} lang={lang} t={t} values={values} typed={typed} />
         {bubble && (
           bubble.compact ? (
-            bubble.off ? (
-              <div className={`tap-off ${bubble.off}`} aria-hidden="true">
-                {bubble.off === 'up' ? '⬆' : '⬇'} {bubble.label}
-              </div>
-            ) : (
+            <>
+              <div className="tap-tint" style={{ left: bubble.box.x, top: bubble.box.y, width: bubble.box.w, height: bubble.box.h }} aria-hidden="true" />
               <div className="tap-hand" style={{ left: bubble.x, top: bubble.y }} aria-hidden="true">
                 👆
               </div>
-            )
+            </>
           ) : (
             <div className={`tap-bubble ${bubble.below ? 'below' : ''}`} style={{ left: bubble.x, top: bubble.y }}>
               👆 {bubble.label}

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import useInstall from './useInstall';
 import TrustedContacts from './TrustedContacts';
-import { speak, unlockAudio, getLearnMode, setLearnMode } from '@/lib/client';
+import { speak, unlockAudio, getLearnMode, setLearnMode, getVoiceChoice, setVoiceChoice, diagnoseVoice } from '@/lib/client';
 import { voiceStatus } from '@/lib/voice';
 import { T } from '@/lib/i18n';
 import { LANGS } from '@/lib/langs';
@@ -13,6 +13,8 @@ export default function Settings({ lang, setLang, muted, toggleMute, onClose, on
   const [canInstall, install] = useInstall();
   const [tested, setTested] = useState(false);
   const [mode, setMode] = useState(getLearnMode());
+  const [voice, setVoice] = useState(getVoiceChoice());
+  const [diag, setDiag] = useState(null);
   const t = T[lang] || T.en;
   // English plus the chosen language, so a Malayalam parent never sees Hindi here.
   const bi = (en, hi, ml) => `${en} / ${lang === 'ml' ? ml : hi}`;
@@ -66,6 +68,45 @@ export default function Settings({ lang, setLang, muted, toggleMute, onClose, on
             {t.soundTestBtn}
           </button>
         </div>
+        <label className="settings-row">
+          <span>{t.voiceChoice}</span>
+          <select
+            value={voice}
+            onChange={(e) => {
+              setVoice(e.target.value);
+              setVoiceChoice(e.target.value);
+            }}
+          >
+            <option value="auto">{t.voiceAuto}</option>
+            <option value="phone">{t.voicePhoneOwn}</option>
+          </select>
+        </label>
+        <div className="settings-row">
+          <span>{t.diagTitle}</span>
+          <button className="toggle" onClick={async () => setDiag(await diagnoseVoice(lang))}>
+            {t.diagBtn}
+          </button>
+        </div>
+        {diag && (
+          <ul className="diag">
+            {[
+              [!diag.muted, t.diagSound, t.diagSoundFix],
+              [diag.speech, t.diagBrowser, t.diagBrowserFix],
+              [diag.voices > 0 && !!diag.pick, `${t.diagVoice}${diag.pick ? ': ' + diag.pick : ''}`, t.diagVoiceFix],
+              [diag.unlocked, t.diagUnlocked, t.diagUnlockedFix],
+              [diag.server, t.diagServer, t.diagServerFix],
+              [!diag.lastError, t.diagErrors, diag.lastError],
+            ].map(([ok, label, fix], i) => (
+              <li key={i} className={ok ? 'ok' : 'bad'}>
+                <b>{ok ? '✓' : '✗'}</b> {label}
+                {!ok && fix ? <small>{fix}</small> : null}
+              </li>
+            ))}
+            <li>
+              <small>{t.diagHint}</small>
+            </li>
+          </ul>
+        )}
         {tested && (
           <p className="muted small" style={{ margin: '6px 0 0' }}>
             {voiceStatus.server ? t.voiceNatural : t.voicePhone}
