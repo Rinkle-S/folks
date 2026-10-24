@@ -22,6 +22,9 @@ the owner could check against real screenshots. Everything below is paused, not 
   to someone you know"); WhatsApp send a photo, change your photo; Uber share your trip; YONO send money; Maps find a hospital/ATM/
   shop nearby, share where you are; Play Store find your way around; Phone basics silent, talk on speaker, block a number, set an
   alarm. "Learn what common icons mean" stays. These journeys are planned within each app, to return after screenshots.
+- Fifth round (24 Oct, 26 lessons): WhatsApp make a group, IRCTC check your PNR, flashlight, save a contact, Google Pay past
+  payments. The four Uber lessons that were cut in round three (rate, lost item, pay by UPI, share a trip) are back, so the Rides
+  topic is a complete journey: book, check the driver, share, pay, rate, cancel, lost item.
 - **iPhone (iOS) is a roadmap item, Android first.** App screens (Google Pay, WhatsApp, Uber, Maps) are broadly similar, but
   WhatsApp and Maps move their tab bars and some buttons, and phone basics (Settings, Wi-Fi, text size, alarm) differ completely.
   Most 55+ Indian users are on Android. Doing iOS well means a second set of real screenshots and a second check of every step,
