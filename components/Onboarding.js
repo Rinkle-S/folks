@@ -7,7 +7,6 @@ import AppIcon from './AppIcon';
 import { ALL_APPS } from '@/lib/apps';
 import { T } from '@/lib/i18n';
 import { LANGS } from '@/lib/langs';
-import PhonePick from './PhonePick';
 import SkillsPick, { skillsFor, fluencyFrom } from './SkillsPick';
 import { saveProfile } from '@/lib/profile';
 
@@ -15,7 +14,6 @@ export default function Onboarding({ lang, setLang, onDone }) {
   const [step, setStep] = useState(0);
   const [apps, setApps] = useState([]);
   const [name, setName] = useState('');
-  const [phone, setPhone] = useState({ brand: '', model: '' });
   const [skills, setSkills] = useState([]);
   const t = T[lang];
   const toggle = (id) => setApps(apps.includes(id) ? apps.filter((x) => x !== id) : [...apps, id]);
@@ -27,7 +25,6 @@ export default function Onboarding({ lang, setLang, onDone }) {
         <span className={step === 1 ? 'on' : ''} />
         <span className={step === 2 ? 'on' : ''} />
         <span className={step === 3 ? 'on' : ''} />
-        <span className={step === 4 ? 'on' : ''} />
       </div>
 
       {step === 0 ? (
@@ -82,24 +79,11 @@ export default function Onboarding({ lang, setLang, onDone }) {
             <p>{t.obNameSub}</p>
             <input className="name-input" value={name} onChange={(e) => setName(e.target.value)} placeholder={t.obNamePh} maxLength={30} aria-label={t.obNamePh} autoComplete="given-name" />
           </div>
-          <button className="btn primary" onClick={() => setStep(2)}>
-            {t.obNext}
-          </button>
-          <button className="btn ghost" onClick={() => setStep(2)}>
-            {t.obSkip}
-          </button>
-        </>
-      ) : step === 2 ? (
-        <>
-          <div className="onboard-hero">
-            <h1>{t.obPhoneQ}</h1>
-            <PhonePick lang={lang} value={phone} onChange={setPhone} />
-          </div>
           <button
             className="btn primary"
             onClick={() => {
-              saveProfile({ name, ...phone });
-              setStep(3);
+              saveProfile({ name });
+              setStep(2);
             }}
           >
             {t.obNext}
@@ -108,13 +92,13 @@ export default function Onboarding({ lang, setLang, onDone }) {
             className="btn ghost"
             onClick={() => {
               saveProfile({ name });
-              setStep(3);
+              setStep(2);
             }}
           >
             {t.obSkip}
           </button>
         </>
-      ) : step === 3 ? (
+      ) : step === 2 ? (
         <>
           <div className="onboard-hero">
             <h1>{t.appsQ}</h1>
@@ -129,14 +113,14 @@ export default function Onboarding({ lang, setLang, onDone }) {
               ))}
             </div>
           </div>
-          <button className="btn primary" onClick={() => setStep(4)}>
+          <button className="btn primary" onClick={() => setStep(3)}>
             {t.obNext}
           </button>
           <button
             className="btn ghost"
             onClick={() => {
               setApps([]);
-              setStep(4);
+              setStep(3);
             }}
           >
             {t.obSkip}
