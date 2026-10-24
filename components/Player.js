@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Screen from './Screens';
 import PracticeIntro from './PracticeIntro';
+import { BottomNav } from './AppShell';
 import { watchPersona, personalise } from '@/lib/persona';
 import { recordPerf } from '@/lib/adapt';
 import { levelOf } from '@/lib/levels';
@@ -523,7 +524,7 @@ function PlayerInner({ id }) {
 
   if (done) {
     return (
-      <div className="page done">
+      <div className="page done has-nav">
         <div className="done-medal">
           <Icon name="check" size={56} stroke={3} />
         </div>
@@ -634,6 +635,7 @@ function PlayerInner({ id }) {
             {t.practiceAgain}
           </button>
         </div>
+        <BottomNav active="learn" t={t} />
       </div>
     );
   }

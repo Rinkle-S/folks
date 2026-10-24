@@ -8,6 +8,7 @@ import Icon from './Icons';
 import { T } from '@/lib/i18n';
 import { useLang, track } from '@/lib/client';
 import PrintBar from './PrintBar';
+import { BottomNav } from './AppShell';
 import LessonPrint from './LessonPrint';
 import { LESSONS } from '@/lib/lessons';
 import { GUIDES } from '@/lib/guides';
@@ -41,11 +42,12 @@ export default function GuideView({ id }) {
   const t = T[lang];
   if (!guide)
     return (
-      <div className="page guide-page">
+      <div className="page guide-page has-nav">
         <p>{t.guideGone}</p>
         <Link className="btn primary" href="/">
           {t.home}
         </Link>
+        <BottomNav active="learn" t={t} />
       </div>
     );
 
@@ -53,7 +55,7 @@ export default function GuideView({ id }) {
   const last = i === n - 1;
   const showOpen = guide.app && canOpenApp(guide.app);
   return (
-    <div className="page guide-page">
+    <div className="page guide-page has-nav">
       <div className="guide-top">
         <Link href="/" className="guide-back" aria-label={t.home}>
           <Icon name="back" size={26} />
@@ -135,6 +137,7 @@ export default function GuideView({ id }) {
         </div>
       )}
       {all && guide.caution && <p className="ai-caution">⚠️ {guide.caution}</p>}
+      <BottomNav active={id === 'open-link-safe' ? 'safe' : 'learn'} t={t} />
     </div>
   );
 }

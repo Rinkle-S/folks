@@ -190,7 +190,7 @@ export default function Scams() {
 
   if (finished) {
     return (
-      <div className="done">
+      <div className="done has-nav">
         <div className="done-medal shield">
           <Icon name="shieldCheck" size={56} stroke={2.4} />
         </div>
@@ -227,6 +227,7 @@ export default function Scams() {
         <Link className="btn ghost" href="/">
           {t.home}
         </Link>
+        <BottomNav active="safe" t={t} />
       </div>
     );
   }
@@ -234,7 +235,7 @@ export default function Scams() {
   const right = picked && picked === c.answer;
 
   return (
-    <div className="page">
+    <div className="page has-nav">
       <div className="scam-top">
         <Link href="/" className="ptop-btn" aria-label={t.exit} onClick={() => stopSpeaking()}>
           <Icon name="close" size={24} />
@@ -277,6 +278,7 @@ export default function Scams() {
           </button>
         </div>
       )}
+      <BottomNav active="safe" t={t} />
     </div>
   );
 }

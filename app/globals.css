@@ -823,3 +823,6 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; }
 
 /* Written steps are for the real phone: say so, so practice numbers never get typed into a real app. */
 .follow-real { margin: 10px 0 0; padding: 12px 14px; border-radius: 14px; background: #e6f3ec; color: #11401f; font-size: 18px; font-weight: 600; line-height: 1.4; }
+
+/* Pages that show the bottom bar need room under their content. */
+.has-nav { padding-bottom: 112px; }
