@@ -1,45 +1,27 @@
-// Google Pay extras, PhonePe, Paytm and bank apps (YONO SBI, iMobile).
-// Google Pay screens reuse the look of components/screens/GPay.js.
+// Google Pay extras (balance, history, PIN reset, pay a number), PhonePe and bank apps (YONO SBI).
+// Google Pay screens share the parts in components/screens/GPay.js, so every lesson looks the same.
 import Icon from '../Icons';
 import AppIcon from '../AppIcon';
 import { Av, Status, Keys, PinDots } from './ui';
-import { GpHome, GpAmount, GpPin, GpSuccess } from '../screens/GPay';
+import { GpHome, GpAmount, GpPin, GpSuccess, GpScan, GpPayAnyone, GpTop, GpAv, BankBadge, BANKS, ME } from '../screens/GPay';
 
 export { GpHome, GpAmount, GpPin, GpSuccess };
-
-const BANKS = [
-  { k: 'sbi', name: 'State Bank of India', acc: '••5234', c: '#2a5caa' },
-  { k: 'hdfc', name: 'HDFC Bank', acc: '••8891', c: '#004c8f' },
-];
-
-function GpBar({ title, more }) {
-  return (
-    <div className="gp-bar">
-      <Icon name="back" size={22} />
-      <span style={{ flex: 1 }}>{title}</span>
-      {more !== undefined && (
-        <span data-t={more ? 'more' : undefined}>
-          <Icon name="more" size={22} />
-        </span>
-      )}
-    </div>
-  );
-}
 
 // Choose a bank account (balance check, reset PIN).
 export function GpBanks({ title = 'Select bank account', tap }) {
   return (
-    <div className="app gp">
-      <GpBar title={title} />
-      <div className="gp-list-h">Bank accounts</div>
+    <div className="app gp g2">
+      <Status />
+      <GpTop title={title} />
+      <div className="g2-list-h">Bank accounts</div>
       {BANKS.map((b) => (
-        <div key={b.k} className="gp-row k-gp-bank" data-t={tap === b.k ? `bank-${b.k}` : undefined}>
-          <span className="gp-bank-ic" style={{ background: '#e8f0fe', color: b.c }}>
-            <Icon name="bank" size={20} />
-          </span>
-          <div style={{ flex: 1 }}>
-            <b>{b.name}</b>
-            <small>Savings {b.acc}</small>
+        <div key={b.k} className="g2-row" data-t={tap === b.k ? `bank-${b.k}` : undefined}>
+          <BankBadge bank={b} />
+          <div className="g2-row-t">
+            <b>
+              {b.name} ••••{b.last4}
+            </b>
+            <small>Savings account</small>
           </div>
           <Icon name="chevron" size={18} />
         </div>
@@ -48,15 +30,17 @@ export function GpBanks({ title = 'Select bank account', tap }) {
   );
 }
 
+// "You": the profile page from the round picture at the top right.
 export function GpProfile({ tap }) {
   return (
-    <div className="app gp">
-      <GpBar title="" more={false} />
-      <div className="k-gp-prof">
-        <span className="gp-me lg">K</span>
-        <b>Kamala Nair</b>
-        <small>kamla.devi@okaxis</small>
-        <span className="k-gp-qr">
+    <div className="app gp g2">
+      <Status />
+      <GpTop right={['more']} />
+      <div className="g2-prof">
+        <GpAv name={ME.name} color="#c26401" size={72} />
+        <b>{ME.name}</b>
+        <small>UPI ID: {ME.upi}</small>
+        <span className="g2-chip">
           <Icon name="scan" size={18} /> Your QR code
         </span>
       </div>
@@ -66,14 +50,14 @@ export function GpProfile({ tap }) {
         ['upi', 'upi', 'UPI Lite', 'Pay small amounts without PIN'],
         ['settings', 'gear', 'Settings', ''],
         ['help', 'help', 'Get help', ''],
-      ].map(([k, ic, l, s]) => (
-        <div key={k} className="gp-row" data-t={tap === k ? k : undefined}>
-          <span className="gp-bank-ic">
+      ].map(([k, ic, l, sub]) => (
+        <div key={k} className="g2-row" data-t={tap === k ? k : undefined}>
+          <span className="g2-round">
             <Icon name={ic} size={20} />
           </span>
-          <div style={{ flex: 1 }}>
+          <div className="g2-row-t">
             <b>{l}</b>
-            {s && <small>{s}</small>}
+            {sub && <small>{sub}</small>}
           </div>
         </div>
       ))}
@@ -82,25 +66,27 @@ export function GpProfile({ tap }) {
 }
 
 export function GpBankPage({ more }) {
+  const b = BANKS[0];
   return (
-    <div className="app gp">
-      <GpBar title="" more={more} />
-      <div className="k-gp-prof">
-        <span className="gp-bank-ic lg">
-          <Icon name="bank" size={30} />
-        </span>
-        <b>State Bank of India ••5234</b>
+    <div className="app gp g2">
+      <Status />
+      <GpTop right={[{ icon: 'more', t: more ? 'more' : undefined }]} />
+      <div className="g2-prof">
+        <BankBadge bank={b} size={64} />
+        <b>
+          {b.name} ••••{b.last4}
+        </b>
         <small>Savings account · Primary</small>
       </div>
-      <div className="gp-links">
+      <div className="g2-links">
         <div>
-          <Icon name="balance" size={20} /> Check balance
+          <Icon name="balance" size={22} /> <span>Check balance</span> <Icon name="chevron" size={18} />
         </div>
         <div>
-          <Icon name="key" size={20} /> UPI PIN is set
+          <Icon name="key" size={22} /> <span>UPI PIN is set</span>
         </div>
         <div>
-          <Icon name="upi" size={20} /> UPI ID: kamla.devi@oksbi
+          <Icon name="upi" size={22} /> <span>UPI ID: {ME.upi}</span>
         </div>
       </div>
     </div>
@@ -108,40 +94,48 @@ export function GpBankPage({ more }) {
 }
 
 export function GpBalance() {
+  const b = BANKS[0];
   return (
-    <div className="app gp-done">
-      <div className="gp-done-tick">
-        <Icon name="bank" size={44} color="#fff" stroke={2.4} />
+    <div className="app gp g2">
+      <Status />
+      <GpTop left="close" />
+      <div className="g2-done">
+        <BankBadge bank={b} size={72} />
+        <div className="g2-done-to">
+          {b.name} ••••{b.last4}
+        </div>
+        <small>Available balance</small>
+        <div className="g2-done-amt">₹ 12,450.00</div>
       </div>
-      <div className="gp-done-to">State Bank of India ••5234</div>
-      <div className="gp-done-amt">₹12,450.00</div>
-      <div className="gp-done-meta">Available balance</div>
     </div>
   );
 }
 
 const TXNS = [
-  { k: 'sharma', n: 'Sunrise General Store', d: '23 Oct', a: '₹50', c: '#5f6368' },
-  { k: 'ramesh', n: 'Ramesh Bhaiya', d: '21 Oct', a: '₹500', c: '#ea580c' },
-  { k: 'failed', n: 'Gupta Medical', d: '20 Oct', a: '₹320', c: '#16a34a', failed: true },
-  { k: 'sunita', n: 'Sunita', d: '19 Oct', a: '+ ₹200', c: '#e8710a', inn: true },
-  { k: 'bill', n: 'State Electricity Board', d: '15 Oct', a: '₹1,240', c: '#b06000' },
+  { k: 'sharma', n: 'Sunrise General Store', d: '23 October', a: '₹50', c: '#5f6368' },
+  { k: 'ramesh', n: 'Ramesh Bhaiya', d: '21 October', a: '₹500', c: '#1e8e3e' },
+  { k: 'failed', n: 'Gupta Medical', d: '20 October', a: '₹320', c: '#16a34a', failed: true },
+  { k: 'sunita', n: 'Sunita Didi', d: '19 October', a: '+ ₹200', c: '#e8710a', inn: true },
+  { k: 'bill', n: 'State Electricity Board', d: '15 October', a: '₹1,240', c: '#b06000' },
 ];
 export function GpHistory({ tap }) {
   return (
-    <div className="app gp">
-      <GpBar title="Transaction history" />
-      <div className="gp-search in">
-        <Icon name="search" size={18} />
-        <span>Search transactions</span>
+    <div className="app gp g2">
+      <Status />
+      <GpTop title="Transaction history" right={['more']} />
+      <div className="g2-find">
+        <div className="g2-input">
+          <Icon name="search" size={20} />
+          <span className="ph">Search transactions</span>
+        </div>
       </div>
-      <div className="gp-list-h">October</div>
+      <div className="g2-list-h">October</div>
       {TXNS.map((t) => (
-        <div key={t.k} className="gp-row" data-t={tap === t.k ? `txn-${t.k}` : undefined}>
-          <Av name={t.n} size={40} color={t.c} />
-          <div style={{ flex: 1 }}>
+        <div key={t.k} className="g2-row" data-t={tap === t.k ? `txn-${t.k}` : undefined}>
+          <GpAv name={t.n} color={t.c} />
+          <div className="g2-row-t">
             <b>{t.n}</b>
-            <small style={t.failed ? { color: '#d93025' } : undefined}>{t.failed ? `Failed · ${t.d}` : t.d}</small>
+            <small style={t.failed ? { color: '#b3261e' } : undefined}>{t.failed ? `Failed · ${t.d}` : t.d}</small>
           </div>
           <b className={t.inn ? 'k-green' : ''}>{t.a}</b>
         </div>
@@ -151,13 +145,15 @@ export function GpHistory({ tap }) {
 }
 
 export function GpTxn({ failed, help }) {
+  const name = failed ? 'Gupta Medical' : 'Sunrise General Store';
   return (
-    <div className="app gp">
-      <GpBar title="" more={false} />
-      <div className="k-gp-prof">
-        <Av name={failed ? 'Gupta Medical' : 'Sunrise General Store'} size={56} color={failed ? '#16a34a' : '#5f6368'} />
-        <small>To {failed ? 'Gupta Medical' : 'Sunrise General Store'}</small>
-        <b className="k-gp-big">{failed ? '₹320' : '₹50'}</b>
+    <div className="app gp g2">
+      <Status />
+      <GpTop left="close" right={['share', 'more']} />
+      <div className="g2-done">
+        <GpAv name={name} color={failed ? '#16a34a' : '#5f6368'} size={56} />
+        <small>To {name}</small>
+        <div className="g2-done-amt">{failed ? '₹320' : '₹50'}</div>
         <span className={failed ? 'k-gp-fail' : 'k-gp-ok'}>{failed ? '⚠ Failed' : '✓ Completed'}</span>
         <small>{failed ? '20 Oct, 11:42 am' : '23 Oct, 4:12 pm'}</small>
       </div>
@@ -168,7 +164,9 @@ export function GpTxn({ failed, help }) {
         </div>
         <div>
           <small>From</small>
-          <b>State Bank of India ••5234</b>
+          <b>
+            {BANKS[0].name} ••••{BANKS[0].last4}
+          </b>
         </div>
       </div>
       {failed && (
@@ -182,8 +180,9 @@ export function GpTxn({ failed, help }) {
 
 export function GpCard() {
   return (
-    <div className="app gp">
-      <GpBar title="Reset UPI PIN" />
+    <div className="app gp g2">
+      <Status />
+      <GpTop title="Reset UPI PIN" />
       <div className="k-gp-form">
         <small>Enter the last 6 digits of your debit card and its expiry date</small>
         <div className="k-gp-field">
@@ -202,8 +201,9 @@ export function GpCard() {
 
 export function GpOtp({ title = 'Enter the 6-digit code sent to your phone' }) {
   return (
-    <div className="app gp">
-      <GpBar title="Verify" />
+    <div className="app gp g2">
+      <Status />
+      <GpTop title="Verify" />
       <div className="k-gp-form">
         <small>{title}</small>
         <PinDots n={6} filled={3} color="#0b57d0" />
@@ -214,49 +214,14 @@ export function GpOtp({ title = 'Enter the 6-digit code sent to your phone' }) {
   );
 }
 
-// Pay phone number: type the number. found: show who it belongs to (the name to check).
-export function GpPayPhone({ number = '98765 43210', found, tap }) {
-  return (
-    <div className="app gp">
-      <GpBar title="Pay phone number" />
-      <div className="k-gp-num">
-        <span>+91</span>
-        <b>{number}</b>
-      </div>
-      {found && (
-        <div className="gp-row k-gp-found" data-t={tap ? 'person' : undefined}>
-          <Av name="Ramesh Kumar" size={44} color="#ea580c" />
-          <div style={{ flex: 1 }}>
-            <b>Ramesh Kumar</b>
-            <small>Banking name: RAMESH KUMAR</small>
-          </div>
-        </div>
-      )}
-      {!found && <Keys />}
-    </div>
-  );
+// Pay a phone number: "Pay anyone", type the number, then check whose name comes up.
+export function GpPayPhone({ number = '99023 11845', found, tap }) {
+  return <GpPayAnyone number={number} found={found} tap={tap} keypad={!found} />;
 }
 
-// Google Pay QR scanner with the gallery icon, and the picture picker.
+// Google Pay QR scanner, with "Upload from gallery" as the tap target.
 export function GpScanG({ gallery }) {
-  return (
-    <div className="app gp-cam">
-      <div className="gp-cam-top">
-        <Icon name="back" size={22} color="#fff" />
-        <span>Scan any QR code</span>
-        <span data-t={gallery ? 'gallery' : undefined} className="k-cam-ic">
-          <Icon name="image" size={22} color="#fff" />
-        </span>
-      </div>
-      <div className="viewfinder">
-        <div className="vf-corner tl" />
-        <div className="vf-corner tr" />
-        <div className="vf-corner bl" />
-        <div className="vf-corner br" />
-      </div>
-      <div className="k-cam-hint">Point at a QR code, or pick a picture of one from your gallery</div>
-    </div>
-  );
+  return <GpScan gallery={gallery} />;
 }
 
 export function PhotoPick() {

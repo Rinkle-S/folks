@@ -23,6 +23,9 @@ Tagline: "Your cozy corner for everyday learning". Next.js 14 app router, no log
 ## Apps kept (Sat 24 Oct)
 Only Google Pay, PhonePe, WhatsApp, Uber, Rapido, Zomato, YONO SBI, IRCTC and Google Maps (plus Phone basics) are in Nook. Paytm, Drive, YouTube, Swiggy, Ola, Amazon, Flipkart, Instagram, Spotify, Blinkit, ICICI and Zepto were deleted with their lessons, guides, screens and keywords. Zomato has no lesson of its own (its old lesson was the Swiggy one). Some old Malayalam text for the deleted lessons is still in `lib/mlContent*.js` (unused, harmless).
 
+## Google Pay screens (Sat 24 Oct)
+All Google Pay practice screens were rebuilt to match the owner's real screenshots (`docs/reference/gpay`, with a README mapping each image to a screen, and real-vs-Nook comparison images). Shared parts in `components/screens/GPay.js`: `GpTop`, `BankingName`, `BankBadge`, `GpTabs`, `UpiMark`; one practice bank (State Bank of India ••••5234) and UPI ID everywhere. Lesson changes: 'Pay anyone' (not 'Pay contacts'), no 'Request' button in chat, success screen closes with the X at the top left (no 'Done'), recharge number under 'My recharges', electricity starts from 'Bills & recharges' on Home and uses 'Link account'. All 11 Google Pay lessons were played start to finish (English; 6 also in Hindi and Malayalam). The new Hindi and Malayalam lines need a native read.
+
 ## What is built (all on main)
 - 78 lessons: hand-built plus guide lessons (`lib/guides/*`, screens in `lib/kitSpec*.js`, components in `components/kit` and `components/screens`).
   99 recreated app screens, **all are best guesses**: none checked against real phones. See `docs/SCREENS-TO-REPLACE.md`.
