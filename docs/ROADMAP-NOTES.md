@@ -18,6 +18,9 @@ Paytm, Google Drive (scan to PDF), YouTube, Swiggy, Ola, Amazon, Flipkart, Insta
 government: Aadhaar and DigiLocker, pension and life certificates, income tax, ration card, passport and bill portals.
 These need the most careful checking against the real sites, so they come after the core journeys are verified.
 
+**Expert review (from the Reddit feedback, 24 Oct):** before a wider launch, ask an eldercare organisation and a UX person who works with older adults to review the practice screens, wording and pace. See `docs/FEEDBACK.md`.
+**Idea:** a "change the language in an app or on the phone" lesson (a caregiver said Google Maps suddenly spoke German and the setting took 40 minutes to find).
+
 **Order to bring things back:** one app at a time. Get 5 to 10 real screenshots from the owner, rebuild the screens from them
 (as done for Google Pay in `docs/reference/gpay`), check each step against the app's own help pages, play every lesson in all
 three languages, then take the id off the hidden list.
