@@ -30,7 +30,7 @@ const STYLE = {
   irctc: { bg: '#1a3e8f', border: '#1a3e8f', fg: '#ffffff', icon: 'list' },
   maps: { bg: '#ffffff', border: '#dadce0', fg: '#ea4335', icon: 'pin' },
   playstore: { bg: '#ffffff', border: '#dadce0' },
-  phone: { bg: '#1e8e3e', border: '#1e8e3e', fg: '#ffffff', icon: 'phone' },
+  phone: { bg: '#3d6a8c', border: '#3d6a8c', fg: '#ffffff', icon: 'phone' },
   other: { bg: '#f5f5f4', border: '#d6d3d1', fg: '#57534e', icon: 'more' },
 };
 

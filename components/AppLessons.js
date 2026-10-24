@@ -6,6 +6,7 @@ import Icon from './Icons';
 import AppIcon from './AppIcon';
 import { AppBar, BottomNav } from './AppShell';
 import PrintBar from './PrintBar';
+import ShareLesson from './ShareLesson';
 import { idsForApp } from '@/lib/printable';
 import { LESSONS, APPS } from '@/lib/lessons';
 import { ALL_APPS } from '@/lib/apps';
@@ -50,7 +51,8 @@ export default function AppLessons({ app }) {
           {list.map((l, i) => {
             const isDone = done.includes(l.id);
             return (
-              <Link key={l.id} href={`/lesson/${l.id}`} className={`lesson-card ${isDone ? 'is-done' : ''}`}>
+              <div key={l.id} className="lesson-row">
+              <Link href={`/lesson/${l.id}`} className={`lesson-card ${isDone ? 'is-done' : ''}`}>
                 <span className="lesson-num">{isDone ? <Icon name="check" size={20} stroke={3} /> : i + 1}</span>
                 <span className="lesson-main">
                   <b>{l.title[lang]}</b>
@@ -63,6 +65,8 @@ export default function AppLessons({ app }) {
                   <Icon name="chevron" size={22} />
                 </span>
               </Link>
+              <ShareLesson id={l.id} title={l.title[lang]} lang={lang} t={t} where="app_list" />
+              </div>
             );
           })}
         </div>
