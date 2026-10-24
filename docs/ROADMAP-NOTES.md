@@ -33,6 +33,9 @@ the owner could check against real screenshots. Everything below is paused, not 
 - Seventh round (24 Oct, 20 lessons): "Check a forwarded message" and "If you left something in the car" hidden. WhatsApp and
   Uber screens rebuilt from the owner's screenshots (see docs/SCREEN-TEMPLATES.md); steps checked against Uber and WhatsApp help.
   The Stay safe topic now holds "Check the driver" and "Share your trip".
+- Eighth round (24 Oct, 18 lessons): Uber "Share your trip" hidden (Book a cab already teaches it) and "Rate your ride" hidden;
+  rating is now the end of "Pay for a ride and rate it": choose UPI before booking, then the end-of-ride screen asks for stars,
+  what went wrong, and an optional tip (Uber help: rating comes first, then the tip).
 - **iPhone (iOS) is a roadmap item, Android first.** App screens (Google Pay, WhatsApp, Uber, Maps) are broadly similar, but
   WhatsApp and Maps move their tab bars and some buttons, and phone basics (Settings, Wi-Fi, text size, alarm) differ completely.
   Most 55+ Indian users are on Android. Doing iOS well means a second set of real screenshots and a second check of every step,

@@ -27,7 +27,7 @@ Only Google Pay, PhonePe, WhatsApp, Uber, Rapido, Zomato, YONO SBI, IRCTC and Go
 All Google Pay practice screens were rebuilt to match the owner's real screenshots (the screenshots were removed from the repo on 24 Oct for privacy; see `docs/SCREEN-TEMPLATES.md`). Shared parts in `components/screens/GPay.js`: `GpTop`, `BankingName`, `BankBadge`, `GpTabs`, `UpiMark`; one practice bank (State Bank of India ••••5234) and UPI ID everywhere. Lesson changes: 'Pay anyone' (not 'Pay contacts'), no 'Request' button in chat, success screen closes with the X at the top left (no 'Done'), recharge number under 'My recharges', electricity starts from 'Bills & recharges' on Home and uses 'Link account'. All 11 Google Pay lessons were played start to finish (English; 6 also in Hindi and Malayalam). The new Hindi and Malayalam lines need a native read.
 
 ## Core only (Sat 24 Oct, evening)
-20 lessons across 5 apps (Google Pay, WhatsApp, Uber, YONO, Maps) plus Phone basics (6 lessons incl. Install an app). Seven rounds of lessons were hidden (see `docs/ROADMAP-NOTES.md`). Zomato has one lesson
+18 lessons across 5 apps (Google Pay, WhatsApp, Uber, YONO, Maps) plus Phone basics (6 lessons incl. Install an app). Eight rounds of lessons were hidden (see `docs/ROADMAP-NOTES.md`). Zomato has one lesson
 (unverified, generic screens). The bottom bar (Learn, Stay safe, Help) now also shows on quick guides, the scam practice and the lesson end
 screen; it stays hidden during a lesson, where "Leave" is the way out.
 

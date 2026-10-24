@@ -839,7 +839,8 @@ export function UbLost() {
   );
 }
 
-export function UbRate({ rated }) {
+// Rating screen. end: shown by itself when the ride ends (paid by UPI), with an optional tip after the stars.
+export function UbRate({ rated, end }) {
   return (
     <div className="app ub">
       <div className="ub-bar">
@@ -847,8 +848,9 @@ export function UbRate({ rated }) {
       </div>
       <div className="ub-rate-h">
         <span className="ub-dp-sm big">R</span>
+        {end && <small className="ub-paid">You arrived at City Hospital · ₹186.00 paid by UPI</small>}
         <b>How was your trip with {UB_DRIVER.name}?</b>
-        <small>Cab ride · Today 11:20 AM · ₹186.00</small>
+        {!end && <small>Cab ride · Today 11:20 AM · ₹186.00</small>}
       </div>
       <div className="ub-stars" data-t="stars">
         {[1, 2, 3, 4, 5].map((i) => (
@@ -862,6 +864,16 @@ export function UbRate({ rated }) {
           <div className="ub-h center">What could have been better?</div>
           <div className="ub-tags">
             {['Driving', 'Car condition', 'Route', 'Pickup', 'Driver attitude'].map((x) => (
+              <span key={x}>{x}</span>
+            ))}
+          </div>
+        </>
+      )}
+      {rated && end && (
+        <>
+          <div className="ub-h center">Add a tip for {UB_DRIVER.name}? (optional)</div>
+          <div className="ub-tags">
+            {['₹10', '₹20', '₹30', 'Custom'].map((x) => (
               <span key={x}>{x}</span>
             ))}
           </div>

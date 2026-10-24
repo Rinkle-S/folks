@@ -1076,3 +1076,4 @@
 .ub-stars .on { color: #000; }
 .ub-tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; padding: 0 14px; }
 .ub-tags span { background: #f3f3f3; border-radius: 999px; padding: 8px 14px; font-size: 14px; font-weight: 600; }
+.ub-paid { display: block; background: #e8f5e9; color: #1b5e20 !important; border-radius: 8px; padding: 6px 10px; margin-bottom: 8px; font-weight: 600; }
