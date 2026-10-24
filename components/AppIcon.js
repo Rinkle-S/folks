@@ -29,6 +29,7 @@ const STYLE = {
   yono: { bg: '#7b1e7a', border: '#7b1e7a', fg: '#ffffff', icon: 'bank' },
   irctc: { bg: '#1a3e8f', border: '#1a3e8f', fg: '#ffffff', icon: 'list' },
   maps: { bg: '#ffffff', border: '#dadce0', fg: '#ea4335', icon: 'pin' },
+  playstore: { bg: '#ffffff', border: '#dadce0' },
   phone: { bg: '#1e8e3e', border: '#1e8e3e', fg: '#ffffff', icon: 'phone' },
   other: { bg: '#f5f5f4', border: '#d6d3d1', fg: '#57534e', icon: 'more' },
 };
@@ -50,6 +51,15 @@ function Glyph({ app }) {
         <svg viewBox="0 0 24 24" width="64%" height="64%" fill="none" stroke="#fff" strokeWidth="2" strokeLinejoin="round">
           <path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3z" />
           <path d="M9 8.2c.3-.4.8-.4 1 0l.8 1.6c.1.3 0 .6-.2.8l-.5.5c.5 1.2 1.6 2.3 2.8 2.8l.5-.5c.2-.2.5-.3.8-.2l1.6.8c.4.2.4.7 0 1-.9.9-2 1.2-3.2.6A9 9 0 0 1 8.4 11.4c-.6-1.2-.3-2.3.6-3.2z" fill="#fff" stroke="none" />
+        </svg>
+      );
+    case 'playstore':
+      return (
+        <svg viewBox="0 0 24 24" width="58%" height="58%">
+          <path d="M5 3.2v17.6l9.2-8.8z" fill="#00c4ff" />
+          <path d="M5 3.2l12.4 7.1-3.2 1.7z" fill="#00e676" />
+          <path d="M5 20.8l12.4-7.1-3.2-1.7z" fill="#ff3d57" />
+          <path d="M17.4 10.3l3.2 1.7-3.2 1.7-3.2-1.7z" fill="#ffc400" />
         </svg>
       );
     case 'uber':
