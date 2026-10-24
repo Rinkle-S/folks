@@ -1,5 +1,7 @@
 # Nook: standing rules for every session
 
+**New session? Read `docs/SESSION-HANDOFF.md` first.** It has the current status, open items, the deck link and how to run and test.
+
 ## Buildathon focus (deadline: Mon 26 Oct 2026, afternoon)
 Judging is 35 points, seven criteria at 5 each:
 1. **Problem clarity**: one clear user, one real problem
