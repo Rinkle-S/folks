@@ -18,6 +18,14 @@ the owner could check against real screenshots. Everything below is paused, not 
 - Third round (24 Oct): Google Pay pay your electricity bill; WhatsApp delete a message; Uber rate your ride, report a lost item,
   pay your ride by UPI; Google Maps save Home; IRCTC cancel a ticket. Kept on purpose: past payments, bank balance (both now go
   through the Money tab, built from the owner's screenshot), pay a QR from your photos, use maps offline.
+- Fourth round (24 Oct, down to 27 lessons): Google Pay pay a QR saved in photos, pay a phone number (now a tip inside "Send money
+  to someone you know"); WhatsApp send a photo, change your photo; Uber share your trip; YONO send money; Maps find a hospital/ATM/
+  shop nearby, share where you are; Play Store find your way around; Phone basics silent, talk on speaker, block a number, set an
+  alarm. "Learn what common icons mean" stays. These journeys are planned within each app, to return after screenshots.
+- **iPhone (iOS) is a roadmap item, Android first.** App screens (Google Pay, WhatsApp, Uber, Maps) are broadly similar, but
+  WhatsApp and Maps move their tab bars and some buttons, and phone basics (Settings, Wi-Fi, text size, alarm) differ completely.
+  Most 55+ Indian users are on Android. Doing iOS well means a second set of real screenshots and a second check of every step,
+  so it is not done now.
 - Added: **Zomato** has one lesson, "Order food on Zomato" (`zomato-order` in `lib/guides/apps.js`). It was written from general
   knowledge of the app with generic practice screens, and has NOT been checked against real Zomato screenshots. Check its button
   names (ADD, View cart, the place-order button) when screenshots arrive.
