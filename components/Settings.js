@@ -8,12 +8,13 @@ import { voiceStatus } from '@/lib/voice';
 import { T } from '@/lib/i18n';
 import { LANGS } from '@/lib/langs';
 
-export default function Settings({ lang, setLang, muted, toggleMute, onClose, onApps, appsLabel, onPracticeInfo }) {
+export default function Settings({ lang, setLang, muted, toggleMute, onClose, onApps, appsLabel, onPracticeInfo, onMismatch }) {
   const [canInstall, install] = useInstall();
   const [tested, setTested] = useState(false);
   const [mode, setMode] = useState(getLearnMode());
   const [voice, setVoice] = useState(getVoiceChoice());
   const [diag, setDiag] = useState(null);
+  const [told, setTold] = useState(false);
   const t = T[lang] || T.en;
   // English plus the chosen language, so a Malayalam parent never sees Hindi here.
   const bi = (en, hi, ml) => `${en} / ${lang === 'ml' ? ml : hi}`;
@@ -121,6 +122,22 @@ export default function Settings({ lang, setLang, muted, toggleMute, onClose, on
           </div>
         )}
         <TrustedContacts t={t} />
+        {onMismatch && (
+          <div className="settings-row">
+            <span>{told ? t.mismatchThanks : t.mismatchQ}</span>
+            {!told && (
+              <button
+                className="toggle"
+                onClick={() => {
+                  onMismatch();
+                  setTold(true);
+                }}
+              >
+                {t.mismatchBtn}
+              </button>
+            )}
+          </div>
+        )}
         {onPracticeInfo && (
           <div className="settings-row">
             <span>{t.practiceWhat}</span>
