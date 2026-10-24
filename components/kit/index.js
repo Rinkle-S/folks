@@ -37,6 +37,7 @@ export const KIT = {
   'and-call': A.ACall,
   'and-web': A.AWeb,
   'gp-home': M.GpHome,
+  'gp-money': M.GpMoney,
   'gp-amount': M.GpAmount,
   'gp-pin': M.GpPin,
   'gp-banks': M.GpBanks,
