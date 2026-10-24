@@ -44,6 +44,16 @@ at the screen edge points to a button scrolled out of sight.
 ## Practice clarity (Sat 24 Oct, from the Reddit and tester feedback)
 Every practice screen has a PRACTICE banner (20px) and a faint tilted PRACTICE mark. A "this is practice" card opens at the start of every lesson until the person taps "I know this. Do not show it again" or turns it off in Settings ("Practice reminder at the start of each lesson"); the FAQ explains it. Step numbers now start at 1 on the first practice screen (the lesson start is not counted). Help scrolls the screen back to the button, and a hand at the screen edge points to a button that was scrolled out of sight. Highlight style options (ring, label, arrow, glow) were shown to the owner; no pick yet.
 
+## Sat 24 Oct (evening): ten fixes from the owner's list
+- **Home:** more space above "Learn by topic"; Phone basics icon is now a calm blue (`components/AppIcon.js`).
+- **Search:** richer keywords for every hand-built lesson and some guides (`lib/keywordsMore.js`), a "Did you mean one of these?" list when nothing matches clearly or two lessons score almost the same (`suggest`, `isClear` in `lib/match.js`), one-letter typos tolerated. "pay money" used to show nothing.
+- **Ask someone on WhatsApp removed** from the no-match card and the Help tab (the receiving page needs the lesson-making flow, which is not ready). Both now offer "Tell the Nook team" (event `lesson_request`).
+- **Share buttons:** on a search result, and beside every lesson on app pages and topic pages (`components/ShareLesson.js`, event `share` with `meta.where`). Wording is shared with `/send` (`lib/shareMsg.js`).
+- **Names by language** (`lib/persona.js`, `REGION`): English unchanged (general Indian names), Hindi drops the Kerala surname, Malayalam uses Kerala names and Chechi / Chettan. Needs a native read.
+- **Voice note:** a calm banner on Home when the browser cannot listen or speak (Brave, in-app browsers).
+- **Rating:** five big stars after the second finished lesson (once; "Not now" asks again after two more, twice at most) and always on the Help tab. Events `app_rating`, `app_feedback`.
+- **Feedback by voice or typing:** "Tell us more" under the three faces at the end of every lesson, and a box on Help (`components/FeedbackAsk.js`). The mic uses the browser's own recognition, so nothing is recorded; it hides itself where unsupported. Note text is in `events.meta->>'note'`, `via` is `voice` or `typed`.
+
 ## What is built (all on main)
 - 78 lessons: hand-built plus guide lessons (`lib/guides/*`, screens in `lib/kitSpec*.js`, components in `components/kit` and `components/screens`).
   99 recreated app screens, **all are best guesses**: none checked against real phones. See `docs/SCREENS-TO-REPLACE.md`.

@@ -9,14 +9,14 @@ import Icon from './Icons';
 import Onboarding from './Onboarding';
 import { AppBar, BottomNav } from './AppShell';
 import { LESSONS, APPS, findLesson } from '@/lib/lessons';
-import { matchLesson, matchGuide } from '@/lib/match';
+import { matchLesson, matchGuide, suggest, isClear } from '@/lib/match';
 import { getProfile } from '@/lib/profile';
 import { GUIDES, GUIDE_LIST } from '@/lib/guides';
 import { T } from '@/lib/i18n';
 import { langCode } from '@/lib/langs';
-import { askSomeone, loadMade, isReady } from '@/lib/ask';
-import AskWho from './AskWho';
+import { loadMade, isReady } from '@/lib/ask';
 import ThemeList from './ThemeList';
+import ShareLesson from './ShareLesson';
 import { orderForFluency } from '@/lib/levels';
 import { effectiveFluency, reviewDueIds } from '@/lib/adapt';
 import {
@@ -42,10 +42,12 @@ export default function Home() {
   const [typedQ, setTypedQ] = useState('');
   const [micMsg, setMicMsg] = useState('');
   const [inApp, setInApp] = useState(false);
+  const [voiceWarn, setVoiceWarn] = useState(false); // this browser cannot listen or speak (Brave, in-app browsers, some others)
   const [asked, setAsked] = useState(false);
   const [fluency, setFluency] = useState('');
   const [skills, setSkills] = useState([]);
   const [guideId, setGuideId] = useState(null); // a quick guide we wrote that fits
+  const [sugg, setSugg] = useState([]); // closest lessons and guides, when nothing fits clearly
   const [showSettings, setShowSettings] = useState(false);
   const [serverStt, setServerStt] = useState(false);
   const [myApps, setMyApps] = useState(undefined);
@@ -65,6 +67,13 @@ export default function Home() {
     const ua = navigator.userAgent || '';
     // WhatsApp, Instagram, Facebook etc. open links in their own browser, where the mic usually doesn't work.
     setInApp(/Android/i.test(ua) && (/; wv\)/.test(ua) || /WhatsApp|Instagram|FBAN|FBAV|FB_IAB|Line\//i.test(ua)));
+    // Voice needs the browser's speech services. Brave switches them off, and some browsers never had them.
+    const noListen = !(window.SpeechRecognition || window.webkitSpeechRecognition);
+    const noSpeak = !('speechSynthesis' in window);
+    setVoiceWarn(noListen || noSpeak);
+    if (navigator.brave && typeof navigator.brave.isBrave === 'function') {
+      navigator.brave.isBrave().then((yes) => yes && setVoiceWarn(true)).catch(() => {});
+    }
     setOb(isOnboarded());
     setMyApps(getApps());
     setProfileName(getProfile().name);
@@ -120,15 +129,20 @@ export default function Home() {
       meta: { q: q.slice(0, 200), via, match: m ? m.id : null, lang },
     });
     // A practice lesson wins unless a quick guide fits the question clearly better ("cancel order" vs the order lesson).
+    // If two lessons score almost the same, the parent chooses between them instead of landing in the wrong one.
     const g0 = matchGuide(q);
-    const lessonWins = m && m.kind === 'lesson' && !(g0 && g0.score > m.task);
-    const gm = lessonWins ? null : g0;
+    const lessonWins = m && m.kind === 'lesson' && !(g0 && g0.score > m.task) && isClear(q);
+    const gm = lessonWins || !isClear(q) ? null : g0;
+    const close = lessonWins || gm ? [] : suggest(q);
     setGuideId(gm ? gm.id : null);
     setResult(lessonWins ? m : null);
+    setSugg(close);
     if (lessonWins) {
       speak([t.confirmQ, LESSONS[m.id].title[lang]], lang);
+    } else if (close.length) {
+      speak(t.didYouMean, lang);
     } else if (!gm) {
-      speak(t.noMatch, lang); // nothing fits: offer to ask someone, or browse the topics
+      speak(t.noMatch, lang); // nothing fits: tell the Nook team, or browse the topics
     }
   }
 
@@ -298,8 +312,9 @@ export default function Home() {
     window.location.href = `intent://${host}${pathname}${search}#Intent;scheme=https;package=com.android.chrome;end`;
   }
 
-  function askChild(text, contact) {
-    askSomeone(text, lang, t, contact);
+  // Nothing fits: tell the Nook team, so the lessons that are missing get written first.
+  function tellNook(text) {
+    track('lesson_request', { meta: { q: text.slice(0, 200), lang, from: 'home' } });
     setAsked(true);
   }
 
@@ -347,6 +362,11 @@ export default function Home() {
             {state === 'listening' ? t.listening : state === 'processing' ? t.processing : micMsg || t.tapToSpeak}
           </p>
         </div>
+        {voiceWarn && !serverStt && (
+          <p className="voice-warn" role="note">
+            {t.voiceWarn}
+          </p>
+        )}
         <form
           className="askbar typed"
           onSubmit={(e) => {
@@ -381,6 +401,7 @@ export default function Home() {
                 <Link className="btn primary" href={`/lesson/${matched.id}`}>
                   {t.yesStart}
                 </Link>
+                <ShareLesson big id={matched.id} title={matched.title[lang]} lang={lang} t={t} where="search_result" />
                 <button className="btn ghost" onClick={() => setState('idle')}>
                   {t.noOther}
                 </button>
@@ -395,15 +416,45 @@ export default function Home() {
                 <Link className="btn primary" href={LESSONS['gd-' + guideId] ? `/lesson/gd-${guideId}` : `/guide/${guideId}`}>
                   {t.showGuide}
                 </Link>
+                <ShareLesson big id={LESSONS['gd-' + guideId] ? 'gd-' + guideId : guideId} kind={LESSONS['gd-' + guideId] ? 'lesson' : 'guide'} title={GUIDES[guideId].title[lang]} lang={lang} t={t} where="search_result" />
                 <button className="btn ghost" onClick={() => setState('idle')}>
                   {t.noOther}
+                </button>
+              </div>
+            ) : sugg.length ? (
+              <div className="card did-you-mean">
+                <p>{t.didYouMean}</p>
+                {sugg.map((x) => {
+                  const item = x.kind === 'lesson' ? LESSONS[x.id] : GUIDES[x.id];
+                  if (!item) return null;
+                  const href = x.kind === 'lesson' ? `/lesson/${x.id}` : LESSONS['gd-' + x.id] ? `/lesson/gd-${x.id}` : `/guide/${x.id}`;
+                  return (
+                    <Link key={x.kind + x.id} className="dym-row" href={href}>
+                      <AppIcon app={item.app} size={48} />
+                      <span className="dym-txt">{item.title[lang]}</span>
+                      <Icon name="chevron" size={22} />
+                    </Link>
+                  );
+                })}
+                <p className="muted dym-none">{t.noneOfThese}</p>
+                <button className="btn ghost" onClick={() => tellNook(query)} disabled={asked}>
+                  {t.requestTell}
+                </button>
+                {asked && <p className="thanks">{t.requestThanks}</p>}
+                <Link className="btn ghost" href="/themes">
+                  {t.themesTitle}
+                </Link>
+                <button className="btn ghost" onClick={() => setState('idle')}>
+                  {t.tryAgain}
                 </button>
               </div>
             ) : (
               <div className="card">
                 <p>{t.noMatch}</p>
-                <AskWho t={t} label={t.askChild} onAsk={(c) => askChild(query, c)} />
-                {asked && <p className="thanks">{t.thanks}</p>}
+                <button className="btn primary" onClick={() => tellNook(query)} disabled={asked}>
+                  {t.requestTell}
+                </button>
+                {asked && <p className="thanks">{t.requestThanks}</p>}
                 <Link className="btn ghost" href="/themes">
                   {t.themesTitle}
                 </Link>

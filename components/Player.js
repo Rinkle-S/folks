@@ -20,7 +20,9 @@ import LessonPrint from './LessonPrint';
 import Icon from './Icons';
 import { LESSONS } from '@/lib/lessons';
 import { T } from '@/lib/i18n';
-import { useLang, useMute, speak, stopSpeaking, prefetchSpeech, onSpeaking, track, getFrom, whatsappLink, markDone, vibrate, getLearnMode, addRecent, getPracticeNote, setPracticeNote, setPracticeSeen, onSpeechProgress } from '@/lib/client';
+import FeedbackAsk, { FeedbackBox } from './FeedbackAsk';
+import RateApp from './RateApp';
+import { useLang, useMute, speak, stopSpeaking, prefetchSpeech, onSpeaking, track, getFrom, whatsappLink, markDone, shouldAskRate, vibrate, getLearnMode, addRecent, getPracticeNote, setPracticeNote, setPracticeSeen, onSpeechProgress } from '@/lib/client';
 
 // Watch-first pacing (milliseconds). Slower than before: older viewers need time to see the screen, then the pointer,
 // then the tap. Research on older listeners favours clear speech (about 140 words a minute or less) and pauses.
@@ -56,6 +58,7 @@ function PlayerInner({ id }) {
   const [fbReasons, setFbReasons] = useState([]);
   const [fbNote, setFbNote] = useState('');
   const [fbSent, setFbSent] = useState(false);
+  const [askRate, setAskRate] = useState(false); // after the second finished lesson, once
   const [realTry, setRealTry] = useState(false);
   const [from, setFrom] = useState('');
   const [bubble, setBubble] = useState(null);
@@ -353,6 +356,7 @@ function PlayerInner({ id }) {
     clearTimers();
     track('lesson_complete', { lesson: id, meta: { mode } });
     markDone(id);
+    setAskRate(shouldAskRate());
     if (mode === 'practice') recordPerf({ id, level: levelOf(lesson), wrong: wrongRef.current, hints: helpRef.current, steps: total });
   }
 
@@ -577,7 +581,10 @@ function PlayerInner({ id }) {
         <div className="feedback">
           <p>{t.howWasIt}</p>
           {feedback && (feedback !== 'hard' || fbSent) ? (
-            <p className="thanks">{t.thanks}</p>
+            <>
+              <p className="thanks">{t.thanks}</p>
+              {feedback !== 'hard' && <FeedbackAsk t={t} lang={lang} lesson={id} where="lesson_end" v={feedback} />}
+            </>
           ) : feedback ? (
             <div className="fb-more">
               <p>{t.fbWhy}</p>
@@ -593,10 +600,11 @@ function PlayerInner({ id }) {
                   </button>
                 ))}
               </div>
+              <FeedbackBox t={t} lang={lang} value={fbNote} onChange={setFbNote} />
               <button
                 className="btn primary"
                 onClick={() => {
-                  track('feedback_detail', { lesson: id, meta: { v: feedback, reasons: fbReasons, note: '', lang, mode, steps: total } });
+                  track('feedback_detail', { lesson: id, meta: { v: feedback, reasons: fbReasons, note: fbNote.trim().slice(0, 600), lang, mode, steps: total, where: 'lesson_end' } });
                   setFbSent(true);
                 }}
               >
@@ -625,6 +633,8 @@ function PlayerInner({ id }) {
             </div>
           )}
         </div>
+
+        {askRate && <RateApp t={t} lang={lang} where="lesson_end" canSnooze />}
 
         <Link className="btn ghost" href="/">
           {t.otherLessons}

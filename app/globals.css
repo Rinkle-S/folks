@@ -747,7 +747,9 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; }
 .topic-card b { font-size: 20px; line-height: 1.3; }
 .topic-card small { font-size: 16px; }
 .topic-card.is-soon { opacity: 0.75; background: transparent; border: 2px dashed var(--line, #cfd8d4); box-shadow: none; }
-.home-topics { display: grid; gap: 10px; }
+.home-topics { display: grid; gap: 12px; margin-top: 24px; margin-bottom: 8px; }
+.home-topics .lesson-list { gap: 12px; }
+.home-topics .topic-card { margin: 0; }
 .home-topics .btn { width: 100%; }
 
 .print-toast { position: fixed; left: 16px; right: 16px; bottom: 90px; z-index: 50; background: #17302a; color: #fff; border-radius: 14px; padding: 14px 16px; font-size: 18px; text-align: center; }
@@ -826,3 +828,31 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; }
 
 /* Pages that show the bottom bar need room under their content. */
 .has-nav { padding-bottom: 112px; }
+/* "Did you mean" list on Home */
+.did-you-mean .dym-row { display: flex; align-items: center; gap: 12px; min-height: 64px; padding: 8px 12px; margin: 8px 0; border-radius: 16px; background: var(--paper); color: var(--ink); text-decoration: none; font-size: 18px; font-weight: 700; line-height: 1.3; }
+.did-you-mean .dym-txt { flex: 1; min-width: 0; }
+.did-you-mean .dym-none { margin: 14px 0 6px; }
+
+/* Calm note when this browser cannot listen or speak */
+.voice-warn { margin: 0 0 12px; padding: 12px 14px; border-radius: 14px; background: var(--marigold-soft); color: var(--ink); font-size: 16px; line-height: 1.45; border: 1.5px solid #f0d9ab; }
+
+/* Lesson rows with a share button beside the card */
+.lesson-row { display: flex; align-items: stretch; gap: 8px; }
+.lesson-row .lesson-card { flex: 1; min-width: 0; }
+.share-sq { flex: none; width: 72px; gap: 2px; align-content: center; font: inherit; border-radius: var(--r-group); border: 1.5px solid var(--line); background: var(--surface); color: var(--peacock-deep); display: grid; place-items: center; cursor: pointer; }
+.share-sq:active { background: var(--peacock-soft); }
+
+/* Rating stars and the "tell us more" box (big, for older hands) */
+.rate-card { display: grid; gap: 8px; margin-top: 22px; padding: 16px; border-radius: var(--r-group); background: var(--surface); box-shadow: var(--shadow-1); text-align: center; }
+.rate-card b { font-size: 19px; }
+.rate-card p { margin: 0; }
+.stars { display: flex; justify-content: center; gap: 4px; }
+.star { width: 58px; height: 58px; border: none; background: transparent; border-radius: 50%; color: #c9c4b8; display: grid; place-items: center; cursor: pointer; }
+.star.on { color: var(--marigold); }
+.star.on svg { fill: currentColor; }
+.star:active { background: var(--marigold-soft); }
+.fb-box { display: grid; gap: 10px; }
+.fb-box textarea { font: inherit; font-size: 18px; line-height: 1.45; padding: 12px 14px; border-radius: 14px; border: none; box-shadow: 0 0 0 1.5px var(--line) inset; background: #fff; resize: vertical; min-height: 120px; }
+.fb-mic.on { background: var(--marigold-soft); border-color: var(--marigold); }
+.fb-hint { margin: 0; font-size: 16px; }
+.share-sq small { font-size: 15px; font-weight: 700; }

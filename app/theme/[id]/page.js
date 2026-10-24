@@ -7,6 +7,7 @@ import AppIcon from '@/components/AppIcon';
 import { AppBar, BottomNav } from '@/components/AppShell';
 import PrintBar from '@/components/PrintBar';
 import JourneyArticle from '@/components/JourneyArticle';
+import ShareLesson from '@/components/ShareLesson';
 import { T } from '@/lib/i18n';
 import { useLang, getDone } from '@/lib/client';
 import { THEMES } from '@/lib/themes';
@@ -55,7 +56,8 @@ export default function Theme({ params }) {
           {lessons.map((l, i) => {
             const isDone = done.includes(l.id);
             return (
-              <Link key={l.id} href={`/lesson/${l.id}`} className={`lesson-card ${isDone ? 'is-done' : ''}`}>
+              <div key={l.id} className="lesson-row">
+              <Link href={`/lesson/${l.id}`} className={`lesson-card ${isDone ? 'is-done' : ''}`}>
                 <span className="lesson-num">{isDone ? <Icon name="check" size={20} stroke={3} /> : i + 1}</span>
                 <span className="lesson-main">
                   <b>{l.title[lang]}</b>
@@ -68,6 +70,8 @@ export default function Theme({ params }) {
                   <Icon name="chevron" size={22} />
                 </span>
               </Link>
+              <ShareLesson id={l.id} title={l.title[lang]} lang={lang} t={t} where="topic_list" />
+              </div>
             );
           })}
           {(th.links || []).map((x) => (
