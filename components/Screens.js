@@ -28,10 +28,7 @@ import {
   WaCalling,
   WaVideo,
 } from './screens/WhatsApp';
-import { DriveHome, DriveNew, DriveScanner, DriveReview, DriveSave } from './screens/Drive';
 import { UbHome, UbSearch, UbRides, UbPickup, UbDriver, UbShare, RpHome, RpSearch, RpRides, RpCaptain, RpEnd } from './screens/Rides';
-import { YtHome, YtSearch, YtResults, YtPlayer } from './screens/YouTube';
-import { SwHome, SwSearch, SwResults, SwMenu, SwCart, SwPlaced } from './screens/Swiggy';
 import { PhoneHome } from './screens/PhoneHome';
 import GenScreen from './screens/Gen';
 import KitScreen from './kit';
@@ -158,18 +155,6 @@ function ScreenFor({ step, lesson, lang, t, values, typed }) {
     case 'wa-text-status':
       return <WaTextStatus typed={step.typed} color={step.color || 0} />;
 
-    // Google Drive
-    case 'drive-home':
-      return <DriveHome saved={step.saved} />;
-    case 'drive-new':
-      return <DriveNew />;
-    case 'drive-scanner':
-      return <DriveScanner />;
-    case 'drive-review':
-      return <DriveReview />;
-    case 'drive-save':
-      return <DriveSave />;
-
     // Uber
     case 'ub-home':
       return <UbHome />;
@@ -195,30 +180,6 @@ function ScreenFor({ step, lesson, lang, t, values, typed }) {
       return <RpCaptain />;
     case 'rp-end':
       return <RpEnd rated={step.rated} />;
-
-    // YouTube
-    case 'yt-home':
-      return <YtHome />;
-    case 'yt-search':
-      return <YtSearch />;
-    case 'yt-results':
-      return <YtResults />;
-    case 'yt-player':
-      return <YtPlayer ad={step.ad} full={step.full} />;
-
-    // Swiggy
-    case 'sw-home':
-      return <SwHome />;
-    case 'sw-search':
-      return <SwSearch />;
-    case 'sw-results':
-      return <SwResults />;
-    case 'sw-menu':
-      return <SwMenu added={step.added} />;
-    case 'sw-cart':
-      return <SwCart />;
-    case 'sw-placed':
-      return <SwPlaced />;
 
     default:
       return null;

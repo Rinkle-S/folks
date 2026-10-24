@@ -10,7 +10,7 @@ HelloPM Buildathon, Oct 2026 · built by Rinkle Sebastian · spec in [SPEC.md](S
 |---|---|---|
 | `/` | Parent | Say or type what you want to learn → the matching lesson. An "up next" lesson card, a grid of apps ("Your apps" first), plus a "Spot the scam" card. With no match, "Ask someone to make this lesson" sends a WhatsApp link. |
 | `/app/<id>` | Parent | One app's lessons, with what's already learned. |
-| `/lesson/<id>` | Parent | 12 lessons (Google Pay: QR payment, send money, recharge, electricity bill · WhatsApp: find an old file, status, video call · YouTube: find and play a bhajan, skip ads · Uber: book a cab, check the car, share the trip · Rapido: book an auto, OTP, fair fare · Swiggy: order food, check the bill, refund scam · Google Drive: scan to PDF). Each lesson can be learned three ways (see below). |
+| `/lesson/<id>` | Parent | Hand-built lessons (Google Pay: QR payment, send money, recharge, electricity bill · WhatsApp: find an old file, status, video call · Uber: book a cab, check the car, share the trip · Rapido: book an auto, OTP, fair fare). Each lesson can be learned three ways (see below). |
 | `/scams` | Parent | 10 real-looking messages and calls (KYC link, fake bank call, "new number" child, customs, job offer, lottery, wrong-number refund) plus genuine ones. Pick Real or Scam and hear why. |
 | `/add/<id>` | Helper | Make a lesson for what the parent asked: type the steps, record a voice note, and/or upload a screen recording or screenshots. |
 | `/my/<id>` | Parent | The lesson made for them: the helper's voice note, video, screenshots and written steps (read aloud). |

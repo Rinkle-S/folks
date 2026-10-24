@@ -171,7 +171,7 @@ export default function AddLesson({ params }) {
             <input
               value={s}
               onChange={(e) => setSteps(steps.map((x, k) => (k === i ? e.target.value : x)))}
-              placeholder={i === 0 ? 'e.g. Open YouTube and tap the search icon at the top' : 'Next step'}
+              placeholder={i === 0 ? 'e.g. Open Google Maps and tap the search box at the top' : 'Next step'}
               maxLength={300}
             />
           </div>
