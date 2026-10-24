@@ -15,6 +15,8 @@ owner confirms. "Delays" is what it would take time from.
 | 8 | "Look first, then answer" two-step quizzes for careful quizzes | 4 UX | Small to medium. Adds a tap on those quizzes | Waiting |
 | 10 | AI helper ("ask anything", Gemini fallback) and voice assistants / ChatGPT-style lessons | 5 Innovation, but it makes Nook look like a chatbot wrapper | Removed from the app. Home shows "coming soon". How to bring it back is in `docs/ROADMAP-NOTES.md` | Parked by owner |
 | 9 | Show the original-order Hindi chats in English lessons as English | 4 UX | Small | Waiting |
+| 11 | Bring back the paused apps and lessons (Rapido, PhonePe, PIN reset, failed payment, 7 phone guides, and the deleted apps) | 3, 6 once each is verified | One app at a time, each needs real screenshots first. See `docs/ROADMAP-NOTES.md` | Paused until verified |
+| 12 | Government services practice (Aadhaar, DigiLocker, pension, tax) | 6 | Large, needs careful checking | Coming soon (roadmap slide) |
 
 ## Needs the owner (not code)
 - **Connect Supabase** so events are really recorded (criteria 3 and 7). Steps are in `docs/HANDOFF.md` on the
