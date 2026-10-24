@@ -20,6 +20,7 @@ const BRAND = {
   rapido: 'Rapido',
   yono: 'YONO SBI',
   irctc: 'IRCTC',
+  zomato: 'Zomato',
   maps: 'Maps',
 };
 const POOL = Object.keys(BRAND).filter((id) => !HIDDEN_APPS.has(id));
