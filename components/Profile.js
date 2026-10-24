@@ -1,10 +1,9 @@
 'use client';
-// My profile: name, phone, language, apps, and a way to bring family in. Everything is stored on this phone.
+// My profile: name, language, apps, and a way to bring family in. Everything is stored on this phone.
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { AppBar, BottomNav } from './AppShell';
 import AppsPicker from './AppsPicker';
-import PhonePick from './PhonePick';
 import FluencyPick from './FluencyPick';
 import { T } from '@/lib/i18n';
 import { LANGS } from '@/lib/langs';
@@ -29,7 +28,7 @@ export default function Profile() {
     const clean = saveProfile(next);
     setP(clean);
     setSaved(true);
-    track('profile_set', { meta: { brand: clean.brand, model: clean.model, hasName: !!clean.name } });
+    track('profile_set', { meta: { hasName: !!clean.name } });
     setTimeout(() => setSaved(false), 1500);
   };
 
@@ -43,19 +42,6 @@ export default function Profile() {
           <span>{t.yourName}</span>
           <input className="name-input" value={p.name} onChange={(e) => setP({ ...p, name: e.target.value })} onBlur={() => save(p)} maxLength={30} placeholder={t.obNamePh} />
         </label>
-
-        <div className="field">
-          <span>{t.yourPhone}</span>
-          <PhonePick
-            lang={lang}
-            value={{ brand: p.brand, model: p.model }}
-            onChange={(v) => {
-              const next = { ...p, ...v };
-              setP(next);
-              save(next);
-            }}
-          />
-        </div>
 
         <div className="field">
           <span>{t.obFluencyQ}</span>
