@@ -2,7 +2,7 @@
 // First-run card: this is a practice screen, not the real phone. Shown once; Settings can show it again.
 import Icon from './Icons';
 
-export default function PracticeIntro({ t, onClose }) {
+export default function PracticeIntro({ t, onClose, onNever }) {
   return (
     <div className="pi-wrap" role="dialog" aria-modal="true" aria-label={t.practiceIntroTitle}>
       <div className="pi-card">
@@ -14,6 +14,11 @@ export default function PracticeIntro({ t, onClose }) {
         <button className="btn primary" onClick={onClose}>
           {t.practiceIntroBtn}
         </button>
+        {onNever && (
+          <button className="btn ghost" onClick={onNever}>
+            {t.practiceIntroNever}
+          </button>
+        )}
       </div>
     </div>
   );

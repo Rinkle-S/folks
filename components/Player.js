@@ -19,7 +19,7 @@ import LessonPrint from './LessonPrint';
 import Icon from './Icons';
 import { LESSONS } from '@/lib/lessons';
 import { T } from '@/lib/i18n';
-import { useLang, useMute, speak, stopSpeaking, prefetchSpeech, onSpeaking, track, getFrom, whatsappLink, markDone, vibrate, getLearnMode, addRecent, isPracticeSeen, setPracticeSeen, onSpeechProgress } from '@/lib/client';
+import { useLang, useMute, speak, stopSpeaking, prefetchSpeech, onSpeaking, track, getFrom, whatsappLink, markDone, vibrate, getLearnMode, addRecent, getPracticeNote, setPracticeNote, setPracticeSeen, onSpeechProgress } from '@/lib/client';
 
 // Watch-first pacing (milliseconds). Slower than before: older viewers need time to see the screen, then the pointer,
 // then the tap. Research on older listeners favours clear speech (about 140 words a minute or less) and pauses.
@@ -72,6 +72,8 @@ function PlayerInner({ id }) {
   const startedRef = useRef(false);
   const lockRef = useRef(false);
   const lastStepRef = useRef(-1);
+  const lastHelpRef = useRef(0);
+  const [helpTick, setHelpTick] = useState(0); // goes up each time Help is used, so the screen scrolls back to the button
   const timers = useRef([]);
   const wrongRef = useRef(0); // wrong taps this run, for the quiet level estimate (lib/adapt.js)
   const helpRef = useRef(0); // Help presses this run
@@ -109,7 +111,8 @@ function PlayerInner({ id }) {
     const el = document.querySelector('.coach-text .say-now');
     if (el) el.scrollIntoView({ block: 'nearest' }); // keep the sentence being spoken in view
   }, [spoken]);
-  useEffect(() => setShowIntro(!isPracticeSeen()), []);
+  // A short "this is practice" card at the start of every lesson, until the person turns it off.
+  useEffect(() => setShowIntro(getPracticeNote()), []);
 
   // Allow links that open straight into a mode (?mode=watch|follow|practice).
   useEffect(() => {
@@ -189,7 +192,9 @@ function PlayerInner({ id }) {
     // Bring the button into view ONCE when the step starts. After that the person may scroll freely.
     const freshStep = lastStepRef.current !== idx;
     lastStepRef.current = idx;
-    if (sc && freshStep) {
+    const helped = lastHelpRef.current !== helpTick;
+    lastHelpRef.current = helpTick;
+    if (sc && (freshStep || helped)) {
       const er = el.getBoundingClientRect();
       const sr = sc.getBoundingClientRect();
       if (er.top < sr.top + 8 || er.bottom > sr.bottom - 8) sc.scrollTop += er.top - sr.top - (sr.height - er.height) / 2;
@@ -253,7 +258,7 @@ function PlayerInner({ id }) {
       window.removeEventListener('resize', place);
       root.removeEventListener('scroll', place, true);
     };
-  }, [idx, typed, lang, done, mode, showHint]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [idx, typed, lang, done, mode, showHint, helpTick]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Watch mode: play each step by itself. Each step waits for its voice to finish before the next one.
   useEffect(() => {
@@ -372,6 +377,7 @@ function PlayerInner({ id }) {
     setTimeout(() => setShake(false), 400);
     if (stepWrongRef.current >= 2) {
       setShowHint(true);
+      setHelpTick((n) => n + 1);
       if (step.hint) speak(step.hint[lang], lang);
     }
   }
@@ -418,6 +424,7 @@ function PlayerInner({ id }) {
     helpRef.current++;
     track('hint', { lesson: id, step: idx, meta: { id: step.id } });
     setShowHint(true);
+    setHelpTick((n) => n + 1);
     speak((step.hint || step.say)[lang], lang);
   }
 
@@ -503,6 +510,11 @@ function PlayerInner({ id }) {
     <PracticeIntro
       t={t}
       onClose={() => {
+        setPracticeSeen();
+        setShowIntro(false);
+      }}
+      onNever={() => {
+        setPracticeNote(false);
         setPracticeSeen();
         setShowIntro(false);
       }}
@@ -660,7 +672,7 @@ function PlayerInner({ id }) {
           <div className="bar">
             <span style={{ width: `${(idx / total) * 100}%` }} />
           </div>
-          <small>{watching ? `${t.watching}: ${t.step(idx + 1, total)}` : t.step(idx + 1, total)}</small>
+          <small>{idx === 0 ? '' : watching ? `${t.watching}: ${t.step(idx, total - 1)}` : t.step(idx, total - 1)}</small>
         </div>
         <LessonPrint lesson={lesson} lang={lang} t={t} variant="icon" />
         <button className="ptop-btn" onClick={() => setShowSettings(true)} aria-label="Settings">
