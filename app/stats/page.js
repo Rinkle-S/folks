@@ -1,5 +1,6 @@
 // Live usage numbers from Supabase. Proves the data is real, and gives numbers for the deck.
 import { LESSONS, COMING_SOON } from '@/lib/lessons';
+import { authHeaders } from '@/lib/supabase';
 
 export const dynamic = 'force-dynamic';
 export const metadata = { title: 'Nook live stats' };
@@ -10,7 +11,7 @@ async function loadEvents() {
   if (!url || !key) return { connected: false, events: [] };
   try {
     const r = await fetch(`${url}/rest/v1/events?select=*&order=created_at.desc&limit=10000`, {
-      headers: { apikey: key, Authorization: `Bearer ${key}` },
+      headers: authHeaders(key),
       cache: 'no-store',
     });
     if (!r.ok) return { connected: true, error: true, events: [] };

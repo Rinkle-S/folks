@@ -1,5 +1,6 @@
 // Stores one usage event in Supabase. Keys stay on the server (Vercel env vars).
 import { NextResponse } from 'next/server';
+import { authHeaders } from '@/lib/supabase';
 
 const ALLOWED = new Set([
   'lesson_start',
@@ -72,8 +73,7 @@ export async function POST(req) {
     const r = await fetch(`${url}/rest/v1/events`, {
       method: 'POST',
       headers: {
-        apikey: key,
-        Authorization: `Bearer ${key}`,
+        ...authHeaders(key),
         'Content-Type': 'application/json',
         Prefer: 'return=minimal',
       },
