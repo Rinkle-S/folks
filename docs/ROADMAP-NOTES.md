@@ -25,6 +25,12 @@ the owner could check against real screenshots. Everything below is paused, not 
 - Fifth round (24 Oct, 26 lessons): WhatsApp make a group, IRCTC check your PNR, flashlight, save a contact, Google Pay past
   payments. The four Uber lessons that were cut in round three (rate, lost item, pay by UPI, share a trip) are back, so the Rides
   topic is a complete journey: book, check the driver, share, pay, rate, cancel, lost item.
+- Sixth round (24 Oct, 22 lessons): apps IRCTC (book a ticket) and Zomato (order food) hidden; Connect to Wi-Fi, call for help in an
+  emergency, and "you sent money to the wrong person" hidden; the topics "Make your phone your own" and the "voice assistants and AI
+  helpers: coming soon" card removed. Flashlight is back, and "Install an app" now sits under Phone basics.
+  Google Pay screens fixed: the receipt now has "Share screenshot" and "Done" (no X, no "Open scanner"); the PIN page in the
+  balance lesson no longer shows half-typed dots; "Credit for you" on the Money tab.
+  Reference folders for owner screenshots: docs/reference/whatsapp and docs/reference/uber.
 - **iPhone (iOS) is a roadmap item, Android first.** App screens (Google Pay, WhatsApp, Uber, Maps) are broadly similar, but
   WhatsApp and Maps move their tab bars and some buttons, and phone basics (Settings, Wi-Fi, text size, alarm) differ completely.
   Most 55+ Indian users are on Android. Doing iOS well means a second set of real screenshots and a second check of every step,

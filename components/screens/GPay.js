@@ -344,7 +344,7 @@ export function GpMoney({ tap }) {
             742<small>Good</small>
           </span>
         </div>
-        <SecHead title="Credits for you" />
+        <SecHead title="Credit for you" />
         <div className="g2-offers">
           <div>
             <span className="g2-offer-ic">💰</span>
@@ -604,9 +604,9 @@ export function GpAmount({ payee, amount, keypad, sheet }) {
 // ---------- UPI PIN (the bank's PIN page) ----------
 
 // balance: the PIN asked for a balance check, so nothing is being sent.
-export function GpPin({ payee = {}, amount, typed, full, balance }) {
+export function GpPin({ payee = {}, amount, typed, full, balance, shown }) {
   const lang = useScreenLang();
-  const filled = full ? 4 : (typed || '').length;
+  const filled = full || shown ? 4 : (typed || '').length;
   return (
     <div className="app g2-pin">
       <Status />
@@ -651,7 +651,7 @@ export function GpPin({ payee = {}, amount, typed, full, balance }) {
           </span>
         </div>
       )}
-      <div className="pin-warn">{PIN_NOTE[lang] || PIN_NOTE.en}</div>
+      {!shown && <div className="pin-warn">{PIN_NOTE[lang] || PIN_NOTE.en}</div>}
       <Keypad tick />
     </div>
   );
@@ -664,7 +664,7 @@ export function GpSuccess({ payee, amount, title, share }) {
   return (
     <div className={`app gp g2 ${share ? 'stack' : ''}`}>
       <Status />
-      <GpTop left={{ icon: 'close', t: 'done' }} right={['more']} />
+      <GpTop left={null} right={['more']} />
       <div className="g2-done">
         <div className="g2-done-tick">
           <Icon name="check" size={50} color="#fff" stroke={3} />
@@ -677,10 +677,10 @@ export function GpSuccess({ payee, amount, title, share }) {
       </div>
       <div className="g2-btns center">
         <div className="g2-btn outline" data-t="share">
-          <Icon name="share" size={18} /> Share
+          <Icon name="share" size={18} /> Share screenshot
         </div>
-        <div className="g2-btn">
-          <Icon name="scan" size={18} color="#fff" /> Open scanner
+        <div className="g2-btn" data-t="done">
+          Done
         </div>
       </div>
       <div className="g2-foot">
