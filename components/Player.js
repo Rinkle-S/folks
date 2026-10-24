@@ -71,6 +71,7 @@ function PlayerInner({ id }) {
   const coachRef = useRef(null);
   const startedRef = useRef(false);
   const lockRef = useRef(false);
+  const lastStepRef = useRef(-1);
   const timers = useRef([]);
   const wrongRef = useRef(0); // wrong taps this run, for the quiet level estimate (lib/adapt.js)
   const helpRef = useRef(0); // Help presses this run
@@ -178,54 +179,81 @@ function PlayerInner({ id }) {
     els.forEach((el) => el.classList.add('hl'));
     const el = els[0];
     if (!el) return;
-    // Bring the button to tap into view inside the practice screen: centre it in whatever part of the screen scrolls.
-    const bringIntoView = () => {
-      let sc = el.parentElement;
-      while (sc && sc !== root) {
-        if (sc.scrollHeight > sc.clientHeight + 4 && /(auto|scroll)/.test(getComputedStyle(sc).overflowY)) break;
-        sc = sc.parentElement;
-      }
-      if (!sc || sc === root) return;
+    // The part of the screen that scrolls and holds this button (null when the whole screen is fixed).
+    let sc = el.parentElement;
+    while (sc && sc !== root) {
+      if (sc.scrollHeight > sc.clientHeight + 4 && /(auto|scroll)/.test(getComputedStyle(sc).overflowY)) break;
+      sc = sc.parentElement;
+    }
+    if (sc === root) sc = null;
+    // Bring the button into view ONCE when the step starts. After that the person may scroll freely.
+    const freshStep = lastStepRef.current !== idx;
+    lastStepRef.current = idx;
+    if (sc && freshStep) {
       const er = el.getBoundingClientRect();
       const sr = sc.getBoundingClientRect();
       if (er.top < sr.top + 8 || er.bottom > sr.bottom - 8) sc.scrollTop += er.top - sr.top - (sr.height - er.height) / 2;
-    };
-    bringIntoView();
+    }
+    // Everything below is measured from the inside edge of the dashed border, which is where the overlays are drawn from.
     const place = () => {
-      let r = el.getBoundingClientRect();
-      const R = root.getBoundingClientRect();
-      if (!r.width) return;
-      if (r.bottom < R.top + 4 || r.top > R.bottom - 4) {
-        bringIntoView();
-        r = el.getBoundingClientRect();
+      const rb = root.getBoundingClientRect();
+      const ox = rb.left + root.clientLeft;
+      const oy = rb.top + root.clientTop;
+      const W = root.clientWidth;
+      const H = root.clientHeight;
+      const r = el.getBoundingClientRect();
+      if (!r.width && !r.height) return;
+      // Only the visible part of the button counts: not the part scrolled away or hidden behind a bar.
+      let vis = { left: Math.max(r.left, ox), top: Math.max(r.top, oy), right: Math.min(r.right, ox + W), bottom: Math.min(r.bottom, oy + H) };
+      if (sc) {
+        const c = sc.getBoundingClientRect();
+        vis = { left: Math.max(vis.left, c.left), top: Math.max(vis.top, c.top), right: Math.min(vis.right, c.right), bottom: Math.min(vis.bottom, c.bottom) };
       }
-      const half = Math.min(R.width / 2 - 8, Math.max(64, String(label).length * 4.8));
-      const x = Math.min(Math.max(r.left - R.left + r.width / 2, half), R.width - half);
-      const above = r.top - R.top > 52;
-      if (step.kind === 'tap') {
+      const visW = vis.right - vis.left;
+      const visH = vis.bottom - vis.top;
+      const showing = visW > 8 && visH > Math.min(r.height * 0.5, 24);
+      let next;
+      if (!showing) {
+        // Scrolled out of sight: a hand at the edge points the way back to the button.
+        const up = r.bottom <= oy + H / 2;
+        next = { edge: up ? 'up' : 'down', x: Math.min(Math.max(r.left + r.width / 2 - ox, 28), W - 28), y: up ? 28 : H - 28, label };
+      } else if (step.kind === 'tap') {
         // A small hand on the corner of the button: it never covers a neighbouring icon or its name.
-        setBubble({
+        next = {
           compact: true,
-          box: { x: r.left - R.left, y: r.top - R.top, w: r.width, h: r.height },
-          x: Math.min(Math.max(r.right - R.left - 8, 22), R.width - 22),
-          y: Math.min(Math.max(r.bottom - R.top - 6, 22), R.height - 22),
+          box: { x: vis.left - ox, y: vis.top - oy, w: visW, h: visH },
+          x: Math.min(Math.max(vis.right - ox - 8, 26), W - 26),
+          y: Math.min(Math.max(vis.bottom - oy - 6, 26), H - 26),
           label,
-        });
-        return;
+        };
+      } else {
+        const half = Math.min(W / 2 - 8, Math.max(64, String(label).length * 4.8));
+        const x = Math.min(Math.max(r.left - ox + r.width / 2, half), W - half);
+        const above = r.top - oy > 52;
+        next = { x, y: above ? r.top - oy - 10 : r.bottom - oy + 10, below: !above, label };
       }
-      setBubble({ x, y: above ? r.top - R.top - 10 : r.bottom - R.top + 10, below: !above, label });
+      setBubble((prev) => (prev && JSON.stringify(prev) === JSON.stringify(next) ? prev : next));
     };
     const raf = requestAnimationFrame(place);
     const tm = setTimeout(place, 400);
+    // Keep the pointer on the button whenever the layout changes: the help text opening, a font loading, a bar appearing.
+    const poll = setInterval(place, 250);
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(place) : null;
+    if (ro) {
+      ro.observe(root);
+      ro.observe(el);
+    }
     window.addEventListener('resize', place);
     root.addEventListener('scroll', place, true);
     return () => {
       cancelAnimationFrame(raf);
       clearTimeout(tm);
+      clearInterval(poll);
+      if (ro) ro.disconnect();
       window.removeEventListener('resize', place);
       root.removeEventListener('scroll', place, true);
     };
-  }, [idx, typed, lang, done, mode]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [idx, typed, lang, done, mode, showHint]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Watch mode: play each step by itself. Each step waits for its voice to finish before the next one.
   useEffect(() => {
@@ -648,7 +676,12 @@ function PlayerInner({ id }) {
         onClick={onScreenClick}
       >
         <Screen step={step} lesson={lesson} lang={lang} t={t} values={values} typed={typed} />
-        {bubble && (
+        {bubble && bubble.edge && (
+          <div className="tap-hand edge" style={{ left: bubble.x, top: bubble.y }} aria-hidden="true">
+            {bubble.edge === 'up' ? '👆' : '👇'}
+          </div>
+        )}
+        {bubble && !bubble.edge && (
           bubble.compact ? (
             <>
               <div className="tap-tint" style={{ left: bubble.box.x, top: bubble.box.y, width: bubble.box.w, height: bubble.box.h }} aria-hidden="true" />

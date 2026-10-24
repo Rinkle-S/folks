@@ -768,7 +768,8 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; }
 .app-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity 0.2s; }
 
 .ptop-leave { display: inline-flex; align-items: center; gap: 6px; flex: none; height: 48px; padding: 0 14px 0 10px; border-radius: 999px; border: none; background: var(--surface); box-shadow: 0 0 0 1.5px var(--line) inset; color: var(--ink); font: inherit; font-weight: 700; font-size: 17px; }
-.tap-hand { position: absolute; z-index: 6; width: 36px; height: 36px; margin: -18px 0 0 -18px; display: grid; place-items: center; font-size: 22px; background: #fff; border-radius: 50%; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); pointer-events: none; animation: bob 1.1s ease-in-out infinite; }
+.tap-hand { position: absolute; z-index: 6; width: 36px; height: 36px; margin: -18px 0 0 -18px; display: grid; place-items: center; font-size: 22px; background: #fff; border-radius: 50%; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); pointer-events: none; animation: handbob 1.1s ease-in-out infinite; }
+@keyframes handbob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(4px); } }
 .done-quiet { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 14px; margin-top: 4px; }
 .done-quiet .link-btn { display: inline-flex; align-items: center; gap: 6px; }
 
@@ -808,3 +809,7 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; }
 .how-steps b { font-size: 15px; line-height: 1.25; }
 .how-steps > i { align-self: center; font-style: normal; font-size: 22px; color: var(--ink-3); }
 .flags { margin: 0; padding-left: 22px; display: grid; gap: 4px; font-size: 17px; line-height: 1.4; }
+
+/* On a short phone, practice screens scroll instead of squashing their parts (tabs, bars) into slivers. */
+.screen .app > * { flex-shrink: 0; }
+.screen .app > .g2-scroll, .screen .app > .g2-thread { flex-shrink: 1; }
