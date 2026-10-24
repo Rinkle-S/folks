@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import useInstall from './useInstall';
 import TrustedContacts from './TrustedContacts';
-import { speak, unlockAudio, getLearnMode, setLearnMode, getVoiceChoice, setVoiceChoice, diagnoseVoice } from '@/lib/client';
+import { getPracticeNote, setPracticeNote, speak, unlockAudio, getLearnMode, setLearnMode, getVoiceChoice, setVoiceChoice, diagnoseVoice } from '@/lib/client';
 import { voiceStatus } from '@/lib/voice';
 import { T } from '@/lib/i18n';
 import { LANGS } from '@/lib/langs';
@@ -15,6 +15,7 @@ export default function Settings({ lang, setLang, muted, toggleMute, onClose, on
   const [voice, setVoice] = useState(getVoiceChoice());
   const [diag, setDiag] = useState(null);
   const [told, setTold] = useState(false);
+  const [note, setNote] = useState(getPracticeNote());
   const t = T[lang] || T.en;
   // English plus the chosen language, so a Malayalam parent never sees Hindi here.
   const bi = (en, hi, ml) => `${en} / ${lang === 'ml' ? ml : hi}`;
@@ -122,6 +123,19 @@ export default function Settings({ lang, setLang, muted, toggleMute, onClose, on
           </div>
         )}
         <TrustedContacts t={t} />
+        <div className="settings-row">
+          <span>{t.practiceNoteRow}</span>
+          <button
+            className={`toggle ${note ? 'on' : ''}`}
+            onClick={() => {
+              setNote(!note);
+              setPracticeNote(!note);
+            }}
+            aria-pressed={note}
+          >
+            {note ? bi('On', 'चालू', 'ഓൺ') : bi('Off', 'बंद', 'ഓഫ്')}
+          </button>
+        </div>
         {onMismatch && (
           <div className="settings-row">
             <span>{told ? t.mismatchThanks : t.mismatchQ}</span>

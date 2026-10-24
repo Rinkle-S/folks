@@ -35,6 +35,9 @@ Pointer fixes in `components/Player.js`: the hand no longer gets cut off (its bo
 can be scrolled freely (it used to snap back to the button), the highlight follows the button when the Help text opens, and a hand
 at the screen edge points to a button scrolled out of sight.
 
+## Practice clarity (Sat 24 Oct, from the Reddit and tester feedback)
+Every practice screen has a PRACTICE banner (20px) and a faint tilted PRACTICE mark. A "this is practice" card opens at the start of every lesson until the person taps "I know this. Do not show it again" or turns it off in Settings ("Practice reminder at the start of each lesson"); the FAQ explains it. Step numbers now start at 1 on the first practice screen (the lesson start is not counted). Help scrolls the screen back to the button, and a hand at the screen edge points to a button that was scrolled out of sight. Highlight style options (ring, label, arrow, glow) were shown to the owner; no pick yet.
+
 ## What is built (all on main)
 - 78 lessons: hand-built plus guide lessons (`lib/guides/*`, screens in `lib/kitSpec*.js`, components in `components/kit` and `components/screens`).
   99 recreated app screens, **all are best guesses**: none checked against real phones. See `docs/SCREENS-TO-REPLACE.md`.
