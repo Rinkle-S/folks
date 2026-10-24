@@ -26,6 +26,11 @@ Only Google Pay, PhonePe, WhatsApp, Uber, Rapido, Zomato, YONO SBI, IRCTC and Go
 ## Google Pay screens (Sat 24 Oct)
 All Google Pay practice screens were rebuilt to match the owner's real screenshots (`docs/reference/gpay`, with a README mapping each image to a screen, and real-vs-Nook comparison images). Shared parts in `components/screens/GPay.js`: `GpTop`, `BankingName`, `BankBadge`, `GpTabs`, `UpiMark`; one practice bank (State Bank of India ••••5234) and UPI ID everywhere. Lesson changes: 'Pay anyone' (not 'Pay contacts'), no 'Request' button in chat, success screen closes with the X at the top left (no 'Done'), recharge number under 'My recharges', electricity starts from 'Bills & recharges' on Home and uses 'Link account'. All 11 Google Pay lessons were played start to finish (English; 6 also in Hindi and Malayalam). The new Hindi and Malayalam lines need a native read.
 
+## Core only (Sat 24 Oct, evening)
+47 lessons in 8 apps plus Phone basics (10 lessons). A second round of lessons was hidden (see `docs/ROADMAP-NOTES.md`). Zomato has one lesson
+(unverified, generic screens). The bottom bar (Learn, Stay safe, Help) now also shows on quick guides, the scam practice and the lesson end
+screen; it stays hidden during a lesson, where "Leave" is the way out.
+
 ## Hidden, not deleted (Sat 24 Oct)
 `lib/hidden.js` lists apps (Rapido, PhonePe) and guides that are switched off but kept in the code. To bring one back, remove its
 id from the list. Why: the owner cannot verify every screen, so we show only what is checked. Details and the order to restore them
