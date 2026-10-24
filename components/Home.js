@@ -317,7 +317,8 @@ export default function Home() {
   const mine = myApps || [];
   const orderedApps = [...mine.map((id) => APPS.find((a) => a.id === id)).filter(Boolean), ...APPS.filter((a) => !mine.includes(a.id))];
   // Apps they picked come first; the rest stay one tap away so they can still be discovered.
-  const shownApps = mine.length && !moreApps ? orderedApps.filter((a) => mine.includes(a.id)) : orderedApps;
+  // Phone basics is on every phone, so it is always shown, whatever apps the person picked.
+  const shownApps = mine.length && !moreApps ? orderedApps.filter((a) => mine.includes(a.id) || a.id === 'phone') : orderedApps;
   const hiddenCount = orderedApps.length - shownApps.length;
   const orderedLessons = orderedApps.flatMap((a) => orderForFluency(lessons.filter((l) => l.app === a.id), fluency, skills));
   // Never suggest something already learned, except a lesson they struggled with a few days ago.
