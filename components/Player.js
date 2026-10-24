@@ -221,14 +221,14 @@ function PlayerInner({ id }) {
       if (!showing) {
         // Scrolled out of sight: a hand at the edge points the way back to the button.
         const up = r.bottom <= oy + H / 2;
-        next = { edge: up ? 'up' : 'down', x: Math.min(Math.max(r.left + r.width / 2 - ox, 28), W - 28), y: up ? 28 : H - 28, label };
+        next = { edge: up ? 'up' : 'down', x: Math.min(Math.max(r.left + r.width / 2 - ox, 34), W - 34), y: up ? 34 : H - 34, label };
       } else if (step.kind === 'tap') {
         // A small hand on the corner of the button: it never covers a neighbouring icon or its name.
         next = {
           compact: true,
           box: { x: vis.left - ox, y: vis.top - oy, w: visW, h: visH },
-          x: Math.min(Math.max(vis.right - ox - 8, 26), W - 26),
-          y: Math.min(Math.max(vis.bottom - oy - 6, 26), H - 26),
+          x: Math.min(Math.max(vis.right - ox - 8, 34), W - 34),
+          y: Math.min(Math.max(vis.bottom - oy - 6, 34), H - 34),
           label,
         };
       } else {
