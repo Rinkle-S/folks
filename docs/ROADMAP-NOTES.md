@@ -1,5 +1,29 @@
 # Roadmap notes (for the deck, not built)
 
+## Paused until verified: apps and lessons (decided 24 Oct 2026)
+**Building a screen is quick. Verifying it against the real app, word for word, is the real work.** So Nook keeps only what
+the owner could check against real screenshots. Everything below is paused, not forgotten.
+
+**Hidden in the code, one line to bring back each** (`lib/hidden.js`: remove the id from the list, rebuild):
+- Apps: **Rapido** (book an auto, cancel), **PhonePe** (send money).
+- Google Pay lessons: reset a forgotten UPI PIN, money was debited but not received.
+- Phone guides: block a lost debit card, keep your apps up to date, set a screen lock, send an email, free up phone space,
+  change your ringtone, change your wallpaper.
+- Moved, not removed: "Is this link or message safe?" is now a quick guide in the Stay safe tab (`/guide/open-link-safe`).
+
+**Removed earlier, code kept in git history** (the commit just before `692c6ff` on 24 Oct 2026 still has all of it):
+Paytm, Google Drive (scan to PDF), YouTube, Swiggy, Ola, Amazon, Flipkart, Instagram, Spotify, Blinkit, ICICI iMobile, Zepto.
+
+**Coming soon: government services.** The same safe practice for the things parents are asked to do online for the
+government: Aadhaar and DigiLocker, pension and life certificates, income tax, ration card, passport and bill portals.
+These need the most careful checking against the real sites, so they come after the core journeys are verified.
+
+**Order to bring things back:** one app at a time. Get 5 to 10 real screenshots from the owner, rebuild the screens from them
+(as done for Google Pay in `docs/reference/gpay`), check each step against the app's own help pages, play every lesson in all
+three languages, then take the id off the hidden list.
+
+## Earlier notes
+
 Decided 23 Oct 2026. Put these on the roadmap slide when we do the deck at the end.
 
 - **Workshops / sessions:** live group sessions for seniors (dance, yoga, games, chair exercise), a "Workshops" tab
