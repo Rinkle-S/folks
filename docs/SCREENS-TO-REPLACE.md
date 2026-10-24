@@ -12,13 +12,11 @@ How to send: a screenshot per step, in the same order as the lesson, on the phon
 4. **Phone settings** (`and-*`, 20): Settings home, Battery, Storage, Security, Bluetooth, quick settings panel, brightness. These differ by phone brand; pick one brand.
 
 ## Then
-- **PhonePe** (`pp-*`, 3), **Paytm** (`pt-*`, 5), **YONO SBI** (`bk-*`, 8)
-- **YouTube** (`yt-*`, 5), **Instagram** (`ig-*`, 8), **Spotify** (`sp-*`, 5), **Photos and Drive**
-- **Swiggy** (`sw-*`, 5), **Blinkit** (`bl-*`, 4), **Flipkart** (`fk-*`, 13), grocery screens (`gro-*`, 3)
+- **PhonePe** (`pp-*`, 3), **YONO SBI** (`bk-*`, 8)
 - **IRCTC** (`ir-*`, 15), **Google Maps** (`mp-*`, 10)
 
 ## What to check on each screen
 Button names and their exact wording and capital letters, the order of items, colours, icons, where the back arrow sits, and which
 items scroll. Nook keeps each app's own wording and capitals on its practice screens.
 
-Total recreated screens: 146 (counted from `components/kit/index.js`).
+Total recreated screens: 99 (counted from `components/kit/index.js`).

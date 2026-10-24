@@ -15,20 +15,10 @@ const SYSTEM = {
 const BRAND = {
   gpay: 'Google Pay',
   whatsapp: 'WhatsApp',
-  youtube: 'YouTube',
   uber: 'Uber',
   rapido: 'Rapido',
-  swiggy: 'Swiggy',
-  drive: 'Drive',
-  flipkart: 'Flipkart',
-  instagram: 'Instagram',
-  spotify: 'Spotify',
   yono: 'YONO SBI',
-  icici: 'iMobile',
-  blinkit: 'Blinkit',
-  zepto: 'Zepto',
   irctc: 'IRCTC',
-  paytm: 'Paytm',
   maps: 'Maps',
 };
 const POOL = Object.keys(BRAND);

@@ -3,8 +3,6 @@ import { Overlay, Done } from './ui';
 import * as A from './Android';
 import * as W from './WhatsApp';
 import * as M from './Money';
-import * as MD from './Media';
-import * as S from './Shop';
 import * as TR from './Travel';
 import * as L from './Lessons';
 import * as ST from './Store';
@@ -55,42 +53,12 @@ export const KIT = {
   'pp-home': M.PpHome,
   'pp-contacts': M.PpContacts,
   'pp-amount': M.PpAmount,
-  'pt-home': M.PtHome,
-  'pt-contacts': M.PtContacts,
-  'pt-amount': M.PtAmount,
   'bk-login': M.BkLogin,
   'bk-home': M.BkHome,
   'bk-list': M.BkList,
   'bk-form': M.BkForm,
   'bk-otp': M.BkOtp,
   'bk-statement': M.BkStatement,
-  'yt-home': MD.YtHomeK,
-  'yt-watch': MD.YtWatch,
-  'yt-you': MD.YtYou,
-  'yt-search': MD.YtSearchK,
-  'yt-results': MD.YtResults,
-  'ig-home': MD.IgHome,
-  'ig-search': MD.IgSearch,
-  'ig-profile': MD.IgProfile,
-  'ig-list': MD.IgList,
-  'sp-home': MD.SpHome,
-  'sp-library': MD.SpLibrary,
-  'sp-playlist': MD.SpPlaylist,
-  'sw-home': S.SwHomeK,
-  'sw-track': S.SwTrack,
-  'sw-page': S.SwPage,
-  'sw-address-map': S.SwAddressMap,
-  'sw-issue': S.SwIssue,
-  'bl-home': S.BlHome,
-  'bl-profile': S.BlProfile,
-  'bl-orders': S.BlOrders,
-  'bl-cart': S.BlCart,
-  'fk-home': S.FkHome,
-  'fk-account': S.FkAccount,
-  'fk-orders': S.FkOrders,
-  'fk-order': S.FkOrder,
-  'fk-addresses': S.FkAddresses,
-  'fk-address-form': S.FkAddressForm,
   'ub-home': TR.UbHome,
   'ub-search': TR.UbSearch,
   'ub-rides': TR.UbRides,
@@ -127,24 +95,8 @@ export const KIT = {
   'and-caller': A.CallerPage,
   'and-recents': A.Recents,
   'gp-scan': GpScan,
-  'fk-search': L.FkSearch,
-  'fk-results': L.FkResults,
-  'fk-product': L.FkProduct,
-  'fk-address-pick': L.FkAddressPick,
-  'fk-summary': L.FkSummary,
-  'fk-payment': L.FkPayment,
-  'fk-placed': L.FkPlaced,
-  'ig-post': L.IgPost,
-  'ig-comments': L.IgComments,
-  'ig-picker': L.IgPicker,
-  'ig-caption': L.IgCaption,
-  'sp-search': L.SpSearch,
-  'sp-player': L.SpPlayer,
   'bk-account': L.BkAccount,
   'bk-login-typed': L.BkLoginTyped,
-  'gro-search': L.GroSearch,
-  'gro-cart': L.GroCart,
-  'gro-done': L.GroDone,
   'ir-login-btn': L.IrLoginBtn,
   'ir-search': L.IrSearch,
   'ir-stations': L.IrStations,
@@ -153,8 +105,6 @@ export const KIT = {
   'ir-passenger': L.IrPassenger,
   'ir-pay': L.IrPay,
   'ir-pnr': L.IrPnr,
-  'pt-pay': L.PtPay,
-  'pt-done': L.PtDone,
   'mp-search': L.MpSearch,
   'mp-place-h': L.MpPlaceH,
   'mp-route': L.MpRoute,
@@ -173,7 +123,6 @@ export default function KitScreen({ step, typed }) {
       <C {...(step.p || {})} typed={step.kind === 'input' ? typed : step.p && step.p.typed} />
       <Overlay ov={step.ov} />
       {step.ov && step.ov.custom === 'bank-pp' && <M.PayBankSheet brand="#5f259f" label="PAY ₹500" />}
-      {step.ov && step.ov.custom === 'bank-pt' && <M.PayBankSheet brand="#00b9f1" label="Pay ₹500" />}
     </div>
   );
 }

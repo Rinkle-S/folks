@@ -20,9 +20,12 @@ Tagline: "Your cozy corner for everyday learning". Next.js 14 app router, no log
 - Kind wording: no strong words ("cheated", "danger"...). Say "scammer", "debited". Design for older users: big text, big buttons, calm colours.
 - No new features, apps or lessons unless the owner asks. The owner decides by looking at ideas first: **show options as images, don't change anything until they pick.**
 
+## Apps kept (Sat 24 Oct)
+Only Google Pay, PhonePe, WhatsApp, Uber, Rapido, Zomato, YONO SBI, IRCTC and Google Maps (plus Phone basics) are in Nook. Paytm, Drive, YouTube, Swiggy, Ola, Amazon, Flipkart, Instagram, Spotify, Blinkit, ICICI and Zepto were deleted with their lessons, guides, screens and keywords. Zomato has no lesson of its own (its old lesson was the Swiggy one). Some old Malayalam text for the deleted lessons is still in `lib/mlContent*.js` (unused, harmless).
+
 ## What is built (all on main)
-- 103 lessons: hand-built plus guide lessons (`lib/guides/*`, screens in `lib/kitSpec*.js`, components in `components/kit` and `components/screens`).
-  146 recreated app screens, **all are best guesses**: none checked against real phones. See `docs/SCREENS-TO-REPLACE.md`.
+- 78 lessons: hand-built plus guide lessons (`lib/guides/*`, screens in `lib/kitSpec*.js`, components in `components/kit` and `components/screens`).
+  99 recreated app screens, **all are best guesses**: none checked against real phones. See `docs/SCREENS-TO-REPLACE.md`.
 - Ride journey for Uber and Rapido (book, cancel, check driver, share trip, pay, rate, lost item), settings guides with scroll, toggles, brightness bar.
 - Practice player: Leave button with confirm, Previous step, hand pointer plus light tint over the whole target (auto scrolls it into view),
   hints spoken only from the second wrong tap (blank taps are free), task-specific closing messages (`lib/closing.js`).
@@ -69,7 +72,7 @@ Slides artifact: https://claude.ai/artifact/FCdHYQL667NKxk3EiYqmj8 ("Nook Builda
 - Browser tests: Playwright from `/opt/node-tools/node_modules/playwright/index.mjs`, Chromium at `/opt/pw-browsers/chromium-1243/chrome-linux64/chrome`
   (`--no-sandbox`). Seed `localStorage`: `folks_lang`, `folks_practice_seen`, `folks_onboarded`, `folks_mute_v2=1`, `folks_mode` (practice, watch or follow).
   Block `/api/**` in tests. The internet is mostly blocked in the sandbox (app icon images fall back to drawn badges).
-- Smoke test of all lessons: open every `/app/<id>` page, collect `/lesson/...` links, open each and click the first mode card (103 lessons, 0 failures last run).
+- Smoke test of all lessons: open every `/app/<id>` page, collect `/lesson/...` links, open each and click the first mode card (78 lessons, 0 failures last run).
 - Git: the clone is shallow, so the Stop hook wrongly says "unpushed commits / no remote branch". Verify with `git ls-remote origin <branch>`.
   `gh pr create` is blocked; use the REST API with a JSON file (`gh api repos/Rinkle-S/folks/pulls -X POST --input file.json`). PRs 1 and 2 are merged.
 - Commit trailers: see the system reminder in the session (Co-Authored-By and Claude-Session lines).
