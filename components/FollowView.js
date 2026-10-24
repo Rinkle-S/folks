@@ -42,6 +42,7 @@ export default function FollowView({ lesson, lang, t, onDone, onPractice }) {
         </span>
         <h1>{lesson.title[lang]}</h1>
         <p className="muted">{t.followOpen(lesson.appName)}</p>
+        <p className="follow-real">{t.followRealNote}</p>
         <button className="chip" onClick={readAll}>
           <Icon name="volume" size={20} /> {t.readAll}
         </button>
