@@ -1,4 +1,4 @@
-// Practice look-alike of Google Pay (India), matched to the reference screens in docs/reference/gpay.
+// Practice look-alike of Google Pay (India), matched to the owner's real screenshots (kept out of the repo).
 // Same order, labels and layout as the real app; no Google logos, no real names, numbers or UPI IDs.
 import Icon from '../Icons';
 import AppIcon from '../AppIcon';

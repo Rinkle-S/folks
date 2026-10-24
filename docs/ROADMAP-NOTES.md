@@ -30,7 +30,9 @@ the owner could check against real screenshots. Everything below is paused, not 
   helpers: coming soon" card removed. Flashlight is back, and "Install an app" now sits under Phone basics.
   Google Pay screens fixed: the receipt now has "Share screenshot" and "Done" (no X, no "Open scanner"); the PIN page in the
   balance lesson no longer shows half-typed dots; "Credit for you" on the Money tab.
-  Reference folders for owner screenshots: docs/reference/whatsapp and docs/reference/uber.
+- Seventh round (24 Oct, 20 lessons): "Check a forwarded message" and "If you left something in the car" hidden. WhatsApp and
+  Uber screens rebuilt from the owner's screenshots (see docs/SCREEN-TEMPLATES.md); steps checked against Uber and WhatsApp help.
+  The Stay safe topic now holds "Check the driver" and "Share your trip".
 - **iPhone (iOS) is a roadmap item, Android first.** App screens (Google Pay, WhatsApp, Uber, Maps) are broadly similar, but
   WhatsApp and Maps move their tab bars and some buttons, and phone basics (Settings, Wi-Fi, text size, alarm) differ completely.
   Most 55+ Indian users are on Android. Doing iOS well means a second set of real screenshots and a second check of every step,
@@ -51,7 +53,7 @@ These need the most careful checking against the real sites, so they come after 
 **Idea:** a "change the language in an app or on the phone" lesson (a caregiver said Google Maps suddenly spoke German and the setting took 40 minutes to find).
 
 **Order to bring things back:** one app at a time. Get 5 to 10 real screenshots from the owner, rebuild the screens from them
-(as done for Google Pay in `docs/reference/gpay`), check each step against the app's own help pages, play every lesson in all
+(as done for Google Pay, WhatsApp and Uber; screenshots are not kept in the repo), check each step against the app's own help pages, play every lesson in all
 three languages, then take the id off the hidden list.
 
 ## Earlier notes

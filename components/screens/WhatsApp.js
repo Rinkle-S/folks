@@ -40,6 +40,7 @@ export function WaChats() {
       <div className="wa-head">
         <span className="wa-word">WhatsApp</span>
         <span className="wa-head-ic">
+          <span className="wa-rs">₹</span>
           <Icon name="camera" size={22} />
           <Icon name="more" size={22} />
         </span>
@@ -140,6 +141,7 @@ export function WaChat({ contact }) {
           <Icon name="emoji" size={22} />
           <span>Message</span>
           <Icon name="attach" size={20} />
+          <span className="wa-rs sm">₹</span>
           <Icon name="camera" size={20} />
         </div>
         <div className="wa-mic">
@@ -150,32 +152,20 @@ export function WaChat({ contact }) {
   );
 }
 
-export function WaCalling({ contact }) {
-  return (
-    <div className="app wa-call">
-      <div className="wa-call-self">🙂</div>
-      <div className="wa-call-top">
-        <div className="wa-call-lock">🔒 End-to-end encrypted</div>
-        <div className="wa-call-name">{contact.name}</div>
-        <div className="wa-call-status">Ringing…</div>
-      </div>
-      <CallControls />
-    </div>
+// Video call screens, as in the current Android app: a dark control bar at the bottom (more, speaker,
+// camera, mute, red end), icons on the right, and your own picture in a small box once the call is answered.
+function CallBar({ live }) {
+  const btn = (t, icon, cls = '') => (
+    <span data-t={t} className={`wa-cc ${cls}`}>
+      <Icon name={icon} size={22} color={cls === 'lit' ? '#111b21' : '#fff'} />
+    </span>
   );
-}
-
-function CallControls() {
   return (
     <div className="wa-call-ctrls">
-      <span data-t="flip" className="wa-cc">
-        <Icon name="self" size={22} color="#fff" />
-      </span>
-      <span data-t="camera-off" className="wa-cc">
-        <Icon name="video" size={22} color="#fff" />
-      </span>
-      <span data-t="mute" className="wa-cc">
-        <Icon name="mic" size={22} color="#fff" />
-      </span>
+      {btn('more', 'dots')}
+      {live ? btn('camera-off', 'video') : btn('speaker', 'volume', 'lit')}
+      {live ? btn('speaker', 'volume', 'lit') : btn('camera-off', 'video')}
+      {btn('mute', 'mic')}
       <span data-t="end" className="wa-cc end">
         <Icon name="phone" size={22} color="#fff" />
       </span>
@@ -183,16 +173,64 @@ function CallControls() {
   );
 }
 
+export function WaCalling({ contact }) {
+  return (
+    <div className="app wa-call">
+      <div className="wa-call-self">
+        <span className="wa-face me">🙂</span>
+      </div>
+      <div className="wa-call-top">
+        <div className="wa-call-name">{contact.name}</div>
+        <div className="wa-call-lock">
+          <Icon name="lock" size={11} color="#fff" /> End-to-end encrypted
+        </div>
+        <div className="wa-call-status">Ringing…</div>
+      </div>
+      <div className="wa-call-side">
+        <span>
+          <Icon name="user" size={22} color="#fff" />
+        </span>
+        <span data-t="flip-ring">
+          <Icon name="rotate" size={22} color="#fff" />
+        </span>
+        <span>
+          <Icon name="sparkle" size={22} color="#fff" />
+        </span>
+      </div>
+      <CallBar />
+    </div>
+  );
+}
+
 export function WaVideo({ contact, flipped }) {
   return (
     <div className="app wa-call live">
-      <div className="wa-call-remote">🧑🏽</div>
-      <div className="wa-call-top">
-        <div className="wa-call-name">{contact.name}</div>
-        <div className="wa-call-status">0:12</div>
+      <div className="wa-call-remote">
+        <span className="wa-face">🧑🏽</span>
       </div>
-      <div className="wa-call-pip">{flipped ? '🪴' : '🙂'}</div>
-      <CallControls />
+      <div className="wa-call-bar">
+        <span className="wa-call-round">
+          <Icon name="down" size={20} color="#fff" />
+        </span>
+        <small>
+          {contact.name} · End-to-end encrypted
+        </small>
+        <span className="wa-call-round">
+          <Icon name="user" size={20} color="#fff" />
+        </span>
+      </div>
+      <div className="wa-call-pip">
+        <span className="wa-pip-face">{flipped ? '🪴' : '🙂'}</span>
+        <span className="wa-pip-tools">
+          <span data-t="flip" className="wa-call-round sm">
+            <Icon name="rotate" size={18} color="#fff" />
+          </span>
+          <span className="wa-call-round sm">
+            <Icon name="sparkle" size={18} color="#fff" />
+          </span>
+        </span>
+      </div>
+      <CallBar live />
     </div>
   );
 }
@@ -326,6 +364,16 @@ export function WaPdf() {
 }
 
 export function WaUpdates({ posted }) {
+  const others = [
+    ['Pinky', '#db2777'],
+    ['Family Group', '#7c3aed'],
+    ['Anil', '#b45309'],
+  ];
+  const channels = [
+    ['Krishi Samachar', '#15803d', 'Rain expected this week in many districts', '46'],
+    ['Health Tips Daily', '#0891b2', 'Walk 30 minutes a day for a healthy heart', '12'],
+    ['Bhajan Sangrah', '#c2410c', 'Today’s morning bhajan is here', '3'],
+  ];
   return (
     <div className="app wa">
       <div className="wa-head">
@@ -336,32 +384,40 @@ export function WaUpdates({ posted }) {
         </span>
       </div>
       <div className="wa-sec-h">Status</div>
-      <div className="wa-row">
-        <div className="wa-av me-av" style={{ background: posted ? '#7c3aed' : '#94a3b8' }}>
-          K{!posted && <span className="wa-plus">+</span>}
+      <div className="wa-stories">
+        <div className={`wa-story mine ${posted ? 'posted' : ''}`}>
+          <span className="wa-story-av" style={{ background: '#64748b' }}>
+            K{!posted && <i className="wa-plus">+</i>}
+          </span>
+          <b>{posted ? 'My status' : 'Add status'}</b>
         </div>
-        <div className="wa-mid">
-          <div className="wa-name">My status</div>
-          <div className="wa-msg">{posted ? 'Just now' : 'Tap to add status update'}</div>
-        </div>
+        {others.map(([n, c]) => (
+          <div key={n} className="wa-story" style={{ background: c }}>
+            <span className="wa-story-av ring" style={{ background: c }}>
+              {n[0]}
+            </span>
+            <b>{n}</b>
+          </div>
+        ))}
       </div>
-      <div className="wa-sec-h small">Recent updates</div>
-      {[
-        ['Pinky', '#db2777', '25 minutes ago'],
-        ['Family Group', '#7c3aed', 'Today, 8:02 am'],
-      ].map(([n, c, tm]) => (
+      <div className="wa-sec-row">
+        <span className="wa-sec-h">Channels</span>
+        <span className="wa-explore">Explore</span>
+      </div>
+      {channels.map(([n, c, m, k]) => (
         <div key={n} className="wa-row">
-          <div className="wa-av ring" style={{ background: c }}>
+          <div className="wa-av" style={{ background: c }}>
             {n[0]}
           </div>
           <div className="wa-mid">
             <div className="wa-name">{n}</div>
-            <div className="wa-msg">{tm}</div>
+            <div className="wa-msg">{m}</div>
+          </div>
+          <div className="wa-right">
+            <b className="wa-badge">{k}</b>
           </div>
         </div>
       ))}
-      <div className="wa-sec-h">Channels</div>
-      <div className="wa-msg pad">Stay updated on topics that matter to you.</div>
       <div className="wa-fabs">
         <div className="wa-fab-sm" data-t="pencil" aria-label="Text status">
           <Icon name="pencil" size={20} />
@@ -375,31 +431,39 @@ export function WaUpdates({ posted }) {
   );
 }
 
-const STATUS_COLORS = ['#7c3aed', '#c2410c', '#0f766e'];
+const STATUS_COLORS = ['#a8326e', '#7c5a8f', '#ef8a7a'];
 
 export function WaTextStatus({ typed, color = 0 }) {
   const tx = useScreenText();
   return (
     <div className="app wa-ts" style={{ background: STATUS_COLORS[color % STATUS_COLORS.length] }}>
       <div className="wa-ts-top">
-        <span>✕</span>
+        {typed ? <span className="wa-ts-done">Done</span> : <span className="wa-ts-x">✕</span>}
         <span className="wa-ts-tools">
-          <Icon name="emoji" size={24} color="#fff" />
-          <span className="wa-ts-T">T</span>
+          <span className="wa-ts-aa">Aa</span>
           <span data-t="palette" className="wa-ts-pal">
-            <Icon name="palette" size={24} color="#fff" />
+            <Icon name="palette" size={22} color="#fff" />
           </span>
         </span>
       </div>
       <div className="wa-ts-text" data-t="text-area">
         {typed ? tx('Good Morning ☀️') : <span className="ph">Type a status</span>}
       </div>
-      <div className="wa-ts-foot">
-        <span className="wa-ts-priv">Status (Contacts)</span>
-        <span className={`wa-ts-send ${typed ? '' : 'dis'}`} data-t="send">
-          <Icon name="send" size={22} color="#fff" />
-        </span>
-      </div>
+      {typed ? (
+        <div className="wa-ts-foot">
+          <span className="wa-ts-priv">Status (Contacts)</span>
+          <span className="wa-ts-send" data-t="send">
+            <Icon name="send" size={22} color="#fff" />
+          </span>
+        </div>
+      ) : (
+        <div className="wa-ts-tabs">
+          <span>Video</span>
+          <span>Photo</span>
+          <span className="on">Text</span>
+          <span>Voice</span>
+        </div>
+      )}
     </div>
   );
 }

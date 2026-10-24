@@ -77,6 +77,8 @@ export const KIT = {
   'ub-lost': TR.UbLost,
   'ub-rate': TR.UbRate,
   'ub-pay': TR.UbPay,
+  'ub-cancel': TR.UbCancel,
+  'ub-why': TR.UbWhy,
   'ir-home': TR.IrHome,
   'ir-login': TR.IrLogin,
   'ir-bookings': TR.IrBookings,

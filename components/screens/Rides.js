@@ -34,81 +34,93 @@ export function MapView({ route = false, pin = false, car = false, tall = false 
   );
 }
 
-/* ---------- Uber ---------- */
+/* ---------- Uber ----------
+   Rebuilt from the owner's reference screens (Oct 2026), with made-up places, driver and numbers.
+   Reusable parts: UB_DRIVER (one practice driver), UbNav (floating bottom bar), UbPinBar, and UbDriver with details. */
+
+export const UB_DRIVER = { name: 'Rakesh', plate: 'DL 3C AB 1234', car: 'White Swift Dzire', rating: '4.9', trips: '1,420 trips', pin: '4821', ride: 'Go Non AC', fare: '₹186.00', road: 'Main Road' };
 
 function UbNav({ on = 'home' }) {
+  const items = [
+    ['home', 'home', 'Home'],
+    ['services', 'grid', 'Services'],
+    ['activity', 'list', 'Activity'],
+    ['account', 'user', 'Account'],
+  ];
   return (
     <div className="ub-nav">
-      <span className={on === 'home' ? 'on' : ''}>
-        <Icon name="home" size={22} />
-        Home
-      </span>
-      <span>
-        <Icon name="grid" size={22} />
-        Services
-      </span>
-      <span className={on === 'activity' ? 'on' : ''} data-t="activity">
-        <Icon name="list" size={22} />
-        Activity
-      </span>
-      <span>
-        <Icon name="user" size={22} />
-        Account
-      </span>
+      {items.map(([k, ic, label]) => (
+        <span key={k} className={on === k ? 'on' : ''} data-t={k === 'activity' ? 'activity' : undefined}>
+          <Icon name={ic} size={22} />
+          {label}
+        </span>
+      ))}
     </div>
   );
 }
 
 export function UbHome() {
+  const tiles = [
+    ['auto', 'Auto'],
+    ['car', 'Trip', '25%'],
+    ['box', 'Parcel'],
+    ['calendar', 'Reserve', '20%'],
+    ['car', 'Intercity', '7%'],
+    ['clock', 'Rentals'],
+    ['train', 'Bus & Train', 'Promo'],
+    ['bike', 'Bike Saver'],
+  ];
   return (
     <div className="app ub">
-      <div className="ub-title">Uber</div>
+      <div className="ub-loc">
+        <span>
+          <i className="ub-blue" /> Current location <Icon name="down" size={14} />
+        </span>
+        <span>
+          <Icon name="bell" size={16} /> Inbox
+        </span>
+      </div>
+      <div className="ub-tabs">
+        <span className="on">
+          <Icon name="car" size={20} /> Uber
+        </span>
+        <span>
+          <Icon name="box" size={20} /> Parcel
+        </span>
+        <span>
+          <Icon name="train" size={20} /> Travel
+        </span>
+      </div>
       <div className="ub-where" data-t="where">
         <Icon name="search" size={22} stroke={2.6} />
         <b>Where to?</b>
         <span className="ub-now">
-          <Icon name="history" size={16} /> Now
+          <Icon name="calendar" size={15} /> Later
         </span>
       </div>
-      <div className="ub-recent">
+      <div className="ub-recent card">
         <div>
           <span className="ub-ic">
-            <Icon name="history" size={18} />
+            <Icon name="clock" size={18} />
           </span>
           <p>
             <b>Railway Station</b>
-            <small>Station Road</small>
+            <small>Station Road, Platform 1 gate</small>
           </p>
-        </div>
-        <div>
-          <span className="ub-ic">
-            <Icon name="history" size={18} />
-          </span>
-          <p>
-            <b>Sunrise General Store</b>
-            <small>Main Road, Green Park</small>
-          </p>
+          <Icon name="chevron" size={16} />
         </div>
       </div>
-      <div className="ub-h">Suggestions</div>
-      <div className="ub-sugg">
-        {[
-          ['car', 'Trip'],
-          ['auto', 'Auto'],
-          ['bike', 'Moto'],
-          ['calendar', 'Reserve'],
-        ].map(([ic, label]) => (
+      <div className="ub-h">For you ›</div>
+      <div className="ub-tiles">
+        {tiles.map(([ic, label, tag]) => (
           <div key={label}>
             <span>
-              <Icon name={ic} size={30} />
+              {tag && <i className={tag === 'Promo' ? 'promo' : ''}>{tag}</i>}
+              <Icon name={ic} size={28} />
             </span>
             {label}
           </div>
         ))}
-      </div>
-      <div className="ub-promo">
-        <b>Go anywhere with Uber</b>
-        <small>Request a ride, hop in, and go.</small>
       </div>
       <UbNav />
     </div>
@@ -117,34 +129,58 @@ export function UbHome() {
 
 export function UbSearch() {
   const places = [
-    { t: 'place', name: 'City Hospital', sub: 'Sector 12, Main Road · 4.2 km' },
-    { name: 'Railway Station', sub: 'Station Road · 6.8 km' },
-    { name: 'Sunrise General Store', sub: 'Main Road, Green Park · 0.9 km' },
-    { name: 'Gurudwara Sahib', sub: 'Ring Road · 3.1 km' },
+    { t: 'place', name: 'City Hospital', sub: 'Sector 12, Main Road', km: '4.2 km' },
+    { name: 'Railway Station', sub: 'Station Road', km: '6.8 km' },
+    { name: 'Sunrise General Store', sub: 'Main Road, Green Park', km: '0.9 km' },
+    { name: 'Gurudwara Sahib', sub: 'Ring Road', km: '3.1 km' },
   ];
   return (
     <div className="app ub">
-      <div className="ub-bar">
+      <div className="ub-bar center">
         <Icon name="back" size={24} />
         <b>Plan your ride</b>
       </div>
-      <div className="ub-fields">
-        <div className="ub-line" />
-        <div className="ub-field">
-          <i className="dot" />
-          Current location
+      <div className="ub-chips">
+        <span>
+          <Icon name="clock" size={16} /> Pickup now <Icon name="down" size={14} />
+        </span>
+        <span>
+          <Icon name="user" size={16} /> For me <Icon name="down" size={14} />
+        </span>
+      </div>
+      <div className="ub-fields-row">
+        <div className="ub-fields box">
+          <div className="ub-field">
+            <i className="dot" />
+            Gate 2, Green Park
+          </div>
+          <div className="ub-field">
+            <i className="sq" />
+            <span className="ph">Where to?</span>
+            <span className="caret" />
+          </div>
         </div>
-        <div className="ub-field focus">
-          <i className="sq" />
-          <span className="ph">Where to?</span>
-          <span className="caret" />
-        </div>
+        <span className="ub-add">
+          <Icon name="plus" size={20} />
+        </span>
+      </div>
+      <div className="ub-saved">
+        <span>
+          <Icon name="home" size={16} /> Add Home
+        </span>
+        <span>
+          <Icon name="bag" size={16} /> Add Work
+        </span>
+        <span>
+          <Icon name="star" size={16} /> Saved places
+        </span>
       </div>
       <div className="ub-places">
         {places.map((p) => (
           <div key={p.name} data-t={p.t}>
-            <span className="ub-ic">
-              <Icon name="pin" size={18} />
+            <span className="ub-km">
+              <Icon name="clock" size={18} />
+              <small>{p.km}</small>
             </span>
             <p>
               <b>{p.name}</b>
@@ -157,35 +193,52 @@ export function UbSearch() {
   );
 }
 
-export function UbRides({ selected }) {
+export function UbRides({ selected, upi }) {
   const rides = [
-    { t: 'ride-go', ic: 'car', name: 'Uber Go', sub: '4 seats · 3 min away', price: '₹186' },
-    { ic: 'auto', name: 'Uber Auto', sub: '3 seats · 5 min away', price: '₹112' },
-    { ic: 'car', name: 'Premier', sub: 'Comfortable sedans · 6 min', price: '₹245' },
+    { ic: 'auto', name: 'Auto', seats: 3, time: '11:23 · 2 min', sub: 'No bargaining, doorstep pick-up', price: '₹112.00' },
+    { ic: 'car', name: 'Uber Go AC', seats: 4, time: '11:24 · 4 min', sub: 'Affordable compact AC rides', price: '₹199.90' },
+    { t: 'ride-go', ic: 'car', name: 'Go Non AC', seats: 4, time: '11:26 · 5 min', sub: 'Everyday affordable rides', price: '₹186.00' },
+    { ic: 'car', name: 'UberXL', seats: 6, time: '11:26 · 5 min', sub: 'Affordable rides for groups up to 6', price: '₹312.00' },
   ];
+  const on = (r, i) => (selected ? !!r.t : i === 0);
   return (
     <div className="app ub">
       <MapView route />
       <div className="ub-sheet">
         <div className="ub-sheet-h">Choose a ride</div>
-        {rides.map((r) => (
-          <div key={r.name} className={`ub-ride ${selected && r.t ? 'on' : ''}`} data-t={r.t}>
-            <span className="ub-car">
-              <Icon name={r.ic} size={30} />
-            </span>
-            <p>
-              <b>{r.name}</b>
-              <small>{r.sub}</small>
-            </p>
-            <b className="ub-price">{r.price}</b>
-          </div>
-        ))}
+        <div className="ub-ride-list">
+          {rides.map((r, i) => (
+            <div key={r.name} className={`ub-ride ${on(r, i) ? 'on' : ''}`} data-t={r.t}>
+              <span className="ub-car">
+                <Icon name={r.ic} size={30} />
+              </span>
+              <p>
+                <b>
+                  {r.name} <span className="ub-seats">👤{r.seats}</span>
+                </b>
+                <small>{r.time}</small>
+                {on(r, i) && <small>{r.sub}</small>}
+              </p>
+              <b className="ub-price">{r.price}</b>
+            </div>
+          ))}
+        </div>
+        <div className="ub-one">
+          <span className="ub-one-ic">₹</span>
+          Earn 10% back with Uber One
+          <i className="ub-box" />
+        </div>
         <div className="ub-pay" data-t="pay">
-          <span className="ub-cash">₹</span> Cash
+          {upi ? <span className="ub-upi">UPI</span> : <span className="ub-cash">₹</span>} {upi ? 'UPI' : 'Cash'}
           <Icon name="chevron" size={18} />
         </div>
-        <div className="ub-btn" data-t="choose">
-          Choose Uber Go
+        <div className="ub-btn-row">
+          <div className="ub-btn" data-t="choose">
+            Choose {selected ? 'Go Non AC' : 'Auto'}
+          </div>
+          <span className="ub-cal">
+            <Icon name="calendar" size={22} />
+          </span>
         </div>
       </div>
     </div>
@@ -195,11 +248,17 @@ export function UbRides({ selected }) {
 export function UbPickup() {
   return (
     <div className="app ub">
-      <MapView pin tall />
+      <div className="ub-maptop">
+        <MapView pin tall />
+        <span className="ub-mapbtn">
+          <Icon name="back" size={20} />
+        </span>
+      </div>
       <div className="ub-sheet">
-        <div className="ub-sheet-h">Confirm your pickup spot</div>
+        <div className="ub-sheet-h row">
+          Confirm the pickup spot <Icon name="search" size={20} />
+        </div>
         <div className="ub-addr">
-          <Icon name="pin" size={20} />
           <p>
             <b>Gate 2, Green Park</b>
             <small>Main Road, near the temple</small>
@@ -213,57 +272,174 @@ export function UbPickup() {
   );
 }
 
-export function UbDriver({ shared, cancel, focus }) {
+function UbPinBar({ focus }) {
+  return (
+    <div className={`ub-pinbar ${focus ? 'focus-box' : ''}`}>
+      Your PIN
+      <span>
+        {UB_DRIVER.pin.split('').map((d, i) => (
+          <i key={i}>{d}</i>
+        ))}
+      </span>
+    </div>
+  );
+}
+
+// The trip screen while the driver is coming. details: the panel is swiped up ("Ride details").
+// cancel: "Cancel ride" is the tap target. focus: plate, dp or pin gets a box (driver-check lesson).
+export function UbDriver({ shared, cancel, focus, details }) {
+  const d = UB_DRIVER;
   return (
     <div className="app ub">
-      <MapView route car />
-      <div className="ub-sheet">
-        <div className="ub-meet">
-          <b>Meet at the pickup spot</b>
-          <span>3 min</span>
-        </div>
-        <div className="ub-driver">
-          <div className={`ub-plate ${focus === 'plate' ? 'focus-box' : ''}`}>
-            <b>DL 3C AB 1234</b>
-            <small>White Swift Dzire</small>
+      <div className="ub-maptop">
+        <MapView route car />
+        <span className="ub-mapbtn">
+          <Icon name="down" size={20} />
+        </span>
+        <span className="ub-safety">
+          <Icon name="shield" size={16} color="#276ef1" /> Safety
+        </span>
+      </div>
+      {details ? (
+        <div className="ub-sheet tall">
+          <div className="ub-sheet-h">Ride details</div>
+          <div className="ub-route">
+            <div>
+              <i className="dot" />
+              <p>Meet at your pick-up spot on {d.road}</p>
+              <Icon name="edit" size={18} />
+            </div>
+            <div>
+              <i className="sq" />
+              <p>
+                City Hospital
+                <small>11:42 dropoff</small>
+              </p>
+              <Icon name="edit" size={18} />
+            </div>
           </div>
-          <div className={`ub-dp ${focus === 'dp' ? 'focus-box' : ''}`}>
-            <span>R</span>
-            <small>Rakesh · ★ 4.9</small>
-          </div>
-        </div>
-        <div className={`ub-pin ${focus === 'pin' ? 'focus-box' : ''}`}>
-          Your PIN <b>4821</b>
-        </div>
-        <div className="ub-acts">
-          <div className="ub-msg">Send a message</div>
-          <span className="ub-round">
-            <Icon name="phone" size={20} />
-          </span>
-        </div>
-        <div className="ub-opt" data-t="share">
-          <Icon name="share" size={20} />
-          <p>
-            <b>Share trip status</b>
-            <small>{shared ? 'Shared with Sunita ✓' : 'Family can follow your ride'}</small>
-          </p>
-        </div>
-        {cancel !== undefined && (
-          <div className="ub-opt" data-t={cancel ? 'cancel' : undefined}>
-            <Icon name="close" size={20} />
+          <div className="ub-drow">
+            <Icon name="dots" size={20} />
             <p>
-              <b>Cancel trip</b>
-              <small>A small fee may apply</small>
+              <b>Your PIN</b>
+              <small>Share PIN with your driver</small>
             </p>
+            <span className="ub-pinpill">{d.pin}</span>
           </div>
-        )}
-        <div className="ub-opt">
-          <Icon name="shield" size={20} />
-          <p>
-            <b>Safety</b>
-            <small>Emergency help, trusted contacts</small>
-          </p>
+          <div className="ub-drow">
+            <Icon name="user" size={20} />
+            <p>
+              <b>{d.fare}</b>
+              <small>Cash</small>
+            </p>
+            <span className="ub-chipbtn">Switch</span>
+          </div>
+          <div className="ub-drow">
+            <Icon name="location" size={20} />
+            <p>
+              <b>Share trip status</b>
+              {shared && <small>Shared with Sunita ✓</small>}
+            </p>
+            <span className="ub-chipbtn" data-t="share">
+              Share
+            </span>
+          </div>
+          <div className="ub-cancel" data-t={cancel ? 'cancel' : undefined}>
+            Cancel ride
+          </div>
+          <div className="ub-btn">Close</div>
         </div>
+      ) : (
+        <div className="ub-sheet">
+          <div className="ub-sheet-h">Pick-up in 3 min</div>
+          <UbPinBar focus={focus === 'pin'} />
+          <div className="ub-card">
+            <small>{d.ride} details</small>
+            <b>Meet at your pick-up spot on {d.road}</b>
+            <span className="ub-tag">₹ Cash</span>
+          </div>
+          <div className="ub-card ub-drv">
+            <div className={`ub-dp ${focus === 'dp' ? 'focus-box' : ''}`}>
+              <span>R</span>
+              <small>★ {d.rating}</small>
+            </div>
+            <div className={`ub-plate ${focus === 'plate' ? 'focus-box' : ''}`}>
+              <b>{d.plate}</b>
+              <small>{d.car}</small>
+            </div>
+          </div>
+          <div className="ub-drvname">
+            <b>{d.name.toUpperCase()}</b>
+            <small>{d.trips}</small>
+          </div>
+          <div className="ub-acts">
+            <div className="ub-msg">
+              <Icon name="chats" size={18} /> Message
+            </div>
+            <span className="ub-round">
+              <Icon name="phone" size={20} />
+            </span>
+            <span className="ub-round">
+              <Icon name="more" size={20} />
+            </span>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// "Cancel ride?" pop-up over Ride details (YES, CANCEL is the target).
+export function UbCancel() {
+  return (
+    <div className="app ub stack">
+      <UbDriver details />
+      <div className="gp-dim" />
+      <div className="ub-dialog">
+        <div className="ub-dialog-h">
+          Cancel ride? <Icon name="close" size={22} />
+        </div>
+        <div className="ub-dialog-b">
+          <div>
+            <b>Cancel your ride with {UB_DRIVER.name}?</b>
+            <p>Instead, we can find you another nearby driver for no fee.</p>
+          </div>
+          <span className="ub-dp-sm">R</span>
+        </div>
+        <div className="ub-dialog-pick">
+          <Icon name="pin" size={16} /> Wrong pickup location? <b>Edit pickup</b>
+        </div>
+        <div className="ub-dbtn red" data-t="yes">
+          YES, CANCEL
+        </div>
+        <div className="ub-dbtn black">FIND ANOTHER DRIVER</div>
+        <div className="ub-dbtn plain">NO</div>
+      </div>
+    </div>
+  );
+}
+
+// "Cancel trip?" reasons page. Tapping a reason finishes the cancel.
+export function UbWhy() {
+  const reasons = ['Could not find driver', 'Driver arrived early', 'Wait time was too long', 'Driver asked me to cancel or ride off app', 'Driver not getting closer', 'Other'];
+  return (
+    <div className="app ub">
+      <div className="ub-bar spread">
+        <Icon name="back" size={24} />
+        <b>Cancel trip?</b>
+        <span className="ub-skip">Skip</span>
+      </div>
+      <div className="ub-h big">Why do you want to cancel?</div>
+      <div className="ub-reasons">
+        {reasons.map((r, i) => (
+          <div key={r} data-t={i === 2 ? 'reason' : undefined}>
+            <Icon name={['user', 'car', 'timer', 'user', 'location', 'dots'][i]} size={20} />
+            {r}
+          </div>
+        ))}
+      </div>
+      <div className="ub-btn" style={{ margin: 'auto 14px 12px' }}>
+        Keep my trip
       </div>
     </div>
   );
@@ -278,7 +454,7 @@ export function UbShare() {
   ];
   return (
     <div className="app ub stack">
-      <UbDriver />
+      <UbDriver details />
       <div className="gp-dim" />
       <div className="gp-sheet">
         <div className="gp-sheet-h">Share trip status</div>
@@ -499,30 +675,50 @@ export function RpEnd({ rated }) {
   );
 }
 
-// ---------- Uber: Activity, trip details, Help, lost item, rating, payment ----------
+// ---------- Uber: Activity, ride details, rating, payment ----------
 export function UbActivity() {
   const trips = [
-    { when: 'Today, 11:20 am', to: 'City Hospital', fare: '₹186', t: 'trip' },
-    { when: '12 Oct, 6:05 pm', to: 'Railway Station', fare: '₹212' },
-    { when: '3 Oct, 9:40 am', to: 'Gurudwara Sahib', fare: '₹148' },
+    { when: '12 Oct · 6:05 pm', to: 'Railway Station', fare: '₹212.00', ic: 'auto' },
+    { when: '3 Oct · 9:40 am', to: 'Gurudwara Sahib', fare: '₹0.00 · Cancelled', ic: 'car' },
+    { when: '28 Sept · 5:13 pm', to: 'Sunrise General Store', fare: '₹102.01', ic: 'auto' },
   ];
   return (
     <div className="app ub">
       <div className="ub-title">Activity</div>
-      <div className="ub-h">Past</div>
+      <div className="ub-h">Upcoming</div>
+      <div className="ub-upc">
+        <p>
+          <b>You have no upcoming trips</b>
+          <small>Reserve your trip →</small>
+        </p>
+        <Icon name="calendar" size={30} />
+      </div>
+      <div className="ub-h row">
+        Past <Icon name="filter" size={18} />
+      </div>
+      <div className="ub-past" data-t="trip">
+        <MapView route />
+        <b>City Hospital</b>
+        <small>Today · 11:20 am</small>
+        <small>₹186.00</small>
+        <span className="ub-chipbtn">
+          <Icon name="refresh" size={14} /> Rebook
+        </span>
+      </div>
       <div className="ub-recent">
         {trips.map((x) => (
-          <div key={x.when} data-t={x.t}>
-            <span className="ub-ic">
-              <Icon name="car" size={18} />
+          <div key={x.when}>
+            <span className="ub-car">
+              <Icon name={x.ic} size={24} />
             </span>
             <p>
               <b>{x.to}</b>
-              <small>
-                {x.when} · {x.fare}
-              </small>
+              <small>{x.when}</small>
+              <small>{x.fare}</small>
             </p>
-            <Icon name="chevron" size={18} />
+            <span className="ub-chipbtn">
+              <Icon name="refresh" size={14} /> Rebook
+            </span>
           </div>
         ))}
       </div>
@@ -531,37 +727,64 @@ export function UbActivity() {
   );
 }
 
-export function UbTrip() {
+// Ride details of a past trip: Receipt, tip, Rate, Help & safety, Customer Support.
+export function UbTrip({ rated }) {
   return (
     <div className="app ub">
       <div className="ub-bar">
         <Icon name="back" size={24} />
-        <b>Trip details</b>
       </div>
-      <MapView route />
-      <div className="ub-sheet">
-        <div className="ub-addr">
-          <Icon name="pin" size={20} />
-          <p>
-            <b>City Hospital</b>
-            <small>Today, 11:20 am · Rakesh · White Swift Dzire</small>
-          </p>
-          <b>₹186</b>
-        </div>
-        <div className="ub-opt">
-          <Icon name="file" size={20} />
-          <p>
-            <b>Receipt</b>
-            <small>Fare breakdown</small>
-          </p>
-        </div>
-        <div className="ub-opt" data-t="help">
-          <Icon name="help" size={20} />
-          <p>
-            <b>Help</b>
-            <small>Lost item, fare or driver issue</small>
-          </p>
-        </div>
+      <div className="ub-title sm">Ride details</div>
+      <div className="ub-tripmap">
+        <MapView route />
+      </div>
+      <div className="ub-triphead">
+        <p>
+          <b>Cab ride with {UB_DRIVER.name}</b>
+          <small>Today 11:20 AM</small>
+          <small>₹186.00</small>
+        </p>
+        <span className="ub-ic">
+          <Icon name="user" size={20} />
+        </span>
+      </div>
+      <div className="ub-chips">
+        <span>
+          <Icon name="file" size={15} /> Receipt
+        </span>
+        <span>
+          <Icon name="file" size={15} /> Invoice
+        </span>
+      </div>
+      <div className="ub-drow">
+        <Icon name="rupee" size={18} />
+        <p>No tip added</p>
+        <span className="ub-chipbtn">Add tip</span>
+      </div>
+      <div className="ub-drow">
+        <Icon name="star" size={18} />
+        <p>{rated ? `You rated ${rated} stars` : 'No rating'}</p>
+        <span className="ub-chipbtn" data-t="rate">
+          Rate
+        </span>
+      </div>
+      <div className="ub-h">Help & safety</div>
+      <div className="ub-drow">
+        <Icon name="search" size={18} />
+        <p>
+          <b>Find lost item</b>
+          <small>We can help you get in touch with your driver</small>
+        </p>
+      </div>
+      <div className="ub-drow">
+        <Icon name="shield" size={18} />
+        <p>
+          <b>Report safety issue</b>
+          <small>Report any safety related issues to us</small>
+        </p>
+      </div>
+      <div className="ub-support" data-t="help">
+        <Icon name="help" size={18} /> Customer Support <Icon name="arrow" size={16} />
       </div>
     </div>
   );
@@ -612,13 +835,6 @@ export function UbLost() {
           <small>We connect you without showing your number</small>
         </p>
       </div>
-      <div className="ub-opt">
-        <Icon name="help" size={20} />
-        <p>
-          <b>I could not reach my driver</b>
-          <small>Talk to Uber support</small>
-        </p>
-      </div>
     </div>
   );
 }
@@ -626,29 +842,33 @@ export function UbLost() {
 export function UbRate({ rated }) {
   return (
     <div className="app ub">
-      <div className="rp-end-top" style={{ textAlign: 'center', padding: '18px 16px 6px' }}>
-        <b style={{ fontSize: 20 }}>You have reached City Hospital</b>
-        <p style={{ margin: '6px 0 0', color: '#6b6b6b' }}>Pay Rakesh ₹186 in cash</p>
+      <div className="ub-bar">
+        <Icon name="close" size={24} />
       </div>
-      <div className="ub-h" style={{ textAlign: 'center' }}>How was your trip with Rakesh?</div>
-      <div className="rp-stars" data-t="stars" style={{ display: 'flex', justifyContent: 'center', gap: 6, fontSize: 38, padding: '4px 0 10px' }}>
+      <div className="ub-rate-h">
+        <span className="ub-dp-sm big">R</span>
+        <b>How was your trip with {UB_DRIVER.name}?</b>
+        <small>Cab ride · Today 11:20 AM · ₹186.00</small>
+      </div>
+      <div className="ub-stars" data-t="stars">
         {[1, 2, 3, 4, 5].map((i) => (
-          <span key={i} style={{ color: rated && i <= rated ? '#f5a623' : '#cfcfcf' }}>
+          <span key={i} className={rated && i <= rated ? 'on' : ''}>
             ★
           </span>
         ))}
       </div>
       {rated && rated < 5 && (
-        <div className="ub-sugg" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
-          {['Driving', 'Car condition', 'Route', 'Pickup'].map((x) => (
-            <div key={x}>
-              <span style={{ fontSize: 14, fontWeight: 600 }}>{x}</span>
-            </div>
-          ))}
-        </div>
+        <>
+          <div className="ub-h center">What could have been better?</div>
+          <div className="ub-tags">
+            {['Driving', 'Car condition', 'Route', 'Pickup', 'Driver attitude'].map((x) => (
+              <span key={x}>{x}</span>
+            ))}
+          </div>
+        </>
       )}
-      <div className="ub-btn" data-t="submit" style={{ margin: '10px 14px' }}>
-        Submit
+      <div className="ub-btn" data-t="submit" style={{ margin: 'auto 14px 12px' }}>
+        Done
       </div>
     </div>
   );
@@ -657,19 +877,20 @@ export function UbRate({ rated }) {
 export function UbPay() {
   const rows = [
     ['cash', 'Cash', 'Pay your driver at the end', '₹'],
-    ['upi', 'UPI', 'Pay with an app like Google Pay', 'U'],
-    [undefined, 'Add payment method', 'Card or wallet', '+'],
+    ['upi', 'UPI', 'Pay with a UPI app like Google Pay', 'UPI'],
+    [undefined, 'Uber Cash: ₹0.00', 'Add money to pay faster', 'U'],
+    [undefined, 'Add payment method', 'Card or UPI ID', '+'],
   ];
   return (
     <div className="app ub">
       <div className="ub-bar">
         <Icon name="back" size={24} />
-        <b>Payment</b>
+        <b>Payment options</b>
       </div>
       <div className="ub-recent">
         {rows.map(([k, a, b, c]) => (
           <div key={a} data-t={k}>
-            <span className="ub-ic" style={{ fontWeight: 700 }}>
+            <span className="ub-ic" style={{ fontWeight: 700, fontSize: c.length > 1 ? 10 : 15 }}>
               {c}
             </span>
             <p>

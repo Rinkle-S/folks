@@ -2,9 +2,9 @@
 import Icon from '../Icons';
 import { useScreenText } from '../LangCtx';
 import { Av, Status, Keys } from './ui';
-import { UbHome, UbSearch, UbRides, UbPickup, UbDriver, UbShare, RpHome, RpSearch, RpRides, RpCaptain, RpEnd, UbActivity, UbTrip, UbHelp, UbLost, UbRate, UbPay, MapView } from '../screens/Rides';
+import { UbHome, UbSearch, UbRides, UbPickup, UbDriver, UbShare, RpHome, RpSearch, RpRides, RpCaptain, RpEnd, UbActivity, UbTrip, UbHelp, UbLost, UbRate, UbPay, UbCancel, UbWhy, MapView } from '../screens/Rides';
 
-export { UbHome, UbSearch, UbRides, UbPickup, UbDriver, UbShare, RpHome, RpSearch, RpRides, RpCaptain, RpEnd, UbActivity, UbTrip, UbHelp, UbLost, UbRate, UbPay };
+export { UbHome, UbSearch, UbRides, UbPickup, UbDriver, UbShare, RpHome, RpSearch, RpRides, RpCaptain, RpEnd, UbActivity, UbTrip, UbHelp, UbLost, UbRate, UbPay, UbCancel, UbWhy };
 
 // ---------- IRCTC ----------
 export function IrHome({ tap }) {

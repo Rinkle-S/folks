@@ -6,7 +6,7 @@ a real phone yet. When you have real screenshots, send them app by app and the m
 How to send: a screenshot per step, in the same order as the lesson, on the phone you most want to support (say which phone and Android version).
 
 ## Send these first (what the demo and the most-used lessons touch)
-1. ~~**Google Pay**~~: done 24 Oct 2026. Rebuilt from the owner's real screenshots in `docs/reference/gpay` (home, scanner, Pay anyone, chat, amount and account, UPI PIN, success, mobile recharge). Still guessed: plans, electricity billers, bill, history, balance, profile, reset PIN.
+1. ~~**Google Pay**~~: done 24 Oct 2026. Rebuilt from the owner's real screenshots (not kept in the repo) (home, scanner, Pay anyone, chat, amount and account, UPI PIN, success, mobile recharge). Still guessed: plans, electricity billers, bill, history, balance, profile, reset PIN.
 2. **Uber** (`ub-*`, 12) and **Rapido** (`rp-*`, 5): the newest screens, so the least certain: driver and PIN screen, Activity, trip details, Help, lost item, rating, payment choice, Rapido captain and end-of-ride.
 3. **WhatsApp** (`wa-*`, 9): chat list, a chat, new chat, settings, profile.
 4. **Phone settings** (`and-*`, 20): Settings home, Battery, Storage, Security, Bluetooth, quick settings panel, brightness. These differ by phone brand; pick one brand.

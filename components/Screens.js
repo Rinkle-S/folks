@@ -164,7 +164,7 @@ function ScreenFor({ step, lesson, lang, t, values, typed }) {
     case 'ub-pickup':
       return <UbPickup />;
     case 'ub-driver':
-      return <UbDriver shared={step.shared} />;
+      return <UbDriver shared={step.shared} details={step.details} />;
     case 'ub-share':
       return <UbShare />;
 
