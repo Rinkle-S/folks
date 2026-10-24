@@ -22,7 +22,7 @@ import { LESSONS } from '@/lib/lessons';
 import { T } from '@/lib/i18n';
 import FeedbackAsk, { FeedbackBox } from './FeedbackAsk';
 import RateApp from './RateApp';
-import { useLang, useMute, speak, stopSpeaking, prefetchSpeech, onSpeaking, track, getFrom, whatsappLink, markDone, shouldAskRate, vibrate, getLearnMode, addRecent, getPracticeNote, setPracticeNote, setPracticeSeen, onSpeechProgress } from '@/lib/client';
+import { useLang, useMute, speak, stopSpeaking, prefetchSpeech, onSpeaking, track, getFrom, whatsappLink, markDone, shouldAskRate, getResume, saveResume, clearResume, vibrate, getLearnMode, addRecent, getPracticeNote, setPracticeNote, setPracticeSeen, onSpeechProgress } from '@/lib/client';
 
 // Watch-first pacing (milliseconds). Slower than before: older viewers need time to see the screen, then the pointer,
 // then the tap. Research on older listeners favours clear speech (about 140 words a minute or less) and pauses.
@@ -121,8 +121,15 @@ function PlayerInner({ id }) {
   // Allow links that open straight into a mode (?mode=watch|follow|practice).
   useEffect(() => {
     try {
-      const m = new URLSearchParams(window.location.search).get('mode');
-      if (m === 'watch' || m === 'follow' || m === 'practice') chooseMode(m);
+      const q = new URLSearchParams(window.location.search);
+      const m = q.get('mode');
+      const saved = q.get('resume') === '1' ? getResume() : null;
+      if (saved && saved.id === id && saved.idx < lesson.steps.length) {
+        // Carry on where the person left off: straight back to that step, in practice mode.
+        setMode('practice');
+        setIdx(saved.idx);
+        track('mode_pick', { lesson: id, meta: { mode: 'practice', resumed: saved.idx } });
+      } else if (m === 'watch' || m === 'follow' || m === 'practice') chooseMode(m);
       else {
         const pref = getLearnMode();
         if (pref !== 'ask') chooseMode(pref);
@@ -139,12 +146,26 @@ function PlayerInner({ id }) {
   }, [lang, id]);
 
   // Practice: read each step aloud when it appears, and get the next one ready.
+  // Nothing is said while the "this is practice" card is open: the voice starts when it is dismissed.
+  const spokenRef = useRef('');
   useEffect(() => {
     if (!lang || done || mode === 'follow' || mode === 'watch') return;
+    if (showIntro) {
+      stopSpeaking();
+      return;
+    }
+    const key = `${idx}:${mode}:${lang}`;
+    if (spokenRef.current === key) return; // the card was opened again from Settings: do not repeat the step
+    spokenRef.current = key;
     speak(step.say[lang], lang);
     const nxt = lesson.steps[idx + 1];
     if (nxt) prefetchSpeech(nxt.say[lang], lang);
-  }, [idx, lang, done, mode]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [idx, lang, done, mode, showIntro]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Remember the step, so Home can offer "Continue where you left off" after leaving halfway.
+  useEffect(() => {
+    if (mode === 'practice' && !done && idx >= 2) saveResume(id, idx);
+  }, [idx, mode, done]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => () => stopSpeaking(), []);
   useEffect(() => onSpeaking(setTalking), []);
@@ -268,7 +289,7 @@ function PlayerInner({ id }) {
   useEffect(() => {
     clearTimers();
     if (!watching || done || !lang) return;
-    if (paused) {
+    if (paused || showIntro) {
       stopSpeaking();
       return;
     }
@@ -322,7 +343,7 @@ function PlayerInner({ id }) {
       cancelled = true;
       clearTimers();
     };
-  }, [watching, paused, idx, done, lang]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [watching, paused, idx, done, lang, showIntro]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!lang) return <div className="page" />;
 
@@ -356,6 +377,7 @@ function PlayerInner({ id }) {
     clearTimers();
     track('lesson_complete', { lesson: id, meta: { mode } });
     markDone(id);
+    clearResume(id);
     setAskRate(shouldAskRate());
     if (mode === 'practice') recordPerf({ id, level: levelOf(lesson), wrong: wrongRef.current, hints: helpRef.current, steps: total });
   }
@@ -652,7 +674,7 @@ function PlayerInner({ id }) {
 
   if (mode === 'follow') {
     return (
-      <div className="player reading">
+      <div className="player reading has-nav">
         <div className="ptop">
           <button className="ptop-leave" onClick={askLeave}>
             <Icon name="close" size={20} /> {t.leaveBtn}
@@ -664,6 +686,7 @@ function PlayerInner({ id }) {
           </button>
         </div>
         <FollowView lesson={lesson} lang={lang} t={t} onDone={finish} onPractice={() => restart('practice')} />
+        <BottomNav active="learn" t={t} />
         {settings}
         {intro}
         {leaveDialog}

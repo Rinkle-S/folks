@@ -54,6 +54,16 @@ Every practice screen has a PRACTICE banner (20px) and a faint tilted PRACTICE m
 - **Rating:** five big stars after the second finished lesson (once; "Not now" asks again after two more, twice at most) and always on the Help tab. Events `app_rating`, `app_feedback`.
 - **Feedback by voice or typing:** "Tell us more" under the three faces at the end of every lesson, and a box on Help (`components/FeedbackAsk.js`). The mic uses the browser's own recognition, so nothing is recorded; it hides itself where unsupported. Note text is in `events.meta->>'note'`, `via` is `voice` or `typed`.
 
+## Sat 24 Oct (late): second round from the owner
+- **Continue where you left off:** Home shows one big card (`.resume-card`) when a practice lesson was left halfway; it replaces "Try this" and reopens the lesson at that step (`?resume=1`, `folks_resume` in localStorage, cleared when the lesson is finished, forgotten after a week). "Try this" shows only when there is nothing to resume.
+- The lesson voice now waits until the "this is practice" card is dismissed (and does not repeat the step if the card is reopened from Settings).
+- An example sentence under the mic in all three languages (`micExample`). The voice banner has an alert icon. The feedback box says "or tap the mic" only where a mic is shown.
+- Already rated? Never asked again; Help shows the stars and a thank you. Help has a "Need help now?" card: a placeholder that records `tile_soon` (`tile: help_now`) and says it is coming soon.
+- Settings: the trusted-contacts list became one field, "My son or daughter's name" (it only renames Rahul in practice chats; the WhatsApp number is no longer used). Extra sound rows are folded under "More sound options".
+- Bottom bar also on Read-the-steps mode and on "lessons made for you". It stays hidden while a practice or watch lesson runs (Leave is the way out).
+- **Waiting for the owner's pick (images sent):** the Send button look, the end-of-lesson screen, the Phone basics icon and colour.
+- **Open question:** a Google Pay screen at the end that still says "open scanner"; the owner remembers it should be "Share screenshot" then "Done". Not found by reading the code: ask which lesson.
+
 ## What is built (all on main)
 - 78 lessons: hand-built plus guide lessons (`lib/guides/*`, screens in `lib/kitSpec*.js`, components in `components/kit` and `components/screens`).
   99 recreated app screens, **all are best guesses**: none checked against real phones. See `docs/SCREENS-TO-REPLACE.md`.

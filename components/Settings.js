@@ -56,6 +56,8 @@ export default function Settings({ lang, setLang, muted, toggleMute, onClose, on
             {muted ? bi('Off', 'बंद', 'ഓഫ്') : bi('On', 'चालू', 'ഓൺ')}
           </button>
         </div>
+        <details className="more-sound">
+          <summary>{t.moreSound}</summary>
         <div className="settings-row">
           <span>{t.soundTest}</span>
           <button
@@ -114,6 +116,7 @@ export default function Settings({ lang, setLang, muted, toggleMute, onClose, on
             {voiceStatus.lastError ? ` (${voiceStatus.lastError})` : ''}
           </p>
         )}
+        </details>
         {onApps && (
           <div className="settings-row">
             <span>{bi('My apps', 'मेरे ऐप', 'എന്റെ ആപ്പുകൾ')}</span>

@@ -28,6 +28,7 @@ import {
   saveApps,
   getRequests,
   getDone,
+  getResume,
   isOnboarded,
   setOnboarded,
 } from '@/lib/client';
@@ -57,6 +58,7 @@ export default function Home() {
   const [reviewIds, setReviewIds] = useState([]);
   const [made, setMade] = useState([]);
   const [done, setDone] = useState([]);
+  const [resume, setResumeState] = useState(null); // a lesson left halfway
   const [greet, setGreet] = useState('greetDay');
   const [profileName, setProfileName] = useState('');
   const recRef = useRef(null);
@@ -81,6 +83,7 @@ export default function Home() {
     setSkills(getProfile().skills || []);
     setReviewIds(reviewDueIds());
     setDone(getDone());
+    setResumeState(getResume());
     const h = new Date().getHours();
     setGreet(h < 12 ? 'greetMorning' : h < 17 ? 'greetDay' : 'greetEvening');
     const reqs = getRequests();
@@ -339,6 +342,7 @@ export default function Home() {
   // Never suggest something already learned, except a lesson they struggled with a few days ago.
   const review = orderedLessons.find((l) => reviewIds.includes(l.id));
   const next = review || orderedLessons.find((l) => !done.includes(l.id) && !l.id.startsWith('gd-')) || orderedLessons.find((l) => !done.includes(l.id));
+  const resumeLesson = resume && LESSONS[resume.id] && resume.idx < LESSONS[resume.id].steps.length ? LESSONS[resume.id] : null;
   const pct = Math.round((doneCount / lessons.length) * 100);
 
   return (
@@ -361,10 +365,12 @@ export default function Home() {
           <p className={`mic-cap ${micMsg ? 'warn-text' : ''}`} aria-live="polite">
             {state === 'listening' ? t.listening : state === 'processing' ? t.processing : micMsg || t.tapToSpeak}
           </p>
+          {state === 'idle' && !micMsg && <p className="mic-eg">{t.micExample}</p>}
         </div>
         {voiceWarn && !serverStt && (
           <p className="voice-warn" role="note">
-            {t.voiceWarn}
+            <Icon name="alert" size={26} />
+            <span>{t.voiceWarn}</span>
           </p>
         )}
         <form
@@ -466,7 +472,19 @@ export default function Home() {
           </section>
         )}
 
-        {next ? (
+        {resumeLesson ? (
+          <Link className="resume-card" href={`/lesson/${resumeLesson.id}?resume=1`}>
+            <AppIcon app={resumeLesson.app} size={60} />
+            <span className="resume-tx">
+              <small>{t.resumeTitle}</small>
+              <b>{resumeLesson.title[lang]}</b>
+              <small>{t.resumeStep(resume.idx, resumeLesson.steps.length - 1)}</small>
+            </span>
+            <span className="resume-go">
+              <Icon name="play" size={26} />
+            </span>
+          </Link>
+        ) : next ? (
           <section className="next-card">
             <div className="next-top">
               <span className="eyebrow">{review ? t.practiceAgainTitle : t.tryThis}</span>

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { NookLogo } from '@/components/Logo';
 import AppIcon from '@/components/AppIcon';
 import Icon from '@/components/Icons';
+import { BottomNav } from '@/components/AppShell';
 import { T } from '@/lib/i18n';
 import { ALL_APPS } from '@/lib/apps';
 import { useLang, speak, stopSpeaking, track, addRequest, whatsappLink } from '@/lib/client';
@@ -57,7 +58,7 @@ export default function MyLesson({ params }) {
   const ready = steps.length || media.length;
 
   return (
-    <div className="page my">
+    <div className="page my has-nav">
       <div className="scam-top">
         <Link href="/help" className="ptop-btn" aria-label={t.exit} onClick={() => stopSpeaking()}>
           <Icon name="close" size={24} />
@@ -142,6 +143,7 @@ export default function MyLesson({ params }) {
       <Link className="btn ghost" href="/">
         {t.home}
       </Link>
+      <BottomNav active="help" t={t} />
     </div>
   );
 }

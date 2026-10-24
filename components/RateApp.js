@@ -8,7 +8,21 @@ import { track, getRate, setRate, snoozeRate, getDone } from '@/lib/client';
 export default function RateApp({ t, lang, where, canSnooze }) {
   const [stars, setStars] = useState(getRate().stars || 0);
   const [gone, setGone] = useState(false);
+  const [was] = useState(getRate().stars || 0); // rated before this visit: never ask again, just say thanks
   if (gone) return null;
+  if (was)
+    return (
+      <section className="rate-card" aria-label={t.rateTitle}>
+        <div className="stars" aria-hidden="true">
+          {[1, 2, 3, 4, 5].map((n) => (
+            <span key={n} className={`star ${n <= was ? 'on' : ''}`}>
+              <Icon name="star" size={30} />
+            </span>
+          ))}
+        </div>
+        <p className="thanks">{t.rateDone(was)}</p>
+      </section>
+    );
   function pick(n) {
     setStars(n);
     setRate({ ...getRate(), stars: n });

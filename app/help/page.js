@@ -5,11 +5,14 @@ import AskPanel from '@/components/AskPanel';
 import HelpList from '@/components/HelpList';
 import FeedbackAsk from '@/components/FeedbackAsk';
 import RateApp from '@/components/RateApp';
+import { useState } from 'react';
+import Icon from '@/components/Icons';
 import { T } from '@/lib/i18n';
-import { useLang } from '@/lib/client';
+import { useLang, track } from '@/lib/client';
 
 export default function Help() {
   const [lang] = useLang();
+  const [soon, setSoon] = useState(false);
   if (!lang) return <div className="page" />;
   const t = T[lang];
   return (
@@ -18,6 +21,26 @@ export default function Help() {
       <main className="shell-main">
         <h1 className="page-h">{t.helpPageTitle}</h1>
         <p className="muted">{t.helpPageLead}</p>
+        <section className="help-now">
+          <span className="help-now-ic">
+            <Icon name="phone" size={28} />
+          </span>
+          <div>
+            <b>{t.helpNowTitle}</b>
+            <p>{t.helpNowSub}</p>
+          </div>
+          <button
+            className="btn primary"
+            type="button"
+            onClick={() => {
+              track('tile_soon', { meta: { tile: 'help_now', lang } });
+              setSoon(true);
+            }}
+          >
+            {t.helpNowBtn}
+          </button>
+          {soon && <p className="thanks">{t.helpNowSoon}</p>}
+        </section>
         <div className="section-h">
           <span>{t.helpAsk}</span>
         </div>

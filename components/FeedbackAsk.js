@@ -71,8 +71,8 @@ export function FeedbackBox({ t, lang, value, onChange, onVoice }) {
       <textarea
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        placeholder={t.fbPlaceholder}
-        aria-label={t.fbPlaceholder}
+        placeholder={canListen ? t.fbPlaceholder : t.fbPlaceholderType}
+        aria-label={canListen ? t.fbPlaceholder : t.fbPlaceholderType}
         rows={4}
         maxLength={600}
       />
