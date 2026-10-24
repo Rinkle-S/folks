@@ -9,6 +9,15 @@ the owner could check against real screenshots. Everything below is paused, not 
 - Google Pay lessons: reset a forgotten UPI PIN, money was debited but not received.
 - Phone guides: block a lost debit card, keep your apps up to date, set a screen lock, send an email, free up phone space,
   change your ringtone, change your wallpaper.
+- Second round (24 Oct, "keep the core simple"; all hidden in `lib/hidden.js`): IRCTC where is my train and show your ticket on the
+  train; WhatsApp leave a group, block someone, forward a message, send a voice message, reply to one message; YONO add a new
+  payee and download your bank statement; Google Maps change the voice. Phone basics was cut to the 10 most sought-after
+  lessons (bigger text, Wi-Fi, save a contact, speaker on a call, block a number, emergency SOS, alarm, silent mode,
+  flashlight, what common icons mean). Hidden from Phone basics: hotspot, selfie, screenshot, Bluetooth, airplane mode,
+  battery saver, Do Not Disturb, remove an app, share a photo on WhatsApp.
+- Added: **Zomato** has one lesson, "Order food on Zomato" (`zomato-order` in `lib/guides/apps.js`). It was written from general
+  knowledge of the app with generic practice screens, and has NOT been checked against real Zomato screenshots. Check its button
+  names (ADD, View cart, the place-order button) when screenshots arrive.
 - Moved, not removed: "Is this link or message safe?" is now a quick guide in the Stay safe tab (`/guide/open-link-safe`).
 
 **Removed earlier, code kept in git history** (the commit just before `692c6ff` on 24 Oct 2026 still has all of it):
