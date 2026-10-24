@@ -121,6 +121,8 @@ function ScreenFor({ step, lesson, lang, t, values, typed }) {
       return <GpPin payee={payee} amount={amount} typed={inputHere ? typed : ''} full={!inputHere} />;
     case 'gp-success':
       return <GpSuccess payee={payee} amount={amount} title={lesson.successTitle} />;
+    case 'gp-share':
+      return <GpSuccess payee={payee} amount={amount} title={lesson.successTitle} share />;
     case 'gp-recharge':
       return <GpRechargeNumbers />;
     case 'gp-plans':

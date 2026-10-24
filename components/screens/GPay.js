@@ -1,6 +1,7 @@
 // Practice look-alike of Google Pay (India), matched to the reference screens in docs/reference/gpay.
 // Same order, labels and layout as the real app; no Google logos, no real names, numbers or UPI IDs.
 import Icon from '../Icons';
+import AppIcon from '../AppIcon';
 import Keypad from './Keypad';
 import { Status } from '../kit/ui';
 import { useScreenLang } from '../LangCtx';
@@ -570,9 +571,10 @@ export function GpPin({ payee = {}, amount, typed, full, balance }) {
 
 // ---------- Payment done ----------
 
-export function GpSuccess({ payee, amount, title }) {
+// share: the Share button was tapped, so the phone's share sheet is open over the receipt.
+export function GpSuccess({ payee, amount, title, share }) {
   return (
-    <div className="app gp g2">
+    <div className={`app gp g2 ${share ? 'stack' : ''}`}>
       <Status />
       <GpTop left={{ icon: 'close', t: 'done' }} right={['more']} />
       <div className="g2-done">
@@ -586,7 +588,7 @@ export function GpSuccess({ payee, amount, title }) {
         <small>Today, 11:30 am</small>
       </div>
       <div className="g2-btns center">
-        <div className="g2-btn outline">
+        <div className="g2-btn outline" data-t="share">
           <Icon name="share" size={18} /> Share
         </div>
         <div className="g2-btn">
@@ -596,6 +598,38 @@ export function GpSuccess({ payee, amount, title }) {
       <div className="g2-foot">
         <UpiMark />
       </div>
+      {share && (
+        <>
+          <div className="gp-dim" />
+          <div className="g2-sheet">
+            <div className="g2-sheet-h">Share payment details</div>
+            <div className="g2-share">
+              <div data-t="share-wa">
+                <AppIcon app="whatsapp" size={52} />
+                WhatsApp
+              </div>
+              <div>
+                <span className="g2-sh-ic" style={{ background: '#1a73e8' }}>
+                  <Icon name="chats" size={26} color="#fff" />
+                </span>
+                Messages
+              </div>
+              <div>
+                <span className="g2-sh-ic" style={{ background: '#d93025' }}>
+                  <Icon name="mail" size={26} color="#fff" />
+                </span>
+                Gmail
+              </div>
+              <div>
+                <span className="g2-sh-ic" style={{ background: '#5f6368' }}>
+                  <Icon name="link" size={26} color="#fff" />
+                </span>
+                Copy
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
