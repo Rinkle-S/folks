@@ -27,13 +27,6 @@ export default function ThemeList({ lang, t, done }) {
   return (
     <div className="theme-list">
       <div className="lesson-list">{THEMES.map(card)}</div>
-      <div className="lesson-card topic-card is-soon" aria-disabled="true">
-        <span className="lesson-num theme-ic">🎙️</span>
-        <span className="lesson-main">
-          <b>{t.voiceSoonTitle}</b>
-          <small>{t.soonTag}</small>
-        </span>
-      </div>
     </div>
   );
 }
