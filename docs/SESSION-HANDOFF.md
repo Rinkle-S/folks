@@ -64,6 +64,13 @@ Every practice screen has a PRACTICE banner (20px) and a faint tilted PRACTICE m
 - **Waiting for the owner's pick (images sent):** the Send button look, the end-of-lesson screen, the Phone basics icon and colour.
 - **Open question:** a Google Pay screen at the end that still says "open scanner"; the owner remembers it should be "Share screenshot" then "Done". Not found by reading the code: ask which lesson.
 
+## Sat 24 Oct (night): owner's picks applied
+- **Send button** is the small round share mark (`ShareMark` in `components/ShareLesson.js`), quiet by design: it only reacts to a tap exactly on it, never opens another app, and copies the message with the link, then says "Link copied". Search result: mark plus words under the card; lesson rows: mark only.
+- **End of a lesson (option A):** main button, then Print / Again / Send as round icons, then the three faces. "See other lessons" is gone (the bottom bar has Learn). The star rating and "Tell us more" appear only after a face is tapped.
+- **Phone basics** icon is Google-style: light blue square, blue handset.
+- Removed: the "My son or daughter's name" setting, the "lessons made for you" list on Help and Home (the ask-someone flow is gone), and the WhatsApp-number ask.
+- The bottom bar no longer stretches across wide screens on pages outside the main shell (guides, reading mode, lesson end).
+
 ## What is built (all on main)
 - 78 lessons: hand-built plus guide lessons (`lib/guides/*`, screens in `lib/kitSpec*.js`, components in `components/kit` and `components/screens`).
   99 recreated app screens, **all are best guesses**: none checked against real phones. See `docs/SCREENS-TO-REPLACE.md`.

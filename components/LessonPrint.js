@@ -46,6 +46,11 @@ export default function LessonPrint({ lesson, lang, t, variant = 'icon' }) {
         <button className="ptop-btn no-print" onClick={go} aria-label={t.printBtn}>
           <Icon name="printer" size={26} />
         </button>
+      ) : variant === 'act' ? (
+        <button className="act no-print" onClick={go} aria-label={t.printBtn}>
+          <span className="act-ic"><Icon name="printer" size={26} /></span>
+          {t.actPrint}
+        </button>
       ) : variant === 'link' ? (
         <button className="link-btn no-print" onClick={go}>
           <Icon name="printer" size={20} /> {t.printBtn}

@@ -22,6 +22,7 @@ import { LESSONS } from '@/lib/lessons';
 import { T } from '@/lib/i18n';
 import FeedbackAsk, { FeedbackBox } from './FeedbackAsk';
 import RateApp from './RateApp';
+import ShareLesson from './ShareLesson';
 import { useLang, useMute, speak, stopSpeaking, prefetchSpeech, onSpeaking, track, getFrom, whatsappLink, markDone, shouldAskRate, getResume, saveResume, clearResume, vibrate, getLearnMode, addRecent, getPracticeNote, setPracticeNote, setPracticeSeen, onSpeechProgress } from '@/lib/client';
 
 // Watch-first pacing (milliseconds). Slower than before: older viewers need time to see the screen, then the pointer,
@@ -600,6 +601,15 @@ function PlayerInner({ id }) {
           </>
         )}
 
+        <div className="acts">
+          <LessonPrint lesson={lesson} lang={lang} t={t} variant="act" />
+          <button type="button" className="act" onClick={() => restart(mode || 'practice')}>
+            <span className="act-ic"><Icon name="refresh" size={26} /></span>
+            {t.actAgain}
+          </button>
+          <ShareLesson look="act" id={id} title={lesson.title[lang]} lang={lang} t={t} where="lesson_end" />
+        </div>
+
         <div className="feedback">
           <p>{t.howWasIt}</p>
           {feedback && (feedback !== 'hard' || fbSent) ? (
@@ -656,18 +666,7 @@ function PlayerInner({ id }) {
           )}
         </div>
 
-        {askRate && <RateApp t={t} lang={lang} where="lesson_end" canSnooze />}
-
-        <Link className="btn ghost" href="/">
-          {t.otherLessons}
-        </Link>
-        <div className="done-quiet">
-          <LessonPrint lesson={lesson} lang={lang} t={t} variant="link" />
-          <button className="link-btn" onClick={() => restart(mode || 'practice')}>
-            {t.practiceAgain}
-          </button>
-        </div>
-        <BottomNav active="learn" t={t} />
+        {askRate && feedback && <RateApp t={t} lang={lang} where="lesson_end" canSnooze />}
       </div>
     );
   }

@@ -14,7 +14,6 @@ import { getProfile } from '@/lib/profile';
 import { GUIDES, GUIDE_LIST } from '@/lib/guides';
 import { T } from '@/lib/i18n';
 import { langCode } from '@/lib/langs';
-import { loadMade, isReady } from '@/lib/ask';
 import ThemeList from './ThemeList';
 import ShareLesson from './ShareLesson';
 import { orderForFluency } from '@/lib/levels';
@@ -26,7 +25,6 @@ import {
   track,
   getApps,
   saveApps,
-  getRequests,
   getDone,
   getResume,
   isOnboarded,
@@ -56,7 +54,6 @@ export default function Home() {
   const [showTopics, setShowTopics] = useState(false);
   const [moreApps, setMoreApps] = useState(false);
   const [reviewIds, setReviewIds] = useState([]);
-  const [made, setMade] = useState([]);
   const [done, setDone] = useState([]);
   const [resume, setResumeState] = useState(null); // a lesson left halfway
   const [greet, setGreet] = useState('greetDay');
@@ -86,8 +83,6 @@ export default function Home() {
     setResumeState(getResume());
     const h = new Date().getHours();
     setGreet(h < 12 ? 'greetMorning' : h < 17 ? 'greetDay' : 'greetEvening');
-    const reqs = getRequests();
-    if (reqs.length) loadMade(reqs).then(setMade);
     // Is server speech-to-text switched on? (Only when the owner enables it, because it uses paid credits.)
     fetch('/api/stt')
       .then((r) => r.json())
@@ -331,7 +326,6 @@ export default function Home() {
   const matched = result ? findLesson(result.id) : null;
   const lessons = Object.values(LESSONS);
   const doneCount = lessons.filter((l) => done.includes(l.id)).length;
-  const readyMade = made.filter(isReady);
   const mine = myApps || [];
   const orderedApps = [...mine.map((id) => APPS.find((a) => a.id === id)).filter(Boolean), ...APPS.filter((a) => !mine.includes(a.id))];
   // Apps they picked come first; the rest stay one tap away so they can still be discovered.
@@ -407,7 +401,7 @@ export default function Home() {
                 <Link className="btn primary" href={`/lesson/${matched.id}`}>
                   {t.yesStart}
                 </Link>
-                <ShareLesson big id={matched.id} title={matched.title[lang]} lang={lang} t={t} where="search_result" />
+                <ShareLesson text id={matched.id} title={matched.title[lang]} lang={lang} t={t} where="search_result" />
                 <button className="btn ghost" onClick={() => setState('idle')}>
                   {t.noOther}
                 </button>
@@ -422,7 +416,7 @@ export default function Home() {
                 <Link className="btn primary" href={LESSONS['gd-' + guideId] ? `/lesson/gd-${guideId}` : `/guide/${guideId}`}>
                   {t.showGuide}
                 </Link>
-                <ShareLesson big id={LESSONS['gd-' + guideId] ? 'gd-' + guideId : guideId} kind={LESSONS['gd-' + guideId] ? 'lesson' : 'guide'} title={GUIDES[guideId].title[lang]} lang={lang} t={t} where="search_result" />
+                <ShareLesson text id={LESSONS['gd-' + guideId] ? 'gd-' + guideId : guideId} kind={LESSONS['gd-' + guideId] ? 'lesson' : 'guide'} title={GUIDES[guideId].title[lang]} lang={lang} t={t} where="search_result" />
                 <button className="btn ghost" onClick={() => setState('idle')}>
                   {t.noOther}
                 </button>
@@ -546,26 +540,13 @@ export default function Home() {
           {showTopics && <ThemeList lang={lang} t={t} done={done} />}
         </section>
 
-        {readyMade.length > 0 && (
-          <Link href="/help" className="feature-card">
-            <span className="feature-ic soft">
-              <Icon name="heart" size={26} />
-            </span>
-            <div>
-              <b>{t.forYouTitle}</b>
-              <span>{readyMade.map((m) => m.question).join(', ')}</span>
-            </div>
-            <Icon name="chevron" size={24} />
-          </Link>
-        )}
-
         <footer className="home-foot">
           <Link href="/help">{t.helpLink}</Link>
           <Link href="/send">{t.childLink}</Link>
         </footer>
       </main>
 
-      <BottomNav active="learn" t={t} dot={readyMade.length ? 'help' : null} />
+      <BottomNav active="learn" t={t} />
 
       {showSettings && (
         <Settings
