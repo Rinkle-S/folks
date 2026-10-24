@@ -151,6 +151,7 @@ export default function Home() {
         audio: { echoCancellation: true, noiseSuppression: true },
       });
     } catch (e) {
+      console.error('[Nook mic] getUserMedia failed:', e && e.name, e && e.message);
       setState('idle');
       setMicMsg(inApp ? t.micInApp : t.micDenied);
       track('mic_error', {
@@ -188,6 +189,7 @@ export default function Home() {
             setState('idle');
             setMicMsg(t.micNoSpeech);
           } else {
+            console.error('[Nook mic] /api/stt failed:', r.status, j);
             setState('idle');
             setMicMsg(t.micServer);
             track('mic_error', {
@@ -227,7 +229,11 @@ export default function Home() {
       return;
     }
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const ua = navigator.userAgent;
+    const brave = !!(navigator.brave && navigator.brave.isBrave);
+    console.info('[Nook mic] start', { hasSpeechRecognition: !!SR, lang: langCode(lang), online: navigator.onLine, secure: window.isSecureContext, inApp, brave, ua });
     if (!SR) {
+      console.warn('[Nook mic] This browser has no SpeechRecognition. Try Chrome on Android or desktop Chrome.');
       setMicMsg(inApp ? t.micInApp : t.micUnsupported);
       track('mic_error', { meta: { error: 'unsupported', inApp, lang } });
       return;
@@ -244,8 +250,20 @@ export default function Home() {
         gotResult.current = true;
         handleQuery(e.results[0][0].transcript, 'voice');
       };
+      rec.onstart = () => console.info('[Nook mic] listening');
+      rec.onaudiostart = () => console.info('[Nook mic] microphone is receiving audio');
+      rec.onspeechstart = () => console.info('[Nook mic] speech detected');
       rec.onerror = (e) => {
         errored = true;
+        const why = {
+          network: 'The browser could not reach its speech service (Google servers). Common in Brave, Chromium builds, VPN or firewall, or when offline. Try regular Chrome.',
+          'not-allowed': 'Microphone permission was blocked for this site.',
+          'service-not-allowed': 'The browser refuses speech recognition for this page or profile.',
+          'no-speech': 'The mic opened but heard nothing.',
+          'audio-capture': 'No working microphone was found.',
+          'language-not-supported': 'This browser does not support speech recognition for ' + langCode(lang) + '.',
+        }[e.error];
+        console.error('[Nook mic] error:', e.error, e.message || '', why ? '\n' + why : '', { lang: langCode(lang), online: navigator.onLine, brave, ua });
         setState('idle');
         track('mic_error', { meta: { error: e.error, inApp, lang } });
         if (e.error === 'not-allowed' || e.error === 'service-not-allowed') setMicMsg(inApp ? t.micInApp : t.micDenied);
@@ -254,6 +272,7 @@ export default function Home() {
         else if (e.error !== 'aborted') setMicMsg(t.micUnsupported);
       };
       rec.onend = () => {
+        console.info('[Nook mic] ended', { gotResult: gotResult.current, errored });
         setState((s) => (s === 'listening' ? 'idle' : s));
         if (!gotResult.current && !errored) setMicMsg(t.micNoSpeech);
       };
@@ -261,7 +280,8 @@ export default function Home() {
       setMicMsg('');
       setState('listening');
       rec.start();
-    } catch {
+    } catch (err) {
+      console.error('[Nook mic] could not start speech recognition:', err);
       setState('idle');
       setMicMsg(t.micUnsupported);
       track('mic_error', { meta: { error: 'start-failed', inApp, lang } });
