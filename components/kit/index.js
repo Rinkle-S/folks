@@ -6,7 +6,7 @@ import * as M from './Money';
 import * as TR from './Travel';
 import * as L from './Lessons';
 import * as ST from './Store';
-import { GpScan } from '../screens/GPay';
+import { GpScan, GpChat } from '../screens/GPay';
 
 export const KIT = {
   'and-home': A.AHome,
@@ -95,6 +95,7 @@ export const KIT = {
   'and-caller': A.CallerPage,
   'and-recents': A.Recents,
   'gp-scan': GpScan,
+  'gp-chat': GpChat,
   'bk-account': L.BkAccount,
   'bk-login-typed': L.BkLoginTyped,
   'ir-login-btn': L.IrLoginBtn,

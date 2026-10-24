@@ -12,7 +12,6 @@ import {
   GpSuccess,
   GpRechargeNumbers,
   GpPlans,
-  GpBills,
   GpBoards,
   GpConsumer,
   GpBill,
@@ -126,8 +125,6 @@ function ScreenFor({ step, lesson, lang, t, values, typed }) {
       return <GpRechargeNumbers />;
     case 'gp-plans':
       return <GpPlans />;
-    case 'gp-bills':
-      return <GpBills />;
     case 'gp-boards':
       return <GpBoards />;
     case 'gp-consumer':
