@@ -8,7 +8,56 @@ import { SCAMS } from '@/lib/scams';
 import { T } from '@/lib/i18n';
 import { useLang, speak, stopSpeaking, track, whatsappLink, vibrate } from '@/lib/client';
 
-function Message({ c, lang, t }) {
+// Links, OTP and PIN words, amounts and remote-access app names stand out once the answer is known.
+const FLAG = /(https?:\/\/\S+|\bOTP\b|\bPIN\b|\bKYC\b|\bCVV\b|AnyDesk|₹\s?[\d,]+|Rs\s?[\d,.]+)/g;
+function marked(text, on) {
+  if (!on) return text;
+  return text.split(FLAG).map((part, i) => (i % 2 ? <mark key={i}>{part}</mark> : part));
+}
+
+const HOOK_EMOJI = { worry: '😟', free: '🎁', trust: '👪', official: '🏛️' };
+const ASK_EMOJI = { otp: '🔢', link: '🔗', money: '💸', app: '📲' };
+
+// How the scam works in three steps, and the warning signs it showed.
+function HowItWorks({ c, t }) {
+  if (!c.hook) return null;
+  return (
+    <section className="how" aria-label={t.scamHowTitle}>
+      <h3>{t.scamHowTitle}</h3>
+      <div className="how-steps">
+        <div>
+          <span>{HOOK_EMOJI[c.hook]}</span>
+          <small>{t.scamStep1}</small>
+          <b>{t['scamHook_' + c.hook]}</b>
+        </div>
+        <i aria-hidden="true">→</i>
+        <div>
+          <span>{ASK_EMOJI[c.ask]}</span>
+          <small>{t.scamStep2}</small>
+          <b>{t['scamAsk_' + c.ask]}</b>
+        </div>
+        <i aria-hidden="true">→</i>
+        <div className="move">
+          <span>✋</span>
+          <small>{t.scamStep3}</small>
+          <b>{t.scamMove}</b>
+        </div>
+      </div>
+      {c.flags && c.flags.length > 0 && (
+        <>
+          <h4>{t.scamFlagsTitle}</h4>
+          <ul className="flags">
+            {c.flags.map((f) => (
+              <li key={f}>{t['scamFlag_' + f]}</li>
+            ))}
+          </ul>
+        </>
+      )}
+    </section>
+  );
+}
+
+function Message({ c, lang, t, reveal }) {
   const label = c.kind === 'sms' ? t.scamSms : c.kind === 'call' ? t.scamCall : 'WhatsApp';
   return (
     <div className={`scam-msg ${c.kind}`}>
@@ -22,8 +71,22 @@ function Message({ c, lang, t }) {
         {c.from}
         {c.saved ? ' ✓' : ''}
       </div>
-      <div className="scam-text">{c.msg[lang]}</div>
+      <div className="scam-text">{marked(c.msg[lang], reveal && c.answer === 'scam')}</div>
     </div>
+  );
+}
+
+// The five signs to remember, shown after the practice and on the first screen.
+function Signs({ t }) {
+  return (
+    <section className="how">
+      <h3>{t.scamSignsTitle}</h3>
+      <ul className="flags">
+        {['rush', 'otp', 'link', 'free', 'official'].map((f) => (
+          <li key={f}>{t['scamFlag_' + f]}</li>
+        ))}
+      </ul>
+    </section>
   );
 }
 
@@ -89,6 +152,7 @@ export default function Scams() {
               <li key={k}>{r}</li>
             ))}
           </ul>
+          <Signs t={t} />
           <Cheated t={t} />
         </main>
         <BottomNav active="safe" t={t} />
@@ -133,7 +197,7 @@ export default function Scams() {
             <li key={k}>{r}</li>
           ))}
         </ul>
-        <Cheated t={t} />
+          <Cheated t={t} />
         <a
           className="btn wa-btn"
           href={whatsappLink(t.scamShare(score, SCAMS.length) + '\n' + window.location.origin + '/scams')}
@@ -177,7 +241,7 @@ export default function Scams() {
         </div>
       </div>
       {c.context && <p className="scam-context">{c.context[lang]}</p>}
-      <Message c={c} lang={lang} t={t} />
+      <Message c={c} lang={lang} t={t} reveal={!!picked} />
 
       {!picked ? (
         <>
@@ -198,6 +262,7 @@ export default function Scams() {
           </b>
           <p>{c.why[lang]}</p>
           <p className="scam-todo">{c.todo[lang]}</p>
+          {c.answer === 'scam' && <HowItWorks c={c} t={t} />}
           <button className="btn primary" onClick={next}>
             {t.next}
           </button>
