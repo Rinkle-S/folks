@@ -1,8 +1,9 @@
 # Nook: session handoff (read this first, then `CLAUDE.md`)
 
 Last updated: Sat 24 Oct 2026. **Buildathon submission: Mon 26 Oct 2026, afternoon.**
-Owner: Rinkle Sebastian. Repo: `Rinkle-S/folks` (the product is now called **Nook**; the repo and the Vercel URL keep the old name).
-Live site: `folks-vert.vercel.app` (Vercel auto-deploys from `main`). Local clone: `/home/user/folks`.
+Owner: Rinkle Sebastian. Repo: `Rinkle-S/folks` (the product is called **Nook**; the repo keeps the old name for now).
+Live site: `nook-learn.vercel.app` (added 24 Oct; the old `folks-vert.vercel.app` still works). Vercel auto-deploys from `main`.
+Keep the `folks_` localStorage keys in the code: renaming them would reset every tester's progress and language. Local clone: `/home/user/folks`.
 
 ## What Nook is
 A phone-skills practice app for parents aged 55+ (English, Hindi, Malayalam). They practise an occasional phone task on a safe fake

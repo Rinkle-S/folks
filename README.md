@@ -1,6 +1,8 @@
-# Nook — phone help for your folks
+# Nook: your cozy corner for everyday learning
 
-Safe, voice-guided practice for everyday phone tasks for parents aged 55+. They practise with fake money, in Hindi or English, and then do it for real on their own.
+Live: https://nook-learn.vercel.app
+
+Safe, voice-guided practice for everyday phone tasks for parents aged 55+. They practise with fake money, in English, Hindi or Malayalam, and then do it for real on their own.
 
 HelloPM Buildathon, Oct 2026 · built by Rinkle Sebastian · spec in [SPEC.md](SPEC.md)
 
