@@ -667,6 +667,7 @@ function PlayerInner({ id }) {
         </div>
 
         {askRate && feedback && <RateApp t={t} lang={lang} where="lesson_end" canSnooze />}
+        <BottomNav active="learn" t={t} />
       </div>
     );
   }
