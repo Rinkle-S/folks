@@ -1092,7 +1092,6 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; }
 .ss-fit .ss-ans { margin-top: 16px; }
 .ss-fit .ss-ans p { font-size: 17px; line-height: 1.35; }
 .ss-fit .ss-ans p b { font-size: inherit; color: inherit; }
-.ss-fit .ss-bub.ss-clamp { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .ss-fit .ss-acts { margin-top: 16px; }
 .ss-fit .ss-help { margin-top: 16px; }
 .ss-fit .ss-tips { margin-top: 12px; }
@@ -1100,7 +1099,7 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; }
 .ss-fit .ss-next small { display: none; }
 .ss-fit .ss-opt { min-height: 48px; }
 @media (max-height: 780px) { .ss-fit .ss-opt { display: none !important; } }
-@media (max-height: 720px) { .ss-fit .ss-tips li:nth-child(3) { display: none; } .ss-fit .ss-card:has(.ss-clamp) { display: none; } }
+@media (max-height: 720px) { .ss-fit .ss-tips li:nth-child(3) { display: none; } }
 .ss-fit .ss-sub { font-size: 18px; line-height: 1.35; color: #4A5550; margin: -4px 0 14px; font-weight: 700; }
 .ss-fit .ss-gold { margin-top: 0; }
 @media (max-height: 900px) {
@@ -1118,3 +1117,75 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; }
   .ss-fit .ss-foot { padding: 10px 0 16px; }
 }
 @media (max-height: 740px) { .ss-fit .ss-next .ss-tile .tx span { display: none; } .ss-fit .ss-next { padding: 12px; } }
+
+/* Spacing pass: room between the progress line, the title and the cards; buttons always reachable */
+.ss-home .ss-lead { display: block !important; margin: 2px 0 0; }
+.ss-home .ss-bars { margin: 16px 0 16px !important; }
+.ss-home h1 { margin: 6px 0 8px; }
+.ss-fit { overflow-y: auto; }
+.ss-fit .ss-bars { margin: 2px 0 4px; }
+.ss-fit .ss-bars.ss-q-bars { margin-top: 14px; }
+.ss-fit .ss-meta { margin: 16px 0 10px; }
+.ss-fit h1 { margin: 22px 0 14px !important; }
+.ss-fit .ss-sub { margin: 0 0 18px; }
+.ss-fit .ss-card { padding: 16px; gap: 14px; }
+.ss-fit .ss-flags { margin-top: 20px; gap: 12px; }
+.ss-fit .ss-steps { margin-top: 18px; }
+.ss-fit .ss-acts { margin-top: 20px; gap: 14px; }
+.ss-fit .ss-help { margin-top: 20px; }
+.ss-fit .ss-q { margin-top: 22px; }
+.ss-fit .ss-ans { margin-top: 18px; }
+.ss-fit .ss-foot { position: sticky; bottom: 0; margin: auto -20px 0; padding: 14px 20px 20px; background: var(--paper); }
+@media (max-height: 680px) {
+  .ss-fit h1 { margin: 16px 0 10px !important; }
+  .ss-fit .ss-gold .ic { display: none; }
+  .ss-fit .ss-help p { font-size: 16px; }
+  .ss-fit .ss-btn.soft { display: none; }
+  .ss-fit .ss-meta { margin: 12px 0 8px; }
+  .ss-fit .ss-flags { margin-top: 14px; gap: 8px; }
+  .ss-fit .ss-steps { margin-top: 12px; }
+  .ss-fit .ss-step .body { padding-bottom: 10px; }
+  .ss-fit .ss-acts { margin-top: 14px; gap: 10px; }
+  .ss-fit .ss-help { margin-top: 14px; }
+  .ss-fit .ss-foot { padding: 10px 20px 14px; }
+  .ss-fit .ss-gold { padding: 14px; }
+  .ss-home .ss-tile { min-height: 60px; padding: 6px 12px; margin-bottom: 8px; }
+  .ss-home .ss-bars { margin: 10px 0 12px !important; }
+  .ss-home h1 { font-size: 26px; margin: 2px 0 4px; }
+  .ss-home .ss-lead { font-size: 17px; }
+  .ss-home .ss-sos { min-height: 56px; }
+}
+@media (max-height: 720px) { .ss-fit .ss-sub { display: none; } }
+@media (max-height: 680px) { .ss-fit .ss-acts div { font-size: 17px; } .ss-fit .ss-gold b { font-size: 19px; } .ss-fit .ss-help .ss-sos { min-height: 54px; } }
+/* Malayalam letters run taller and longer, so its lines are a little tighter to keep the same one-screen fit */
+.ss[data-l="ml"] .ss-bub, .ss[data-l="ml"] .ss-step .body p, .ss[data-l="ml"] .ss-flags li, .ss[data-l="ml"] .ss-acts div, .ss[data-l="ml"] .ss-ans p, .ss[data-l="ml"] .ss-tips li, .ss[data-l="ml"] .ss-sub { font-size: 16px; line-height: 1.3; }
+.ss[data-l="ml"] h1 { font-size: 24px !important; line-height: 1.2; }
+.ss[data-l="ml"] .ss-step .body b, .ss[data-l="ml"] .ss-gold b, .ss[data-l="ml"] .ss-ans b { font-size: 18px; line-height: 1.25; }
+.ss[data-l="ml"] .ss-help p { font-size: 15px; line-height: 1.3; }
+.ss[data-l="ml"] .ss-step .num { width: 40px; height: 40px; }
+.ss[data-l="ml"] .ss-step .body { padding-bottom: 8px; }
+.ss[data-l="hi"] .ss-step .body p, .ss[data-l="hi"] .ss-bub { line-height: 1.3; }
+@media (max-height: 740px) { .ss-fit .ss-help p { font-size: 16px; } .ss-fit .ss-acts { margin-top: 14px; gap: 10px; } .ss-fit .ss-help { margin-top: 14px; padding: 12px; } }
+@media (max-height: 680px) {
+  .ss-fit .ss-card { padding: 12px; }
+  .ss-fit .ss-ans { margin-top: 12px; padding: 12px 14px; }
+  .ss-fit .ss-step .body p { line-height: 1.3; }
+}
+@media (max-height: 660px) { .ss[data-l="ml"] .ss-step .body p, .ss[data-l="ml"] .ss-acts div { font-size: 15px; } .ss[data-l="ml"] .ss-meta { margin: 8px 0 6px; } }
+.ss[data-l="ml"] .ss-meta > span { display: none; }
+.ss[data-l="ml"] .ss-meta { justify-content: flex-end; }
+.ss[data-l="ml"] .ss-foot .ss-btn { font-size: 18px; }
+.ss-home[data-l="ml"] .ss-tile .tx b { font-size: 17px; line-height: 1.25; }
+.ss-home[data-l="ml"] .ss-tile { min-height: 64px; margin-bottom: 8px; }
+.ss-home[data-l="ml"] .ss-pill { font-size: 15px; padding: 7px 10px; }
+.ss-home[data-l="ml"] .ss-lead { font-size: 16px; }
+/* Answered quiz card: the full message stays visible, so the verdict area is tightened instead */
+@media (max-height: 740px) {
+  .ss-fit:has(.ss-ans) .ss-card { padding: 12px 14px; gap: 8px; }
+  .ss-fit:has(.ss-ans) .ss-bub { font-size: 17px; padding: 10px 12px; line-height: 1.3; }
+  .ss-fit:has(.ss-ans) .ss-ans { margin-top: 12px; padding: 12px 14px; gap: 3px; }
+  .ss-fit:has(.ss-ans) .ss-ans p { font-size: 16px; line-height: 1.3; }
+  .ss-fit:has(.ss-ans) .ss-ans b { font-size: 19px; }
+  .ss-fit:has(.ss-ans) .ss-foot { padding: 10px 20px 14px; }
+}
+@media (max-height: 780px) { .ss-home[data-l="ml"] .ss-lead { display: none !important; } .ss-home[data-l="ml"] .ss-sos b { font-size: 18px; } .ss-home[data-l="ml"] .ss-tile { min-height: 58px; padding: 4px 12px; } }

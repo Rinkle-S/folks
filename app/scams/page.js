@@ -22,7 +22,7 @@ export default function StaySafe() {
   return (
     <div className="shell">
       <AppBar />
-      <main className="shell-main ss ss-home">
+      <main className="shell-main ss ss-home" data-l={lang}>
         <h1>{u.title}</h1>
         <p className="ss-lead">{u.lead}</p>
 

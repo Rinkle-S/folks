@@ -145,7 +145,7 @@ function Lesson({ params }) {
   );
 
   return (
-    <div className="page ss ss-fit" style={{ paddingBottom: 0 }}>
+    <div className="page ss ss-fit" data-l={lang} style={{ paddingBottom: 0 }}>
       <Top u={u} onListen={() => speak(readText(), lang)} />
       <div>
         {page <= 4 && (
@@ -228,21 +228,17 @@ function Lesson({ params }) {
 
         {page === 4 && (
           <>
-            <h1>{u.realQ}</h1>
-            <p className="ss-sub">{u.noReal}</p>
+            {!picked && <h1>{u.realQ}</h1>}
+            {!picked && <p className="ss-sub">{u.noReal}</p>}
+            {picked && <div style={{ height: 18 }} />}
             <div className="ss-card">
               <div className="ss-who">
                 <div className="av" aria-hidden="true">👤</div>
                 <div>{L.check.from[lang]}</div>
               </div>
-              <div className={`ss-bub${picked ? ' ss-clamp' : ''}`}>{L.check.msg[lang]}</div>
+              <div className="ss-bub">{L.check.msg[lang]}</div>
             </div>
-            {!picked ? (
-              <div className="ss-q">
-                <button onClick={() => pick('real')}>{u.real}</button>
-                <button onClick={() => pick('fake')}>{u.fake}</button>
-              </div>
-            ) : (
+            {picked && (
               <div className={`ss-ans${picked === 'fake' ? '' : ' bad'}`} aria-live="polite">
                 <b>{picked === 'fake' ? u.rightFake : u.notQuite}</b>
                 <p>{L.check.why[lang]}</p>
@@ -305,14 +301,13 @@ function Lesson({ params }) {
             <button className="ss-btn" onClick={() => go(4)}>{u.quick}</button>
           </>
         )}
-        {page === 4 && (
-          <div style={{ gridColumn: '1 / -1', display: 'flex', flexDirection: 'column', gap: 6 }}>
-            {picked && <button className="ss-btn" onClick={finish}>{u.finish}</button>}
-            <a href="tel:1930" className="ss-opt" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, minHeight: 48, fontSize: 18, fontWeight: 700, color: '#A4262C', textDecoration: 'none' }}>
-              <Icon name="phone" size={20} /> {u.lostShort}
-            </a>
-          </div>
+        {page === 4 && !picked && (
+          <>
+            <button className="ss-btn ghost" onClick={() => pick('real')}>{u.real}</button>
+            <button className="ss-btn ghost" onClick={() => pick('fake')}>{u.fake}</button>
+          </>
         )}
+        {page === 4 && picked && <button className="ss-btn" style={{ gridColumn: '1 / -1' }} onClick={finish}>{u.finish}</button>}
         {page === 5 && next && (
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
             {auto ? (

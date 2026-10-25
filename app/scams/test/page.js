@@ -77,7 +77,7 @@ export default function Test() {
 
   if (finished) {
     return (
-      <div className="page ss has-nav">
+      <div className="page ss has-nav" data-l={lang}>
         <div className="ss-top">
           <Link href="/scams" className="ss-back">
             <span style={{ display: 'inline-flex', transform: 'rotate(180deg)' }}><Icon name="chevron" size={22} /></span> {u.title}
@@ -104,14 +104,6 @@ export default function Test() {
           >
             <Icon name="share" size={22} /> {u.share}
           </a>
-          <Link href="/scams" className="ss-btn ghost">{u.home}</Link>
-          <a href="tel:1930" className="ss-sos" onClick={() => track('cheated_call')}>
-            <span className="ic"><Icon name="phone" size={22} /></span>
-            <span style={{ flex: 1 }}>
-              <small>{u.lost}</small>
-              <b>{u.call}</b>
-            </span>
-          </a>
         </div>
         <BottomNav active="safe" t={t} />
       </div>
@@ -122,20 +114,21 @@ export default function Test() {
   const label = c.kind === 'sms' ? t.scamSms : c.kind === 'call' ? t.scamCall : 'WhatsApp';
 
   return (
-    <div className="page ss ss-fit">
+    <div className="page ss ss-fit" data-l={lang}>
       <div className="ss-top">
         <Link href="/scams" className="ss-back" onClick={() => stopSpeaking()}>
           <span style={{ display: 'inline-flex', transform: 'rotate(180deg)' }}><Icon name="chevron" size={22} /></span> {u.title}
         </Link>
         <span style={{ fontSize: 16, color: '#4A5550', paddingRight: 8 }}><b>{u.testOf(i + 1, cards.length)}</b></span>
       </div>
-      <div className="ss-bars" style={{ gridTemplateColumns: `repeat(${cards.length}, minmax(0, 1fr))`, marginTop: 8 }}>
+      <div className="ss-bars ss-q-bars" style={{ gridTemplateColumns: `repeat(${cards.length}, minmax(0, 1fr))` }}>
         {cards.map((_, n) => (
           <i key={n} className={n <= i ? 'on' : ''} />
         ))}
       </div>
-      <h1>{u.realQ}</h1>
-      {c.context && <p className="ss-sub">{c.context[lang]}</p>}
+      {!picked && <h1>{u.realQ}</h1>}
+      {c.context && !picked && <p className="ss-sub">{c.context[lang]}</p>}
+      {picked && <div style={{ height: 18 }} />}
       <div className="ss-card">
         <div className="ss-who">
           <div className="av" aria-hidden="true">{c.kind === 'call' ? '📞' : '💬'}</div>
@@ -145,29 +138,29 @@ export default function Test() {
             <small>{label}</small>
           </div>
         </div>
-        <div className={`ss-bub${picked ? ' ss-clamp' : ''}`}>{c.msg[lang]}</div>
+        <div className="ss-bub">{c.msg[lang]}</div>
       </div>
 
-      {!picked ? (
-        <div className="ss-q">
-          <button onClick={() => pick('safe')}>{u.real}</button>
-          <button onClick={() => pick('scam')}>{u.fake}</button>
+      {picked && (
+        <div className={`ss-ans${right ? '' : ' bad'}`} aria-live="polite">
+          <b>
+            {right ? t.scamRight : t.scamWrong} {c.answer === 'scam' ? u.fake : u.real}
+          </b>
+          <p>{c.why[lang]}</p>
+          <p><b>{c.todo[lang]}</b></p>
         </div>
-      ) : (
-        <>
-          <div className={`ss-ans${right ? '' : ' bad'}`} aria-live="polite">
-            <b>
-              {right ? t.scamRight : t.scamWrong} {c.answer === 'scam' ? u.fake : u.real}
-            </b>
-            <p>{c.why[lang]}</p>
-            <p><b>{c.todo[lang]}</b></p>
-          </div>
-          <button className="ss-btn" style={{ marginTop: 16 }} onClick={next}>{t.next}</button>
-        </>
       )}
-      <a href="tel:1930" className="ss-opt" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, minHeight: 48, marginTop: 4, fontSize: 18, fontWeight: 700, color: '#A4262C', textDecoration: 'none' }}>
-        <Icon name="phone" size={20} /> {u.lostShort}
-      </a>
+
+      <div className="ss-foot">
+        {!picked ? (
+          <>
+            <button className="ss-btn ghost" onClick={() => pick('safe')}>{u.real}</button>
+            <button className="ss-btn ghost" onClick={() => pick('scam')}>{u.fake}</button>
+          </>
+        ) : (
+          <button className="ss-btn" style={{ gridColumn: '1 / -1' }} onClick={next}>{t.next}</button>
+        )}
+      </div>
     </div>
   );
 }
