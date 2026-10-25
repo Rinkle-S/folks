@@ -10,7 +10,8 @@ export function generateStaticParams() {
   return PAGES.map((id) => ({ id }));
 }
 
-export default function AppPage({ params }) {
-  if (!PAGES.includes(params.id)) notFound();
-  return <AppLessons app={params.id} />;
+export default async function AppPage({ params }) {
+  const { id } = await params;
+  if (!PAGES.includes(id)) notFound();
+  return <AppLessons app={id} />;
 }

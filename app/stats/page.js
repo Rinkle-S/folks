@@ -1,6 +1,7 @@
 // Live usage numbers from Supabase. Proves the data is real, and gives numbers for the deck.
 import { LESSONS, COMING_SOON } from '@/lib/lessons';
 import { authHeaders } from '@/lib/supabase';
+import { uniqueEvents } from '@/lib/events';
 
 export const dynamic = 'force-dynamic';
 export const metadata = { title: 'Nook live stats' };
@@ -10,20 +11,24 @@ async function loadEvents() {
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !key) return { connected: false, events: [] };
   try {
-    const r = await fetch(`${url}/rest/v1/events?select=*&order=created_at.desc&limit=10000`, {
-      headers: authHeaders(key),
-      cache: 'no-store',
-    });
-    if (!r.ok) return { connected: true, error: true, events: [] };
-    return { connected: true, events: await r.json() };
+    const events = [];
+    // Supabase caps each response; paginate rather than silently showing only the first 1,000.
+    while (events.length < 10000) {
+      const r = await fetch(`${url}/rest/v1/events?select=*&order=created_at.desc,id.desc&limit=1000&offset=${events.length}`, {
+        headers: authHeaders(key), cache: 'no-store',
+      });
+      if (!r.ok) return { connected: true, error: true, events: [] };
+      const page = await r.json();
+      if (!page.length) break;
+      events.push(...page);
+    }
+    return { connected: true, events: uniqueEvents(events) };
   } catch {
     return { connected: true, error: true, events: [] };
   }
 }
 
 const uniq = (arr) => new Set(arr).size;
-const fmt = (d) =>
-  new Date(d).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' });
 
 export default async function Stats() {
   const { connected, error, events } = await loadEvents();
@@ -49,27 +54,27 @@ export default async function Stats() {
     return { l, s, c, steps, maxStuck };
   });
 
-  const searches = of('voice_search').slice(0, 25);
-  const requests = [...of('ask_child'), ...of('tile_soon')];
-  const reqCounts = {};
+  // Free text stays private in Supabase; this public page shows aggregates only.
+  const requests = [...of('lesson_request'), ...of('ask_child'), ...of('tile_soon')];
+  const reqCounts = Object.create(null);
   for (const r of requests) {
-    const k = r.meta?.id ? COMING_SOON.find((s) => s.id === r.meta.id)?.title.en || r.meta.id : r.meta?.q || '?';
+    const k = COMING_SOON.find((s) => s.id === r.meta?.id)?.title.en || 'Other lesson requests';
     reqCounts[k] = (reqCounts[k] || 0) + 1;
   }
   const fb = { easy: 0, okay: 0, hard: 0 };
-  for (const f of of('feedback')) if (f.meta?.v in fb) fb[f.meta.v]++;
+  for (const f of of('feedback')) if (Object.hasOwn(fb, f.meta?.v)) fb[f.meta.v]++;
 
-  // Lessons people found okay or hard, with the reasons and notes they gave: where to improve.
+  // Only fixed reason labels and counts are public. Notes stay in the database.
   const REASON = { stuck: 'got stuck', mismatch: 'screen did not match phone', words: 'words unclear', voice: 'voice or sound', other: 'other' };
-  const byLesson = {};
+  const byLesson = Object.create(null);
   for (const f of of('feedback')) {
     if (f.meta?.v === 'easy' || !f.lesson) continue;
-    (byLesson[f.lesson] ||= { n: 0, reasons: {}, notes: [] }).n++;
+    (byLesson[f.lesson] ||= { n: 0, reasons: {} }).n++;
   }
   for (const f of of('feedback_detail')) {
-    const l = (byLesson[f.lesson] ||= { n: 0, reasons: {}, notes: [] });
-    for (const r of f.meta?.reasons || []) l.reasons[r] = (l.reasons[r] || 0) + 1;
-    if (f.meta?.note) l.notes.push(`${f.meta.note} (${f.meta.lang || '?'})`);
+    const l = (byLesson[f.lesson] ||= { n: 0, reasons: {} });
+    for (const r of Array.isArray(f.meta?.reasons) ? f.meta.reasons : []) if (Object.hasOwn(REASON, r)) l.reasons[r] = (l.reasons[r] || 0) + 1;
+
   }
   const needsWork = Object.entries(byLesson).sort((a, b) => b[1].n - a[1].n).slice(0, 25);
 
@@ -164,50 +169,25 @@ export default async function Stats() {
         <ul className="plain">
           {needsWork.map(([id, v]) => (
             <li key={id}>
-              <b>{LESSONS[id]?.title.en || id}</b>: {v.n} said okay or hard
+              <b>{LESSONS[id]?.title?.en || 'Other lesson'}</b>: {v.n} said okay or hard
               {Object.keys(v.reasons).length > 0 && (
                 <span className="muted"> ({Object.entries(v.reasons).map(([r, c]) => `${REASON[r] || r} ${c}`).join(', ')})</span>
               )}
-              {v.notes.slice(0, 3).map((n, i) => (
-                <div key={i} className="muted">"{n}"</div>
-              ))}
-            </li>
-          ))}
-        </ul>
-      )}
 
-      <h2>Recent searches</h2>
-      {searches.length === 0 ? (
-        <p className="muted">No searches yet.</p>
-      ) : (
-        <ul className="plain">
-          {searches.map((s) => (
-            <li key={s.id}>
-              "{s.meta?.q}" → {s.meta?.match || 'no match'} <span className="muted">({s.meta?.via}, {fmt(s.created_at)})</span>
             </li>
           ))}
         </ul>
       )}
 
       <h2>Voice and mic problems</h2>
-      {[...of('voice_error'), ...of('mic_error')].length === 0 ? (
-        <p className="muted">None reported.</p>
-      ) : (
-        <ul className="plain">
-          {[...of('voice_error'), ...of('mic_error')].slice(0, 20).map((e) => (
-            <li key={e.id}>
-              {e.type}: {JSON.stringify(e.meta)} <span className="muted">({fmt(e.created_at)})</span>
-            </li>
-          ))}
-        </ul>
-      )}
+      <p>{of('voice_error').length} voice errors · {of('mic_error').length} mic errors</p>
 
       <h2>Feedback</h2>
       <p>
         😊 Easy {fb.easy} · 😐 Okay {fb.okay} · 😟 Hard {fb.hard}
       </p>
 
-      <p className="muted small">Showing up to the latest 10,000 events. No names or phone numbers are stored.</p>
+      <p className="muted small">Showing up to the latest 10,000 events. Only aggregate usage is displayed. Search text, requests and feedback notes stay private.</p>
     </div>
   );
 }

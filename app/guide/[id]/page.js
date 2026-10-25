@@ -5,6 +5,7 @@ export function generateStaticParams() {
   return [...Object.keys(GUIDES), 'ai'].map((id) => ({ id }));
 }
 
-export default function GuidePage({ params }) {
-  return <GuideView id={params.id} />;
+export default async function GuidePage({ params }) {
+  const { id } = await params;
+  return <GuideView id={id} />;
 }

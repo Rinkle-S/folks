@@ -1,4 +1,5 @@
 'use client';
+import { useParams } from 'next/navigation';
 // A lesson made for this parent by someone close: their voice note, video, screenshots and written steps.
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -10,7 +11,8 @@ import { T } from '@/lib/i18n';
 import { ALL_APPS } from '@/lib/apps';
 import { useLang, speak, stopSpeaking, track, addRequest, whatsappLink } from '@/lib/client';
 
-export default function MyLesson({ params }) {
+export default function MyLesson() {
+  const params = useParams();
   const id = params.id;
   const [lang] = useLang();
   const [lesson, setLesson] = useState(undefined); // undefined loading, null missing

@@ -1,4 +1,5 @@
 'use client';
+import { useParams } from 'next/navigation';
 // For the helper (son, daughter, neighbour…): make a lesson for something a parent asked.
 // Type the steps, record a voice note, and/or add a screen recording or screenshots.
 import { useEffect, useRef, useState } from 'react';
@@ -24,7 +25,8 @@ async function uploadFile(id, blob, name) {
   return j.path;
 }
 
-export default function AddLesson({ params }) {
+export default function AddLesson() {
+  const params = useParams();
   const id = params.id;
   const [question, setQuestion] = useState('');
   const [steps, setSteps] = useState(['', '', '']);

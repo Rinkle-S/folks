@@ -6,7 +6,8 @@ export function generateStaticParams() {
   return Object.keys(LESSONS).map((id) => ({ id }));
 }
 
-export default function LessonPage({ params }) {
-  if (!LESSONS[params.id]) notFound();
-  return <Player id={params.id} />;
+export default async function LessonPage({ params }) {
+  const { id } = await params;
+  if (!LESSONS[id]) notFound();
+  return <Player key={id} id={id} />;
 }

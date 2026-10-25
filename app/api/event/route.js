@@ -52,6 +52,10 @@ export async function POST(req) {
   }
 
   const meta = body.meta && typeof body.meta === 'object' ? { ...body.meta } : {};
+  // Retain the queue ID in existing JSON metadata, compatible with the deployed schema.
+  delete meta.eid;
+  const queued = typeof body.eid === 'string' && /^[a-zA-Z0-9_-]{8,80}$/.test(body.eid);
+  if (queued) meta.eid = body.eid;
   if (typeof body.at === 'string') meta.client_at = body.at.slice(0, 40); // when it really happened, if it was queued
   // Which version of the app wrote this event, so results stay readable after the content changes.
   if (process.env.VERCEL_GIT_COMMIT_SHA) meta.build = process.env.VERCEL_GIT_COMMIT_SHA.slice(0, 7);
@@ -62,7 +66,7 @@ export async function POST(req) {
     lesson: clip(body.lesson, 40),
     step: Number.isInteger(body.step) ? body.step : null,
     from_name: clip(body.from, 40),
-    meta: metaStr.length > 2000 ? {} : meta,
+    meta: metaStr.length > 2000 ? (queued ? { eid: body.eid } : {}) : meta,
   };
 
   const url = process.env.SUPABASE_URL;
@@ -73,6 +77,12 @@ export async function POST(req) {
   }
 
   try {
+    if (queued) {
+      const query = new URLSearchParams({ select: 'id', type: `eq.${row.type}`, device: row.device ? `eq.${row.device}` : 'is.null', 'meta->>eid': `eq.${body.eid}`, limit: '1' });
+      const prior = await fetch(`${url}/rest/v1/events?${query}`, { headers: authHeaders(key), cache: 'no-store' });
+      if (!prior.ok) return NextResponse.json({ ok: false, stored: false }, { status: 502 });
+      if ((await prior.json()).length) return NextResponse.json({ ok: true, stored: true });
+    }
     const r = await fetch(`${url}/rest/v1/events`, {
       method: 'POST',
       headers: {
@@ -84,6 +94,10 @@ export async function POST(req) {
     });
     if (!r.ok) {
       const text = await r.text();
+      // The optional unique index also protects simultaneous retries from different tabs.
+      if (queued && r.status === 409) {
+        try { if (JSON.parse(text).code === '23505') return NextResponse.json({ ok: true, stored: true }); } catch {}
+      }
       console.error('supabase insert failed', r.status, text);
       return NextResponse.json({ ok: false, stored: false }, { status: 502 });
     }

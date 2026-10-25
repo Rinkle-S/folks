@@ -1,5 +1,24 @@
 # Nook: session handoff (read this first, then `CLAUDE.md`)
 
+## Owner update: 25 Oct 2026
+All visible journeys must work end to end, not only QR payment. Ask someone remains removed.
+The owner is testing nook-learn.vercel.app. Preserve their existing flows and progress keys.
+
+Security/reliability update: Next.js 15.5.28, patched PostCSS override, async route params,
+app-specific search filtering, durable lesson requests, and aggregate-only public stats.
+Feedback queue IDs are kept in event metadata. Normal retries are acknowledged without another insert;
+stats deduplicate concurrent retries too. The optional SQL index in
+`supabase/migrations/20261025_event_retry_index.sql` enforces uniqueness for simultaneous inserts
+at database level; it has not been applied to the live database. No migration is required for the app to run.
+Raw search/request/feedback text remains available only through the owner's Supabase access.
+Regression checks: `node scripts/test-fixes.mjs`, `node scripts/test-stats.mjs` (fresh build required),
+and `node scripts/smoke-journeys.mjs` (local server plus Playwright required; see script comments).
+Verified locally: production build, Malayalam check, dependency audit (0 vulnerabilities), regression tests,
+public-stats integration checks, and all 18 visible lessons x 3 languages in practice/read/watch-control modes
+(54 lesson/language combinations), plus 24 supporting pages per language, with no page errors.
+These checks disable audio and mock API writes; watch timing/audio, real-phone deep links and live Supabase writes need owner verification.
+
+
 Last updated: Sat 24 Oct 2026. **Buildathon submission: Mon 26 Oct 2026, afternoon.**
 Owner: Rinkle Sebastian. Repo: `Rinkle-S/folks` (the product is called **Nook**; the repo keeps the old name for now).
 Live site: `nook-learn.vercel.app` (added 24 Oct; the old `folks-vert.vercel.app` still works). Vercel auto-deploys from `main`.

@@ -1,4 +1,5 @@
 'use client';
+import { useParams } from 'next/navigation';
 // One topic: a short "good to know" intro, then its lessons in order.
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -13,7 +14,8 @@ import { useLang, getDone } from '@/lib/client';
 import { THEMES } from '@/lib/themes';
 import { LESSONS } from '@/lib/lessons';
 
-export default function Theme({ params }) {
+export default function Theme() {
+  const params = useParams();
   const [lang] = useLang();
   const [done, setDone] = useState([]);
   useEffect(() => setDone(getDone()), []);

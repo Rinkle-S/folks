@@ -8,6 +8,11 @@ export default function PwaBoot() {
   useEffect(() => {
     logVoiceServices();
     flushOutbox(); // send feedback that was waiting for the database
+    const retry = () => flushOutbox();
+    const onVisible = () => { if (document.visibilityState === 'visible') retry(); };
+    window.addEventListener('online', retry);
+    document.addEventListener('visibilitychange', onVisible);
+    const retryTimer = setInterval(retry, 30000);
     if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
     const onPrompt = (e) => {
       e.preventDefault();
@@ -15,7 +20,12 @@ export default function PwaBoot() {
       window.dispatchEvent(new Event('folks-installable'));
     };
     window.addEventListener('beforeinstallprompt', onPrompt);
-    return () => window.removeEventListener('beforeinstallprompt', onPrompt);
+    return () => {
+      window.removeEventListener('beforeinstallprompt', onPrompt);
+      window.removeEventListener('online', retry);
+      document.removeEventListener('visibilitychange', onVisible);
+      clearInterval(retryTimer);
+    };
   }, []);
   return null;
 }

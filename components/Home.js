@@ -123,15 +123,15 @@ export default function Home() {
     setAsked(false);
     setMicMsg('');
     setState('result');
-    track('voice_search', {
-      meta: { q: q.slice(0, 200), via, match: m ? m.id : null, lang },
-    });
     // A practice lesson wins unless a quick guide fits the question clearly better ("cancel order" vs the order lesson).
     // If two lessons score almost the same, the parent chooses between them instead of landing in the wrong one.
     const g0 = matchGuide(q);
     const lessonWins = m && m.kind === 'lesson' && !(g0 && g0.score > m.task) && isClear(q);
     const gm = lessonWins || !isClear(q) ? null : g0;
     const close = lessonWins || gm ? [] : suggest(q);
+    track('voice_search', {
+      meta: { q: q.slice(0, 200), via, match: lessonWins ? m.id : gm?.id || null, lang },
+    });
     setGuideId(gm ? gm.id : null);
     setResult(lessonWins ? m : null);
     setSugg(close);
