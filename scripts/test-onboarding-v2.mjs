@@ -46,6 +46,7 @@ async function audit(p,label){
     for(const e of root.querySelectorAll('p,b,small,label,button,input')){
       if(e.closest('.ob-progress,.bottomnav'))continue;const r=e.getBoundingClientRect(),s=getComputedStyle(e);if(r.height&&parseFloat(s.fontSize)<18)issues.push(`${e.textContent.trim()}: font ${s.fontSize}`);
     }
+    for(const e of root.querySelectorAll('.end-tips p,.end-safety-label'))if(e.scrollWidth>e.clientWidth+1||e.scrollHeight>e.clientHeight+1)issues.push(`clipped tip text: ${e.textContent}`);
     for(const e of root.querySelectorAll('*')){
       if(e.closest('svg,.app-icon')||![...e.childNodes].some(n=>n.nodeType===3&&n.textContent.trim()))continue;
       if(!e.getBoundingClientRect().height)continue;const chain=[];for(let a=e;a;a=a.parentElement)chain.unshift(a);
@@ -89,11 +90,11 @@ async function complete(p,id,mode,lang){
   await p.locator('.lesson-end-v2').waitFor();await p.evaluate(()=>document.fonts.ready);await p.waitForTimeout(50);
 }
 try{
-  if(!process.env.END_ONLY)for(const lang of ['en','hi','ml']){
+  if(!process.env.END_ONLY)for(const lang of (process.env.TEST_LANG?[process.env.TEST_LANG]:['en','hi','ml'])){
     for(const width of [320,390,1366]){const[c,p]=await setup(lang,width,844);await onboard(p,lang,{goal:width===320?'qr-pay':width===390?'whatsapp-docs':'safe',skip:width===320});console.log(`PASS onboarding ${lang} ${width}`);await c.close();}
     for(const goal of ['video-call','gd-install-app']){const[c,p]=await setup(lang);await onboard(p,lang,{goal,skip:true});await c.close();}const[c,p]=await setup(lang);await onboard(p,lang,{look:true,skip:true});await c.close();
   }
-  if(!process.env.ONBOARD_ONLY)for(const lang of ['en','hi','ml'])for(const[width,height]of(process.env.TEST_WIDTH?[[Number(process.env.TEST_WIDTH),Number(process.env.TEST_HEIGHT||844)]]:[[320,700],[390,844],[844,390],[1366,900]])){
+  if(!process.env.ONBOARD_ONLY)for(const lang of (process.env.TEST_LANG?[process.env.TEST_LANG]:['en','hi','ml']))for(const[width,height]of(process.env.TEST_WIDTH?[[Number(process.env.TEST_WIDTH),Number(process.env.TEST_HEIGHT||844)]]:[[320,700],[390,844],[844,390],[1366,900]])){
     const[c,p]=await setup(lang,width,height,true);await p.goto(base);await p.evaluate(()=>localStorage.setItem('folks_profile',JSON.stringify({name:'Elna'})));
     for(const mode of ['practice','watch','follow']){
       await complete(p,'qr-pay',mode,lang);assert.equal(await p.locator('details').count(),0);assert.equal(await p.locator('.end-tips li').count(),3);assert.equal(await p.locator('.done-title').textContent(),T[lang].wellDoneName('Elna'));assert.equal(await p.locator('.done-sub').textContent(),T[lang][mode==='watch'?'endWatched':mode==='follow'?'endRead':'endTried']);assert.equal(await p.locator('.acts,.real-try,.share-dot').count(),0);await audit(p,`end ${lang} ${width}`);

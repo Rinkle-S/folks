@@ -1394,7 +1394,8 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; }
 .end-tips p { margin: 0; font-size: 18px; line-height: 1.5; overflow-wrap: anywhere; }
 .end-tips .safety-tip { background: #fff1d7; }
 .safety-tip .end-tip-number { background: #f9dfab; color: #704600; }
-.end-safety-label { display: flex; align-items: center; gap: 6px; color: #704600; margin-bottom: 5px; font-size: 18px; }
+.end-safety-label { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; min-width: 0; overflow-wrap: anywhere; color: #704600; margin-bottom: 5px; font-size: 18px; }
+.end-safety-label svg { flex: none; }
 .end-feedback { margin: 26px 0 20px; }
 .end-rating { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 10px; margin-top: 12px; }
 .end-rating button { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 8px; min-height: 58px; padding: 12px 6px; border: 1px solid #c7cec7; border-radius: 16px; background: white; color: var(--ink); font-size: 18px; font-weight: 700; overflow-wrap: anywhere; }
