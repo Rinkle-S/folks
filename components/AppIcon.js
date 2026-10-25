@@ -81,7 +81,7 @@ export default function AppIcon({ app, size = 34 }) {
   const px = size <= 48 ? 96 : 192;
   return (
     <span
-      className="app-icon"
+      className={`app-icon${state === 'loaded' ? ' has-image' : ''}`}
       style={{ width: size, height: size, background: s.bg, borderColor: s.border, color: s.fg, fontSize: size, position: 'relative', overflow: 'hidden' }}
       aria-hidden="true"
     >

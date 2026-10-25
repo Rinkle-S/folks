@@ -14,7 +14,7 @@ function navItems(t) {
   ];
 }
 
-export function AppBar({ onSettings, back }) {
+export function AppBar({ onSettings, back, learn = false, t }) {
   const [initial, setInitial] = useState('');
   useEffect(() => {
     const n = getProfile().name;
@@ -23,8 +23,9 @@ export function AppBar({ onSettings, back }) {
   return (
     <header className="appbar">
       {back ? (
-        <Link href={back} className="icon-btn" aria-label="Back">
+        <Link href={back} className={learn ? 'labelled-control' : 'icon-btn'} aria-label={t?.back || 'Back'}>
           <Icon name="back" size={24} />
+          {learn && t.back}
         </Link>
       ) : (
         <Link href="/" className="brand" aria-label="Nook home">
@@ -32,14 +33,15 @@ export function AppBar({ onSettings, back }) {
         </Link>
       )}
       <span className="appbar-right">
-        {!back && (
+        {!back && !learn && (
           <Link href="/profile" className="avatar" aria-label="My profile">
             {initial || '👤'}
           </Link>
         )}
         {onSettings && (
-          <button className="icon-btn" onClick={onSettings} aria-label="Settings">
+          <button className={learn ? 'labelled-control' : 'icon-btn'} onClick={onSettings} aria-label={t?.settingsLabel || 'Settings'}>
             <Icon name="gear" size={24} />
+            {learn && t.settingsLabel}
           </button>
         )}
       </span>

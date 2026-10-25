@@ -6,7 +6,6 @@ import Icon from './Icons';
 import AppIcon from './AppIcon';
 import { AppBar, BottomNav } from './AppShell';
 import PrintBar from './PrintBar';
-import ShareLesson from './ShareLesson';
 import { idsForApp } from '@/lib/printable';
 import { LESSONS, APPS } from '@/lib/lessons';
 import { ALL_APPS } from '@/lib/apps';
@@ -31,49 +30,55 @@ export default function AppLessons({ app }) {
   const info = APPS.find((a) => a.id === app) || ALL_APPS.find((a) => a.id === app);
   const list = orderForFluency(Object.values(LESSONS).filter((l) => l.app === app), fluency, skills);
   const d = list.filter((l) => done.includes(l.id)).length;
+  const nextId = list.find((l) => !done.includes(l.id))?.id;
 
   return (
-    <div className="shell">
-      <AppBar back="/" />
+    <div className="shell learn-page learn-app">
+      <AppBar back="/" learn t={t} />
       <main className="shell-main">
-        <header className="app-head">
+        <header className="app-head" data-app={app}>
           <AppIcon app={app} size={72} />
           <div>
             <h1>{info.name}</h1>
             <p className="muted">
-              {t.lessonsN(list.length)} · {t.learnedOf(d, list.length)}
+              {t.lessonsN(list.length)} · {t.appDoneOf(d, list.length)}
             </p>
           </div>
         </header>
-        <PrintBar lang={lang} t={t} ids={idsForApp(app)} heading={info.name} />
 
         <div className="lesson-list">
           {list.map((l, i) => {
             const isDone = done.includes(l.id);
+            const upNext = l.id === nextId;
             return (
               <div key={l.id} className="lesson-row">
-              <Link href={`/lesson/${l.id}`} className={`lesson-card ${isDone ? 'is-done' : ''}`}>
+              <Link href={`/lesson/${l.id}`} className={`lesson-card ${isDone ? 'is-done' : ''} ${upNext ? 'up-next' : ''}`}>
                 <span className="lesson-num">{isDone ? <Icon name="check" size={20} stroke={3} /> : i + 1}</span>
                 <span className="lesson-main">
                   <b>{l.title[lang]}</b>
                   <small>
                     <Icon name="history" size={15} /> {t.minutesShort(l.minutes)}
                     {isDone && <em> · {t.learned}</em>}
+                    {upNext && <> · {t.appUpNext}</>}
                   </small>
                 </span>
-                <span className="lesson-go">
+                {upNext ? <span className="lesson-start">{t.startNow}</span> : <span className="lesson-go">
                   <Icon name="chevron" size={22} />
-                </span>
+                </span>}
               </Link>
-              <ShareLesson id={l.id} title={l.title[lang]} lang={lang} t={t} where="app_list" />
               </div>
             );
           })}
         </div>
 
-        <Link href="/help" className="ask-more">
-          <Icon name="heart" size={20} /> {t.askMore}
+        <Link href="/help#request-lesson" className="ask-more">
+          <Icon name="plus" size={24} /><span>{t.appRequestLead} <b>{t.appRequestAction}</b></span><Icon name="chevron" size={20} />
         </Link>
+        <section className="learn-helper" aria-labelledby="learn-helper-title">
+          <h2 id="learn-helper-title">{t.appHelperTitle}</h2>
+          <Link className="btn helper-send" href={`/send?app=${encodeURIComponent(app)}&lang=${lang}`}><Icon name="share" size={22} />{t.appSendLesson}</Link>
+          <PrintBar lang={lang} t={t} ids={idsForApp(app)} heading={info.name} />
+        </section>
       </main>
       <BottomNav active="learn" t={t} />
     </div>

@@ -1,6 +1,7 @@
 'use client';
 // Settings sheet: language and sound. Labels are bilingual so anyone can find their language.
 import { useState } from 'react';
+import Link from 'next/link';
 import useInstall from './useInstall';
 import { speak, unlockAudio, getLearnMode, setLearnMode, getVoiceChoice, setVoiceChoice, diagnoseVoice } from '@/lib/client';
 import { voiceStatus } from '@/lib/voice';
@@ -23,6 +24,7 @@ export default function Settings({ lang, setLang, muted, toggleMute, onClose, on
         <div className="settings-h">
           <b>{bi('Settings', 'सेटिंग', 'സെറ്റിംഗ്സ്')}</b>
         </div>
+        <Link className="settings-row settings-profile" href="/profile" onClick={onClose}>{t.profileTitle}</Link>
         <label className="settings-row">
           <span>{lang === 'ml' ? 'Language / ഭാഷ' : 'Language / भाषा / ഭാഷ'}</span>
           <select value={lang} onChange={(e) => setLang(e.target.value)}>

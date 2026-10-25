@@ -18,7 +18,7 @@ export default function AskPanel({ lang, t }) {
 
   return (
     <>
-        <form className="card" onSubmit={(e) => { e.preventDefault(); tellNook(); }} style={{ marginTop: 14 }}>
+        <form id="request-lesson" className="card" onSubmit={(e) => { e.preventDefault(); tellNook(); }} style={{ marginTop: 14 }}>
           <label className="field" style={{ marginTop: 0 }}>
             <span>{t.forYouAsk}</span>
             <input value={q} onChange={(e) => setQ(e.target.value)} placeholder={t.typePlaceholder} maxLength={200} />

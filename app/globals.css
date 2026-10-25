@@ -642,9 +642,7 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; }
 .modes{display:flex;flex-direction:column;gap:10px;margin-top:10px}
 .modes-h{font-size:1.05rem}
 .mode-card{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:14px;border-radius:16px;border:2px solid var(--line,#e3e6ea);background:#fff;color:inherit;font:inherit;cursor:pointer}
-.mode-card.main{border-color:var(--brand,#1a73e8);background:#eef4ff}
-.mode-ic{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:#e8f0fe;flex:none}
-.mode-card.main .mode-ic{background:var(--brand,#1a73e8);color:#fff}
+.mode-ic{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--peacock-soft);color:var(--peacock);flex:none}
 .mode-tx{display:flex;flex-direction:column;flex:1;gap:2px}
 .mode-tx b{font-size:1.05rem}
 .mode-tx small{opacity:.75;font-size:.9rem}
@@ -1189,3 +1187,89 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; }
   .ss-fit:has(.ss-ans) .ss-foot { padding: 10px 20px 14px; }
 }
 @media (max-height: 780px) { .ss-home[data-l="ml"] .ss-lead { display: none !important; } .ss-home[data-l="ml"] .ss-sos b { font-size: 18px; } .ss-home[data-l="ml"] .ss-tile { min-height: 58px; padding: 4px 12px; } }
+/* Learn redesign v2: scoped to the three specified surfaces. Player scenes and Stay safe are unchanged. */
+.learn-page, .learn-mode-v2 {
+  --paper: #F2F3EF;
+  --ink: #16201D;
+  --ink-2: #4B5652;
+  --ink-3: #4B5652;
+  --peacock: #0F6B5C;
+  --peacock-deep: #0A4E43;
+  --peacock-soft: #DDEFE9;
+  background: var(--paper);
+  color: var(--ink);
+}
+.learn-page :focus-visible, .learn-mode-v2 :focus-visible { outline-color: #0F6B5C; }
+.learn-page .app-icon.has-image > svg, .learn-mode-v2 .app-icon.has-image > svg { visibility: hidden; }
+.learn-page .labelled-control { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 8px 14px; border: 1px solid #DCDFD8; border-radius: 999px; background: #fff; color: #16201D; font-size: 16px; font-weight: 700; text-decoration: none; }
+.learn-page .brand { min-height: 44px; }
+.learn-page .home-h { font-size: 27px; line-height: 1.2; margin: 4px 0 0; }
+.learn-page .greet { font-size: 18px; color: #4B5652; }
+.learn-page .askbar { box-shadow: none; border: 1px solid #DCDFD8; }
+.learn-page .askbar input::placeholder { color: #4B5652; opacity: 1; }
+.learn-page .ask-go { width: auto; min-width: 72px; min-height: 48px; padding: 8px 12px; border-radius: 999px; background: #DDEFE9; color: #0A4E43; font-size: 16px; font-weight: 700; }
+.learn-page .share-link { min-height: 44px; }
+.learn-page .eyebrow { font-size: 16px; text-transform: none; letter-spacing: 0; }
+.learn-section-h { margin: 28px 0 12px; }
+.learn-section-h h2 { margin: 0 0 4px; font-size: 22px; }
+.learn-section-h p, .apps-settings-hint { margin: 0; color: #4B5652; font-size: 16px; line-height: 1.5; }
+.learn-page .app-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.learn-page .app-tile { padding: 16px 4px 14px; gap: 8px; border: 1px solid #E2E4DE; border-radius: 18px; background: #fff; box-shadow: none; min-width: 0; }
+.learn-page .app-tile b { font-size: 19px; line-height: 1.25; text-align: center; max-width: 100%; }
+.learn-page .app-tile small { font-size: 16px; line-height: 1.35; color: #4B5652; text-align: center; }
+.learn-page .app-tile .tile-learned { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 4px; color: #0F6B5C; font-weight: 700; }
+.tile-progress { display: block; width: 70%; height: 5px; background: #E2E4DE; border-radius: 3px; overflow: hidden; }
+.tile-progress > span { display: block; height: 100%; background: #0F6B5C; border-radius: inherit; }
+.learn-page .apps-settings-hint { margin-top: 12px; }
+.learn-page .home-topics { margin-top: 0; }
+.learn-page .topic-card { min-height: 84px; padding: 14px; gap: 12px; border: 1px solid #E2E4DE; border-radius: 18px; background: #fff; }
+.learn-page .topic-card .theme-ic { width: 48px; height: 48px; background: #DDEFE9; color: #0F6B5C; }
+.learn-page .topic-card .lesson-main b { font-size: 19px; }
+.learn-page .topic-card .lesson-main small { font-size: 16px; }
+.learn-page .topic-learned { color: #0F6B5C; font-style: normal; font-weight: 700; }
+.learn-page .see-topics { font-size: 17px; min-height: 52px; background: transparent; color: #0F6B5C; box-shadow: 0 0 0 1px #CBD0C8 inset; }
+.learn-page .app-head { margin: 18px 0 22px; gap: 16px; }
+.learn-page .app-head h1 { font-size: 30px; }
+.learn-page .app-head p { font-size: 17px; }
+.learn-page .lesson-row { display: block; }
+.learn-page .lesson-card { min-height: 92px; padding: 16px 14px; gap: 14px; border-radius: 18px; border: 1px solid #E2E4DE; box-shadow: none; }
+.learn-page .lesson-card.up-next { border: 2px solid #0F6B5C; }
+.learn-page .lesson-num { width: 44px; height: 44px; background: #DDEFE9; color: #0A4E43; font-size: 19px; flex: none; }
+.learn-page .is-done .lesson-num { background: #1E7A49; color: #fff; }
+.learn-page .lesson-main b { font-size: 19px; line-height: 1.3; }
+.learn-page .lesson-main, .learn-page .ask-more > span { overflow-wrap: anywhere; }
+.learn-page .lesson-main small { display: block; font-size: 16px; line-height: 1.4; color: #4B5652; }
+.learn-page .lesson-main small > svg { vertical-align: -2px; }
+.learn-page .lesson-main em { font-style: normal; color: #0F6B5C; font-weight: 700; }
+.learn-page .lesson-go { color: #4B5652; }
+.lesson-start { padding: 8px 14px; border-radius: 999px; background: #0F6B5C; color: #fff; font-size: 16px; font-weight: 700; flex: none; }
+.learn-page .ask-more { display: flex; align-items: center; gap: 12px; margin: 16px 0 0; padding: 16px; border-radius: 18px; background: #DDEFE9; color: #0A4E43; font-size: 17px; font-weight: 400; line-height: 1.4; }
+.learn-page .ask-more > span { flex: 1; min-width: 0; }
+.learn-page .ask-more > svg { flex: none; }
+.learn-helper { margin-top: 28px; }
+.learn-helper h2 { margin: 0 0 10px; font-size: 16px; font-weight: 700; color: #4B5652; line-height: 1.5; }
+.learn-helper .print-bar { margin-top: 10px; }
+.learn-helper .print-open { margin-top: 0; min-height: 52px; font-size: 17px; background: transparent; box-shadow: 0 0 0 1px #CBD0C8 inset; }
+.learn-helper .helper-send { min-height: 56px; border: 2px solid #0F6B5C; background: #fff; color: #0F6B5C; font-size: 18px; }
+.settings-profile { min-height: 56px; text-decoration: none; color: var(--peacock-deep); font-weight: 700; }
+.learn-mode-v2 .scene-body { padding: 0 18px 28px; }
+.learn-mode-v2 .modes { gap: 12px; margin-top: 10px; }
+.learn-lesson-context { display: flex; align-items: center; gap: 14px; padding: 14px; border: 1px solid #E2E4DE; border-radius: 18px; background: #fff; }
+.learn-lesson-context > div { min-width: 0; }
+.learn-lesson-context p { margin: 0 0 2px; font-size: 16px; color: #4B5652; }
+.learn-lesson-context b { display: block; font-size: 19px; line-height: 1.3; }
+.learn-mode-v2 .scene-body h1 { margin: 14px 0 4px; font-size: 27px; line-height: 1.2; }
+.learn-mode-v2 .mode-card { min-height: 92px; padding: 14px 16px; gap: 16px; border: 1px solid #DCDFD8; border-radius: 18px; background: #fff; box-shadow: none; }
+.learn-mode-v2 .mode-ic { width: 56px; height: 56px; background: #DDEFE9; color: #0F6B5C; }
+.learn-mode-v2 .mode-tx { min-width: 0; gap: 3px; overflow-wrap: anywhere; }
+.learn-mode-v2 .mode-tx b { font-size: 20px; line-height: 1.3; }
+.learn-mode-v2 .mode-tx small { font-size: 16px; line-height: 1.4; color: #4B5652; opacity: 1; }
+.learn-mode-v2 .mode-card > svg { flex: none; color: #4B5652; }
+/* Phone basics has a generic icon, not a brand logo. Keep that badge in the interface palette. */
+.learn-page [data-app="phone"] .app-icon, .learn-mode-v2 [data-app="phone"] .app-icon { background: #DDEFE9 !important; border-color: #DDEFE9 !important; color: #0F6B5C !important; }
+@media (max-width: 359px) {
+  .learn-page .app-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .learn-page .lesson-card.up-next { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 10px 14px; }
+  .learn-page .up-next .lesson-start { grid-column: 2; justify-self: start; }
+  .learn-mode-v2 .mode-card { padding-inline: 12px; gap: 10px; }
+}

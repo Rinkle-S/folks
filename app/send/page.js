@@ -21,10 +21,17 @@ export default function Send() {
   const [apps, setApps] = useState([]);
   const [origin, setOrigin] = useState('');
   const [copied, setCopied] = useState(false);
+  const [appFilter, setAppFilter] = useState(null);
 
   useEffect(() => {
     setOrigin(window.location.origin);
     setName(getProfile().name || '');
+    // The app page reuses this existing picker/message, with its lesson list scoped to that app.
+    const params = new URLSearchParams(window.location.search);
+    const app = params.get('app');
+    const first = Object.values(LESSONS).find((l) => l.app === app);
+    if (first) { setAppFilter(app); setItem(`l:${first.id}`); }
+    if (LANGS.some((l) => l.id === params.get('lang'))) setLang(params.get('lang'));
   }, []);
 
   const [kind, id] = item.split(':');
@@ -91,14 +98,14 @@ export default function Send() {
           <span>What should they learn?</span>
           <select value={item} onChange={(e) => setItem(e.target.value)}>
             <optgroup label="Practice lessons (fake screens)">
-              {Object.values(LESSONS).filter((x) => !x.id.startsWith('gd-')).map((x) => (
+              {Object.values(LESSONS).filter((x) => !x.id.startsWith('gd-') && (!appFilter || x.app === appFilter)).map((x) => (
                 <option key={x.id} value={`l:${x.id}`}>
                   {x.title.en}
                 </option>
               ))}
             </optgroup>
             <optgroup label="More practice lessons">
-              {GUIDE_LIST.map((x) => (
+              {GUIDE_LIST.filter((x) => !appFilter || (x.app === appFilter && LESSONS[`gd-${x.id}`])).map((x) => (
                 <option key={x.id} value={`l:gd-${x.id}`}>
                   {x.appName}: {x.title.en}
                 </option>

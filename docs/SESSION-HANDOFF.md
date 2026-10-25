@@ -1,5 +1,13 @@
 # Nook: session handoff (read this first, then `CLAUDE.md`)
 
+## Learn redesign v2: 25 Oct 2026
+- Fetched and preserved the owner's Stay safe changes and v2 spec/mockups from `dcddd16`. Applied the three-screen Learn redesign with existing components and icons; no practice scene artwork changes.
+- Home has labelled Settings, profile in Settings, shorter heading/greeting, a labelled Search action, all six app tiles in stable saved order with three progress states, and always-visible topics. App pages have labelled Back, Up next/Start, the request card and bottom helper actions. Mode choice adds lesson context and neutral, matching options.
+- EN/HI/ML supplied. Scoped styles retain at least 16px body copy and 19–20px card titles, with wrapping instead of shrinking. Very narrow phones use two app columns. Existing bottom nav is unchanged.
+- Owner confirmed reusing the existing sharing flow/message: `/send?app=…&lang=…`, not a new picker or native share-sheet design. Only two topics exist, so show both rather than inventing a third.
+- Detailed acceptance results, interpretations and tests: `docs/learn-redesign-v2/IMPLEMENTATION.md`.
+- Unfinished scene-graphics work from the earlier interrupted turn is saved in Git stash `Deferred scene graphics; excluded from Learn redesign v2`. Do not apply it unless the owner resumes graphics work.
+
 ## All-lesson scene and script review: 25 Oct 2026
 - Latest owner request supersedes the earlier QR-only scope and Read bypass below. All 15 retained lessons open with a narrated scene, then a separate mode chooser, then step 1. Saved defaults and direct mode links skip only the chooser. Valid resume links stay direct.
 - Removed `flashlight`, `bigger-text` and `gd-maps-offline` from the catalogue/search/topics. Old lesson links return a localized Home route; stale resumes are cleared without deleting completion history.

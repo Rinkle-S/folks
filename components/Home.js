@@ -51,8 +51,6 @@ export default function Home() {
   const [serverStt, setServerStt] = useState(false);
   const [myApps, setMyApps] = useState(undefined);
   const [showApps, setShowApps] = useState(false);
-  const [showTopics, setShowTopics] = useState(false);
-  const [moreApps, setMoreApps] = useState(false);
   const [reviewIds, setReviewIds] = useState([]);
   const [done, setDone] = useState([]);
   const [resume, setResumeState] = useState(null); // a lesson left halfway
@@ -328,10 +326,8 @@ export default function Home() {
   const doneCount = lessons.filter((l) => done.includes(l.id)).length;
   const mine = myApps || [];
   const orderedApps = [...mine.map((id) => APPS.find((a) => a.id === id)).filter(Boolean), ...APPS.filter((a) => !mine.includes(a.id))];
-  // Apps they picked come first; the rest stay one tap away so they can still be discovered.
-  // Phone basics is on every phone, so it is always shown, whatever apps the person picked.
-  const shownApps = mine.length && !moreApps ? orderedApps.filter((a) => mine.includes(a.id) || a.id === 'phone') : orderedApps;
-  const hiddenCount = orderedApps.length - shownApps.length;
+  // Keep the saved order, with other available apps afterwards. Progress never moves a tile.
+  const shownApps = orderedApps;
   const orderedLessons = orderedApps.flatMap((a) => orderForFluency(lessons.filter((l) => l.app === a.id), fluency, skills));
   // Never suggest something already learned, except a lesson they struggled with a few days ago.
   const review = orderedLessons.find((l) => reviewIds.includes(l.id));
@@ -340,11 +336,11 @@ export default function Home() {
   const pct = Math.round((doneCount / lessons.length) * 100);
 
   return (
-    <div className="shell">
-      <AppBar onSettings={() => setShowSettings(true)} />
+    <div className="shell learn-page learn-home">
+      <AppBar learn t={t} onSettings={() => setShowSettings(true)} />
       <main className="shell-main">
-        <p className="greet">{profileName ? `${t[greet]}, ${profileName}` : t[greet]}</p>
-        <h1 className="home-h">{t.askCardTitle}</h1>
+        <p className="greet">{t[greet].replace(/\s*🙏/g, '')}{profileName ? `, ${profileName}` : ''}</p>
+        <h1 className="home-h">{t.learnHomeTitle}</h1>
 
         <div className="mic-hero">
           <button
@@ -352,11 +348,12 @@ export default function Home() {
             className={`mic-big ${state === 'listening' ? 'on' : ''}`}
             onClick={startMic}
             aria-label={state === 'listening' ? t.listening : t.tapToSpeak}
+            aria-labelledby="home-mic-caption"
             disabled={state === 'processing'}
           >
             <Icon name="mic" size={64} stroke={2.2} />
           </button>
-          <p className={`mic-cap ${micMsg ? 'warn-text' : ''}`} aria-live="polite">
+          <p id="home-mic-caption" className={`mic-cap ${micMsg ? 'warn-text' : ''}`} aria-live="polite">
             {state === 'listening' ? t.listening : state === 'processing' ? t.processing : micMsg || t.tapToSpeak}
           </p>
           {state === 'idle' && !micMsg && <p className="mic-eg">{t.micExample}</p>}
@@ -375,9 +372,9 @@ export default function Home() {
           }}
         >
           <Icon name="search" size={22} />
-          <input value={typedQ} onChange={(e) => setTypedQ(e.target.value)} placeholder={t.typePlaceholder} aria-label={t.typePlaceholder} enterKeyHint="search" />
-          <button type="submit" className="ask-go" aria-label={t.yesStart}>
-            <Icon name="arrow" size={22} stroke={2.4} />
+          <input value={typedQ} onChange={(e) => setTypedQ(e.target.value)} placeholder={t.learnTypePlaceholder} aria-label={t.learnHomeTitle} enterKeyHint="search" />
+          <button type="submit" className="ask-go">
+            {t.search}
           </button>
         </form>
         {inApp && (
@@ -498,12 +495,7 @@ export default function Home() {
           </section>
         ) : null}
 
-        <div className="section-h">
-          <span>{t.pickApp}</span>
-          <button className="link-btn" onClick={() => setShowApps(true)}>
-            {myApps && myApps.length ? t.myApps : t.appsFirst}
-          </button>
-        </div>
+        <header className="learn-section-h"><h2>{t.pickApp}</h2><p>{t.appSectionSub}</p></header>
         <div className="app-grid">
           {shownApps.map((app) => {
             const list = lessons.filter((l) => l.app === app.id);
@@ -511,39 +503,23 @@ export default function Home() {
             if (!list.length && !gn) return null;
             const d = list.filter((l) => done.includes(l.id)).length;
             return (
-              <Link key={app.id} href={`/app/${app.id}`} className="app-tile">
+              <Link key={app.id} href={`/app/${app.id}`} className="app-tile" data-app={app.id}>
                 <AppIcon app={app.id} size={56} />
                 <b>{app.name}</b>
-                <small>{!list.length ? `${gn} ${t.quickGuide}` : d === list.length ? `✓ ${t.learned}` : t.lessonsN(list.length)}</small>
+                {list.length > 0 && d === list.length ? <small className="tile-learned"><Icon name="check" size={18} stroke={3} />{t.learned}</small> : d > 0 ? <><small>{t.appDoneOf(d, list.length)}</small><span className="tile-progress" role="progressbar" aria-label={app.name} aria-valuenow={d} aria-valuemin={0} aria-valuemax={list.length}><span style={{ width: `${d / list.length * 100}%` }} /></span></> : <small>{t.appNewProgress(list.length || gn)}</small>}
               </Link>
             );
           })}
         </div>
 
-        {mine.length > 0 && (hiddenCount > 0 || moreApps) && (
-          <button className="btn ghost" onClick={() => setMoreApps(!moreApps)} aria-expanded={moreApps}>
-            {moreApps ? t.fewerApps : t.moreApps(hiddenCount)}
-          </button>
-        )}
+        <p className="apps-settings-hint">{t.appsSettingsHint}</p>
 
         <section className="home-topics">
-          <button className="topics-toggle" onClick={() => setShowTopics(!showTopics)} aria-expanded={showTopics}>
-            <span className="topics-ic">
-              <Icon name="library" size={24} />
-            </span>
-            <span className="topics-tx">
-              <b>{t.themesTitle}</b>
-              <small>{t.homeThemesSub}</small>
-            </span>
-            <Icon name={showTopics ? 'up' : 'down'} size={22} />
-          </button>
-          {showTopics && <ThemeList lang={lang} t={t} done={done} />}
+          <header className="learn-section-h"><h2>{t.pickTopic}</h2><p>{t.topicSectionSub}</p></header>
+          <ThemeList lang={lang} t={t} done={done} limit={3} />
+          <Link href="/themes" className="btn ghost see-topics">{t.seeAllTopics}</Link>
         </section>
 
-        <footer className="home-foot">
-          <Link href="/help">{t.helpLink}</Link>
-          <Link href="/send">{t.childLink}</Link>
-        </footer>
       </main>
 
       <BottomNav active="learn" t={t} />

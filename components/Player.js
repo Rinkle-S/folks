@@ -18,6 +18,7 @@ import Settings from './Settings';
 import FollowView from './FollowView';
 import LessonPrint from './LessonPrint';
 import Icon from './Icons';
+import AppIcon from './AppIcon';
 import { LESSONS } from '@/lib/lessons';
 import { T } from '@/lib/i18n';
 import FeedbackAsk, { FeedbackBox } from './FeedbackAsk';
@@ -564,15 +565,16 @@ function PlayerInner({ id }) {
   );
 
   if (!mode && !done) return (
-    <div className="player scene-player mode-player">
+    <div className="player scene-player mode-player learn-mode-v2">
       <div className="ptop"><button className="ptop-leave" onClick={askLeave}><Icon name="close" size={20} /> {t.leaveBtn}</button></div>
       <main className="scene-body modes">
+        <div className="learn-lesson-context" data-app={lesson.app}><AppIcon app={lesson.app} size={52} /><div><p>{t.learnLessonMeta(lesson.minutes)}</p><b>{lesson.title[lang]}</b></div></div>
         <h1>{t.modeTitle}</h1>
         {[
-          ['practice', 'hand', t.modePractice, t.modePracticeSub],
-          ['watch', 'play', t.modeWatch, t.modeWatchSub],
-          ['follow', 'list', t.modeFollow, t.modeFollowSub],
-        ].map(([m, ic, title, sub]) => <button key={m} className={`mode-card ${m === 'practice' ? 'main' : ''}`} onClick={() => chooseMode(m)}><span className="mode-ic"><Icon name={ic} size={28} /></span><span className="mode-tx"><b>{title}</b><small>{sub}</small></span><Icon name="chevron" size={20} /></button>)}
+          ['practice', 'hand', t.learnModePractice, t.learnModePracticeSub],
+          ['watch', 'play', t.learnModeWatch, t.learnModeWatchSub],
+          ['follow', 'list', t.modeFollow, t.learnModeReadSub],
+        ].map(([m, ic, title, sub]) => <button key={m} className="mode-card" onClick={() => chooseMode(m)}><span className="mode-ic"><Icon name={ic} size={28} /></span><span className="mode-tx"><b>{title}</b><small>{sub}</small></span><Icon name="chevron" size={20} /></button>)}
       </main>
     </div>
   );
