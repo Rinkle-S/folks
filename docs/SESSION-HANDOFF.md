@@ -1,5 +1,18 @@
 # Nook: session handoff (read this first, then `CLAUDE.md`)
 
+## Responsive layout fix: 25 Oct 2026
+Targeted CSS changes only; the player and highlight/hand/Help logic were preserved.
+- Google Pay shortcuts use tighter spacing below 400px and wrap as a fallback; Rewards is no longer clipped.
+- The practice banner can wrap and the diagonal watermark sizes to its own screen in all three languages.
+- Very short screens keep a 320px minimum practice area and allow page scrolling, so long instructions cannot collapse chat targets.
+- WhatsApp's video thumbnail fits above the call controls and below the header; its tools turn into a row only when needed.
+- Removed identical `public/icon.svg`, which conflicted with the retained `app/icon.svg` route in development.
+Validation: production build and Malayalam check passed. Browser checks passed for all 18 lessons in practice/read/watch-control modes
+at 320x568 in English/Hindi/Malayalam, plus all 18 at 1366x768 in English. All 24 supporting pages passed at those settings.
+`node scripts/check-responsive.mjs` checks seven viewport sizes x three languages, including clipping, Help, free scrolling,
+edge pointers, tint alignment and live resizing. It uses the same runtime environment variables as `smoke-journeys.mjs`.
+The smoke test also accepts TEST_WIDTH, TEST_HEIGHT and TEST_LESSON. Audio and real API writes remain disabled in tests.
+
 ## Owner update: 25 Oct 2026
 All visible journeys must work end to end, not only QR payment. Ask someone remains removed.
 The owner is testing nook-learn.vercel.app. Preserve their existing flows and progress keys.

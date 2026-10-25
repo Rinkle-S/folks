@@ -327,6 +327,8 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; }
 
 .screen-wrap { flex: 1; min-height: 0; padding: 8px 14px 8px; position: relative; }
 .screen-wrap { display: flex; flex-direction: column; background: var(--marigold-soft); }
+/* On very short phones, let the page scroll rather than collapsing the mock app under long instructions. */
+.stage:not(.is-quiz) .screen-wrap { min-height: 320px; }
 .practice-tag {
   /* Big enough to read, but tight: the strip adds only a few pixels of height to the practice screen. */
   flex: none;
@@ -337,7 +339,8 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; }
   font-weight: 800;
   line-height: 1.2;
   padding: 2px 8px;
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: anywhere;
   border-radius: 10px 10px 0 0;
 }
 .screen {
@@ -818,10 +821,10 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; }
 .screen .app > * { flex-shrink: 0; }
 .screen .app > .g2-scroll, .screen .app > .g2-thread { flex-shrink: 1; }
 
-/* A faint PRACTICE mark across every practice screen, so nobody mistakes it for the real app. Taps pass through it.
-   The wrapper clips the tilted word so it can never make the screen scrollable. */
-.practice-mark { position: absolute; inset: 0; z-index: 2; display: grid; place-items: center; overflow: hidden; pointer-events: none; user-select: none; }
-.practice-mark span { display: block; transform: rotate(-24deg); font-size: 84px; font-weight: 900; letter-spacing: 8px; color: rgba(217, 93, 57, 0.2); -webkit-text-stroke: 3px rgba(255, 255, 255, 0.26); white-space: nowrap; }
+/* Fit the faint mark to this screen's width AND height, including short phones and quiz screens.
+   Only the absolute overlay is a size container; the app, scroll areas and tap coordinates stay unchanged. */
+.practice-mark { position: absolute; inset: 0; z-index: 2; display: grid; place-items: center; overflow: hidden; container-type: size; pointer-events: none; user-select: none; }
+.practice-mark span { display: block; transform: rotate(-24deg); font-size: clamp(16px, min(12cqw, 24cqh), 64px); font-weight: 900; letter-spacing: 0.06em; color: rgba(217, 93, 57, 0.2); -webkit-text-stroke: 3px rgba(255, 255, 255, 0.26); white-space: nowrap; }
 
 /* Written steps are for the real phone: say so, so practice numbers never get typed into a real app. */
 .follow-real { margin: 10px 0 0; padding: 12px 14px; border-radius: 14px; background: #e6f3ec; color: #11401f; font-size: 18px; font-weight: 600; line-height: 1.4; }

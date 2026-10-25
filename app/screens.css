@@ -172,7 +172,7 @@
 .wa-call-lock { font-size: 11px; opacity: 0.8; }
 .wa-call-name { font-size: 22px; font-weight: 500; margin-top: 6px; }
 .wa-call-status { font-size: 14px; opacity: 0.85; }
-.wa-call-pip { position: absolute; right: 12px; bottom: 96px; width: 128px; height: 168px; border-radius: 16px; background: linear-gradient(#8a7a6a, #5a4c40); overflow: visible; }
+.wa-call-pip { position: absolute; right: 12px; bottom: 96px; width: 128px; height: min(168px, calc(100% - 164px)); border-radius: 16px; background: linear-gradient(#8a7a6a, #5a4c40); overflow: visible; container-type: size; }
 .wa-call-ctrls { position: absolute; left: 10px; right: 10px; bottom: 14px; display: flex; justify-content: space-around; background: #1f2427; border-radius: 22px; padding: 10px 6px; }
 .wa-cc { width: 52px; height: 52px; border-radius: 50%; background: rgba(255, 255, 255, 0.12); display: grid; place-items: center; }
 .wa-cc.end { background: #ea0038; }
@@ -769,10 +769,15 @@
 .g2-tile { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; font-size: 13px; line-height: 1.25; padding: 4px 2px; color: #1f1f1f; }
 .g2-tile-ic { width: 56px; height: 56px; border-radius: 16px; background: #d3e3fd; color: #0b57d0; display: grid; place-items: center; }
 .g2-tile-ic.round { border-radius: 50%; background: #e8effb; width: 52px; height: 52px; }
-.g2-chips { display: flex; gap: 10px; padding: 10px 14px; overflow: hidden; }
+.g2-chips { display: flex; flex-wrap: wrap; gap: 10px; padding: 10px 14px; }
 .g2-chips > span { flex: none; display: flex; align-items: center; gap: 8px; border: 1px solid #dadce0; border-radius: 999px; padding: 8px 14px; color: #0b57d0; }
 .g2-chips i { font-style: normal; font-size: 12px; color: #1f1f1f; line-height: 1.2; }
 .g2-chips small { display: block; color: #444746; }
+/* Keep all three shortcuts visible on narrow phones, without shrinking their text or icons. */
+@media (max-width: 400px) {
+  .g2-chips { gap: 6px; padding-inline: 8px; }
+  .g2-chips > span { gap: 4px; padding-inline: 4px; }
+}
 .g2-sec-h { display: flex; justify-content: space-between; align-items: center; padding: 18px 18px 8px; }
 .g2-sec-h b { font-size: 20px; font-weight: 400; }
 .g2-sec-h span { color: #0b57d0; font-size: 15px; font-weight: 500; display: inline-flex; align-items: center; }
@@ -959,6 +964,9 @@
 .wa-call-bar small { font-size: 13px; text-shadow: 0 1px 3px rgba(0,0,0,.6); text-align: center; }
 .wa-pip-face { position: absolute; inset: 0; display: grid; place-items: center; font-size: 60px; }
 .wa-pip-tools { position: absolute; right: 6px; top: 8px; display: flex; flex-direction: column; gap: 8px; }
+@container (max-height: 100px) {
+  .wa-pip-tools { flex-direction: row; top: 4px; }
+}
 .wa-cc { width: 50px; height: 50px; }
 
 /* Uber, rebuilt from the owner's reference screens (Oct 2026) */

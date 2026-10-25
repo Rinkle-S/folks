@@ -16,7 +16,7 @@ let passed = 0;
 try {
   for (const lang of (process.env.TEST_LANG ? [process.env.TEST_LANG] : ['en', 'hi', 'ml'])) {
     globalThis.localStorage = { getItem: (key) => key === 'folks_lang' ? lang : null };
-    const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
+    const context = await browser.newContext({ viewport: { width: Number(process.env.TEST_WIDTH || 390), height: Number(process.env.TEST_HEIGHT || 844) } });
     await context.addInitScript((lang) => {
       for (const [k, v] of Object.entries({ folks_lang: lang, folks_onboarded: '1', folks_practice_note: 'off', folks_mute_v2: '1' })) localStorage.setItem(k, v);
       // Accelerate the player's 450ms success flash, without changing app code.
@@ -30,6 +30,7 @@ try {
     const page = await context.newPage(); const errors = [];
     page.on('pageerror', (e) => errors.push(e.message));
     for (const lesson of Object.values(LESSONS)) {
+      if (process.env.TEST_LESSON && lesson.id !== process.env.TEST_LESSON) continue;
       await page.goto(`${base}/lesson/${lesson.id}?mode=practice`);
       for (let i = 1; i < lesson.steps.length; i++) {
         const step = lesson.steps[i];
@@ -38,6 +39,9 @@ try {
         } catch (error) {
           console.error({ lesson: lesson.id, lang, step: step.id, expected: step.say[lang], actual: await page.locator('.coach-text').textContent().catch(() => null) });
           throw error;
+        }
+        if (process.env.LAYOUT_SCREENSHOTS && lesson.id==='video-call' && step.target==='flip') {
+          await page.screenshot({ path:`${process.env.LAYOUT_SCREENSHOTS}/${lang}-video-call-${process.env.TEST_WIDTH || 390}.png`, fullPage:true });
         }
         if (step.kind === 'tap') await page.locator(`.screen [data-t="${step.target}"]`).first().click();
         else if (step.kind === 'input') {
