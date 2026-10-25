@@ -88,9 +88,10 @@ function PlayerInner({ id }) {
   const t = T[lang || 'en'];
   const total = lesson.steps.length;
   const watching = mode === 'watch';
-  const safetyCheck = id === 'qr-pay' && ['scam-quiz', 'decline'].includes(step.id);
-  const safetyQuestion = safetyCheck && step.id === 'scam-quiz';
-  const instruction = safetyQuestion ? `${t.safetyHeading} ${t.safetySub} ${step.say[lang || 'en']}` : step.say[lang || 'en'];
+  const safetyCheck = Boolean(step.safety) || (id === 'qr-pay' && ['scam-quiz', 'decline'].includes(step.id));
+  const safetyQuestion = safetyCheck && step.kind === 'quiz';
+  const safetySub = step.safety?.sub?.[lang || 'en'] || t.safetySub;
+  const instruction = idx === 0 && !mode ? t.modeTitle : safetyQuestion ? `${t.safetyHeading} ${safetySub} ${step.say[lang || 'en']}` : step.say[lang || 'en'];
 
   useEffect(() => setFrom(getFrom()), []);
   useEffect(() => onSpeechProgress(setSpoken), []);
@@ -126,10 +127,14 @@ function PlayerInner({ id }) {
       const m = q.get('mode');
       const selected = ['watch', 'follow', 'practice'].includes(m) ? m : getLearnMode();
       const saved = q.get('resume') === '1' ? getResume() : null;
-      setShowScene(Boolean(lesson.scene && selected !== 'follow' && !(saved && saved.id === id && saved.idx < lesson.steps.length)));
+      setShowScene(Boolean(lesson.scene && !(saved && saved.id === id && saved.idx < lesson.steps.length)));
       if (saved && saved.id === id && saved.idx < lesson.steps.length) {
         // Carry on where the person left off: straight back to that step, in practice mode.
         setMode('practice');
+        // Reconstruct practice values needed by later screens, without storing any entered PIN.
+        const restored = {};
+        for (const s of lesson.steps.slice(0, saved.idx)) if (s.kind === 'input') restored[s.field] = s.anyDigits ? '•'.repeat(s.expected.length) : s.expected;
+        setValues(restored);
         setIdx(saved.idx);
         track('mode_pick', { lesson: id, meta: { mode: 'practice', resumed: saved.idx } });
       } else if (selected !== 'ask') chooseMode(selected);
@@ -144,7 +149,7 @@ function PlayerInner({ id }) {
     }
   }, [lang, id]);
 
-  // Scene narration is the only voice allowed before Ready. Read mode bypasses it.
+  // Scene narration is the only voice allowed before Ready, including saved Read defaults.
   useEffect(() => {
     if (!showScene || !lang) return;
     speak(lesson.scene.say[lang], lang);
@@ -221,11 +226,14 @@ function PlayerInner({ id }) {
     lastStepRef.current = idx;
     const helped = lastHelpRef.current !== helpTick;
     lastHelpRef.current = helpTick;
+    if (helped) el.scrollIntoView({ block: 'nearest', inline: 'nearest' });
     if (sc && (freshStep || helped)) {
       const er = el.getBoundingClientRect();
       const sr = sc.getBoundingClientRect();
       if (er.top < sr.top + 8 || er.bottom > sr.bottom - 8) sc.scrollTop += er.top - sr.top - (sr.height - er.height) / 2;
     }
+    // Keep refocusing keys on Help, but use the reserved PIN prompt instead of a floating bubble.
+    if (step.anyDigits && (step.screen === 'gp-pin' || step.kit === 'gp-pin')) return;
     // Everything below is measured from the inside edge of the dashed border, which is where the overlays are drawn from.
     const place = () => {
       const rb = root.getBoundingClientRect();
@@ -353,6 +361,7 @@ function PlayerInner({ id }) {
   }
 
   function chooseMode(m) {
+    stopSpeaking();
     setMode(m);
     track('mode_pick', { lesson: id, meta: { mode: m } });
     if (m === 'practice') setIdx(1);
@@ -482,7 +491,7 @@ function PlayerInner({ id }) {
     setFbNote('');
     setFbSent(false);
     setRealTry(false);
-    setShowScene(Boolean(lesson.scene && m !== 'follow'));
+    setShowScene(Boolean(lesson.scene));
     spokenRef.current = '';
     setMode(m);
     setPaused(false);
@@ -544,13 +553,27 @@ function PlayerInner({ id }) {
       </div>
       <main className="scene-body">
         <div className="practice-tag">{t.practiceTag}</div>
-        <div className="scene-art" aria-hidden="true">🏪 🥕🥬</div>
+        <div className={`scene-art art-${lesson.scene.art || 0}`} aria-hidden="true" />
         <h1>{t.sceneHeading}</h1>
         <div className="scene-copy">{lesson.scene.say[lang].split(/\n\n/).map((p, i) => <p key={i}>{p}</p>)}</div>
         <button className="btn primary" onClick={() => { stopSpeaking(); setShowScene(false); }}>{t.sceneReady}</button>
         <button className="link-btn scene-listen" onClick={() => speak(lesson.scene.say[lang], lang, { force: true })}>{t.listen}</button>
       </main>
       {leaveDialog}
+    </div>
+  );
+
+  if (!mode && !done) return (
+    <div className="player scene-player mode-player">
+      <div className="ptop"><button className="ptop-leave" onClick={askLeave}><Icon name="close" size={20} /> {t.leaveBtn}</button></div>
+      <main className="scene-body modes">
+        <h1>{t.modeTitle}</h1>
+        {[
+          ['practice', 'hand', t.modePractice, t.modePracticeSub],
+          ['watch', 'play', t.modeWatch, t.modeWatchSub],
+          ['follow', 'list', t.modeFollow, t.modeFollowSub],
+        ].map(([m, ic, title, sub]) => <button key={m} className={`mode-card ${m === 'practice' ? 'main' : ''}`} onClick={() => chooseMode(m)}><span className="mode-ic"><Icon name={ic} size={28} /></span><span className="mode-tx"><b>{title}</b><small>{sub}</small></span><Icon name="chevron" size={20} /></button>)}
+      </main>
     </div>
   );
 
@@ -702,7 +725,7 @@ function PlayerInner({ id }) {
   const choosing = !mode && idx === 0;
 
   return (
-    <div className={`player stage ${step.kind === 'quiz' ? 'is-quiz' : ''} ${safetyCheck ? 'safety-check' : ''}`}>
+    <div className={`player stage ${step.kind === 'quiz' ? 'is-quiz' : ''} ${safetyCheck ? 'safety-check' : ''} ${step.screen === 'gp-pin' || step.kit === 'gp-pin' ? 'pin-stage' : ''} ${['practice-sms', 'practice-call', 'receipt-share'].includes(step.screen) ? 'extras-stage' : ''}`}>
       <div className="ptop">
         <button className="ptop-leave" onClick={askLeave}>
           <Icon name="close" size={20} /> {t.leaveBtn}
@@ -720,7 +743,7 @@ function PlayerInner({ id }) {
       </div>
 
       <div className="screen-wrap">
-      <div className="practice-tag">{safetyCheck ? t.safetyBanner : t.practiceTag}</div>
+      <div className="practice-tag">{safetyCheck ? (step.safety?.banner?.[lang] || t.safetyBanner) : t.practiceTag}</div>
       <div
         className={`screen ${flash ? 'flash' : ''} ${tapFx ? 'tapfx' : ''} ${shake ? 'shake' : ''} ${watching ? 'watching' : ''} ${id === 'qr-pay' && step.id === 'check-name' ? 'with-shop-board' : ''}`}
         ref={screenRef}
@@ -752,7 +775,7 @@ function PlayerInner({ id }) {
       </div>
 
       <div className={`coach ${showHint ? 'hinting' : ''}`} ref={coachRef}>
-        {safetyQuestion && <div className="safety-heading"><Icon name="shieldCheck" size={30} /><div><h2>{t.safetyHeading}</h2><p>{t.safetySub}</p></div></div>}
+        {safetyQuestion && <div className="safety-heading"><Icon name="shieldCheck" size={30} /><div><h2>{t.safetyHeading}</h2><p>{safetySub}</p></div></div>}
         <p className="coach-text">
           {spoken.text === coachText && sentences(coachText).length > 1
             ? sentences(coachText).map((s, i) => (

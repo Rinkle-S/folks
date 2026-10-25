@@ -2,6 +2,7 @@
 // props, so a lesson step is just { kit: 'wa-chats', p: {...}, target: 'fab' }.
 // Anything tappable carries data-t; the lesson's target is one of those keys.
 import Icon from '../Icons';
+import { useScreenLang } from '../LangCtx';
 
 const COLORS = ['#7c3aed', '#0891b2', '#ea580c', '#2563eb', '#db2777', '#16a34a', '#b45309', '#4f46e5', '#dc2626', '#0d9488'];
 export function colorFor(name = '') {
@@ -173,13 +174,15 @@ export function PinDots({ n = 4, filled = 0, color }) {
 
 // End-of-lesson and "be careful" cards, drawn like a phone screen.
 export function Done({ title = 'Well done', sub = 'Now try it once on your real phone.', warn }) {
+  const lang = useScreenLang();
+  const text = (value) => typeof value === 'object' ? value[lang] || value.en : value;
   return (
     <div className={`app k-done ${warn ? 'warn' : ''}`}>
       <span className="k-done-ic">
         <Icon name={warn ? 'alert' : 'checkCircle'} size={48} />
       </span>
-      <b>{title}</b>
-      {sub && <small>{sub}</small>}
+      <b>{text(title)}</b>
+      {sub && <small>{text(sub)}</small>}
     </div>
   );
 }

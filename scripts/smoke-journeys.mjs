@@ -67,6 +67,8 @@ try {
       await page.getByRole('button', { name: T[lang].followFinish, exact: true }).click();
       await page.locator('.done-title').waitFor();
       await openLesson(`${base}/lesson/${lesson.id}?mode=watch`);
+      // Test manual controls while paused; autonomous playback has its own completion regression.
+      await page.locator('.coach-actions button.big').click();
       for (let i = 1; i < lesson.steps.length; i++) {
         await page.waitForFunction((text) => document.querySelector('.coach-text')?.textContent.trim() === text, personalise(lesson.steps[i].say[lang]));
         await page.locator('.coach-actions').getByRole('button', { name: T[lang].next, exact: true }).click();

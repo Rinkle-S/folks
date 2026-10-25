@@ -11,7 +11,7 @@ const qr = LESSONS['qr-pay'];
 assert.equal(qr.steps.length - 1, 12);
 assert.ok(qr.steps.find((s) => s.id === 'pin').anyDigits);
 assert.notEqual(qr.steps.find((s) => s.id === 'scam-quiz'), LESSONS['send-money'].steps.find((s) => s.id === 'scam-quiz'));
-assert.ok(!LESSONS['send-money'].scene);
+assert.ok(Object.values(LESSONS).every(l => l.scene));
 for (const l of Object.values(LESSONS).filter((l) => l.app === 'gpay')) assert.equal(l.steps.find((s) => s.id === 'open-app').say.en, qr.steps[1].say.en);
 for (const box of [{ left:10,right:90,top:50,bottom:140 }, { left:260,right:310,top:50,bottom:100 }, { left:10,right:310,top:440,bottom:500 }]) {
   const hand=handPosition(box,320,520); assert.ok(hand);
@@ -82,15 +82,14 @@ try {
     }
     await page.locator('.done-title').waitFor();assert.equal(await page.locator('.done-sub').textContent(),qr.closing[lang]);
     // Default modes still pass through the scene; Read links/defaults bypass it; resume stays direct.
-    for(const mode of ['practice','watch']){
+    for(const mode of ['practice','watch','follow']){
       await page.evaluate(m=>localStorage.setItem('folks_mode',m),mode);await page.goto(base+'/lesson/qr-pay');
       await page.locator('.scene-body').waitFor();assert.equal(await page.locator('.coach').count(),0);
-      await page.locator('.scene-body .btn.primary').click();await page.locator(mode==='watch'?'.screen.watching':'.screen').waitFor();
+      await page.locator('.scene-body .btn.primary').click();await page.locator(mode==='follow'?'.read-list':mode==='watch'?'.screen.watching':'.screen').waitFor();
     }
-    await page.goto(base+'/lesson/qr-pay?mode=follow');await page.locator('.read-list').waitFor();assert.equal(await page.locator('.scene-body').count(),0);
-    await page.evaluate(()=>localStorage.setItem('folks_mode','follow'));await page.goto(base+'/lesson/qr-pay');await page.locator('.read-list').waitFor();
+    await page.goto(base+'/lesson/qr-pay?mode=follow');await page.locator('.scene-body .btn.primary').click();await page.locator('.read-list').waitFor();
     await page.evaluate(()=>localStorage.setItem('folks_resume',JSON.stringify({id:'qr-pay',idx:6,at:Date.now()})));await page.goto(base+'/lesson/qr-pay?resume=1');await page.locator('[data-t="next"]').first().waitFor();assert.equal(await page.locator('.scene-body').count(),0);
-    await page.goto(base+'/lesson/send-money?mode=practice');await page.locator('.coach').waitFor();assert.equal(await page.locator('.scene-body').count(),0);
+    await page.goto(base+'/lesson/send-money?mode=practice');await page.locator('.scene-body').waitFor();await page.locator('.scene-body .btn.primary').click();await page.locator('.coach').waitFor();
     assert.equal(errors.length,0,errors.join('\n'));console.log(`PASS QR ${lang} ${width}: scene/modes, wrong quizzes, safety, PIN, closing and hands`);await context.close();
   }
   // Record speech calls without producing audio. Hold scene narration to test immediate interruption.

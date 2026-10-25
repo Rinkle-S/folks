@@ -1,5 +1,20 @@
 # Nook: session handoff (read this first, then `CLAUDE.md`)
 
+## All-lesson scene and script review: 25 Oct 2026
+- Latest owner request supersedes the earlier QR-only scope and Read bypass below. All 15 retained lessons open with a narrated scene, then a separate mode chooser, then step 1. Saved defaults and direct mode links skip only the chooser. Valid resume links stay direct.
+- Removed `flashlight`, `bigger-text` and `gd-maps-offline` from the catalogue/search/topics. Old lesson links return a localized Home route; stale resumes are cleared without deleting completion history.
+- `lib/lessonReview.js` applies the reviewed Send money, Recharge and Check balance scripts from `../Nook Lesson Scripts.docx` after shared helpers and language filling. Each addition supplies EN/HI/ML.
+- Send money now includes selecting the WhatsApp recipient and sending the receipt, before returning to Done. Removed its repeated receive-money PIN trap. Read mode uses real-phone sharing instructions.
+- Recharge has a distinct, inert pretend SMS screen; its plan tabs scroll and the first card has space for its glow. Balance now accepts any four practice digits, followed by the tick and a labelled pretend balance.
+- Reviewed other retained lessons: contextual scenes/endings, status audience privacy, pickup/fare checks, driver/ride PIN checks, app authenticity clues, explicit prefilled/install simulation wording, and task-specific next tries. Corresponding quick guides corrected too.
+- Help respects sound-off, speaks automatically with sound-on, shows the hint and refocuses the target. Listen again restores the original instruction. The PIN hint has a reserved row, separate from the yellow warning.
+- New PIN/receipt/safety screens use their content height and page scrolling so the keypad, question and answers stay reachable without clipping or overlapping. Existing screens keep their established layout. Step counters wrap instead of truncating.
+- Generated six scene vignettes as one atlas, `public/scenes/scene-atlas.png`; provenance and prompt in `docs/SCENE-ART.md`.
+- Validation: production build and Malayalam checks; search/event/offline regression; all 15 lessons × EN/HI/ML through Practice, Read and Watch controls on phone and laptop, including wrong quiz picks; all 45 automatic Watch runs; scene/default/resume/retired-link/Help checks; seven-viewport rewards/watermark/hand regression. Audio and external APIs mocked throughout. No Sarvam credits used.
+- Official references used for factual corrections: [WhatsApp status privacy](https://faq.whatsapp.com/502161774931737/) and [Uber payment selection](https://help.uber.com/riders/article/selecting-a-payment-method?nodeId=fcd07b2d-9597-423f-b3a7-ba68ae505dbe).
+
+Earlier entries below describe historical behavior before this update.
+
 ## QR scene and lesson update: 25 Oct 2026
 - QR has a narrated, unnumbered scene with Ready before mode selection. Saved Practise/Watch defaults still pass through it.
   Direct/default Read mode bypasses the scene; a valid resume link continues directly at its saved step.

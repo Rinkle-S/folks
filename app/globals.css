@@ -321,7 +321,7 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; }
 .ptop { display: flex; align-items: center; gap: 12px; padding: 10px 14px 10px; flex: none; }
 .ptop-btn { width: 48px; height: 48px; flex: none; border-radius: 50%; border: none; background: var(--surface); box-shadow: 0 0 0 1.5px var(--line) inset; display: grid; place-items: center; text-decoration: none; color: var(--ink); }
 .progress { flex: 1; min-width: 0; }
-.progress small { display: block; text-align: center; color: var(--ink-2); font-size: 14px; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.progress small { display: block; text-align: center; color: var(--ink-2); font-size: 14px; margin-top: 4px; white-space: normal; line-height: 1.25; }
 .bar { height: 10px; background: var(--line); border-radius: 99px; overflow: hidden; }
 .bar span { display: block; height: 100%; background: var(--peacock); border-radius: 99px; transition: width 0.35s ease; }
 
@@ -908,10 +908,41 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; }
 .scene-player { height: auto; min-height: 100dvh; }
 .scene-body { padding: 4px 18px 24px; }
 .scene-body .practice-tag { margin: 0 -8px 18px; border-radius: 10px; }
-.scene-art { font-size: 60px; text-align: center; line-height: 1.3; margin: 12px 0; }
+.scene-art { width: min(100%, 300px); aspect-ratio: 3 / 2; background-image: url('/scenes/scene-atlas.png'); background-size: 200% 300%; margin: 16px auto; border-radius: 18px; }
+.art-0 { background-position: 0 0; }
+.art-1 { background-position: 100% 0; }
+.art-2 { background-position: 0 50%; }
+.art-3 { background-position: 100% 50%; }
+.art-4 { background-position: 0 100%; }
+.art-5 { background-position: 100% 100%; }
+.mode-player .modes { gap: 18px; }
+.mode-player .mode-card { min-height: 100px; }
 .scene-body h1 { font-size: 28px; margin: 12px 0; }
 .scene-copy p { font-size: 19px; line-height: 1.5; margin: 0 0 16px; }
 .scene-listen { display: block; margin: 8px auto 0; }
+.pin-key-hint { text-align: center; color: #075e54; font-weight: 700; font-size: 15px; padding: 8px; }
+.player.pin-stage, .player.extras-stage { height: auto; min-height: 100dvh; }
+.player.pin-stage .coach, .player.extras-stage .coach { flex: none; max-height: none; overflow: visible; }
+.pin-stage .screen-wrap, .extras-stage .screen-wrap { flex: 0 0 auto; min-height: 0; }
+.player.stage.extras-stage .screen-wrap { flex: 0 0 auto; }
+.pin-stage .screen, .extras-stage .screen { flex: none; height: auto; min-height: 0; }
+.pin-stage .app { height: auto; min-height: 600px; overflow: visible; }
+.extras-stage .app { height: auto; min-height: 460px; overflow: visible; }
+.extras-stage .receipt-share { min-height: 540px; }
+.g2-pin > * { flex-shrink: 0; }
+.g2-pills { overflow-x: auto !important; scrollbar-width: thin; }
+.screen .g2-plans { padding-top: 12px; }
+.extras-bar { display: flex; align-items: center; gap: 16px; padding: 20px; background: #075e54; color: white; }
+.extras-recipient { display: flex; align-items: center; gap: 14px; padding: 20px; border-bottom: 1px solid #dce4df; }
+.extras-recipient small { display: block; margin-top: 5px; }
+.extras-avatar { border-radius: 50%; background: #d9ebe5; padding: 18px; }
+.receipt-preview { margin: 24px; padding: 28px 16px; text-align: center; border: 1px solid #dce4df; border-radius: 18px; background: #fff; }
+.receipt-preview strong { display: block; font-size: 32px; }
+.receipt-preview h2 { font-size: 20px; }
+.receipt-send { display: flex; width: fit-content; align-items: center; gap: 12px; padding: 16px 24px; background: #128c7e; color: #fff; border-radius: 30px; margin: 24px 24px 32px auto; }
+.extras-message { margin: 24px 18px; padding: 20px; border-radius: 16px; border: 1px solid #b8d6ce; background: #e7f3ef; font-size: 20px; line-height: 1.5; overflow-wrap: anywhere; }
+.extras-muted { margin: 20px; color: #53675f; }
+.inert-link { text-decoration: underline; }
 .opt.wrong { box-shadow: 0 0 0 2px #d88d84 inset; background: #f9e8e5; color: var(--ink); }
 .opt:disabled { color: inherit; opacity: 1; cursor: default; }
 .safety-check .screen-wrap { background: #e6f2ef; }

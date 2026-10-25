@@ -6,6 +6,7 @@ import Keypad from './Keypad';
 import { Status } from '../kit/ui';
 import { useScreenLang } from '../LangCtx';
 import { PIN_NOTE } from '@/lib/screenText';
+import { T } from '@/lib/i18n';
 
 // The practice person and bank, the same on every Google Pay screen.
 export const ME = { name: 'Kamala Nair', initial: 'K', upi: 'kamala.nair@oksbi', phone: '+91 98765 43210' };
@@ -652,6 +653,7 @@ export function GpPin({ payee = {}, amount, typed, full, balance, shown }) {
         </div>
       )}
       {!shown && <div className="pin-warn">{PIN_NOTE[lang] || PIN_NOTE.en}</div>}
+      {!full && !shown && <div className="pin-key-hint">{filled < 4 ? T[lang].pressAny(4 - filled) : '\u00a0'}</div>}
       <Keypad tick />
     </div>
   );

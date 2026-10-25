@@ -2,6 +2,7 @@
 // Google Pay screens share the parts in components/screens/GPay.js, so every lesson looks the same.
 import Icon from '../Icons';
 import AppIcon from '../AppIcon';
+import { useScreenLang } from '../LangCtx';
 import { Av, Status, Keys, PinDots } from './ui';
 import { GpHome, GpAmount, GpPin, GpSuccess, GpScan, GpPayAnyone, GpMoney, GpTop, GpAv, BankBadge, BANKS, ME } from '../screens/GPay';
 
@@ -95,6 +96,7 @@ export function GpBankPage({ more }) {
 
 export function GpBalance() {
   const b = BANKS[0];
+  const lang = useScreenLang();
   return (
     <div className="app gp g2">
       <Status />
@@ -106,6 +108,7 @@ export function GpBalance() {
         </div>
         <small>Available balance</small>
         <div className="g2-done-amt">₹ 12,450.00</div>
+        <small className="pretend-balance">{{ en: 'Pretend balance', hi: 'अभ्यास का बैलेंस', ml: 'സാങ്കൽപ്പിക ബാലൻസ്' }[lang]}</small>
       </div>
     </div>
   );

@@ -36,6 +36,7 @@ import AppIcon from './AppIcon';
 import { useLayoutEffect, useRef } from 'react';
 import { LangCtx } from './LangCtx';
 import { mlNames } from '@/lib/ml';
+import { ReceiptShare, SafetyPhone } from './screens/LessonExtras';
 
 function Intro({ lesson, lang, t }) {
   return (
@@ -90,6 +91,11 @@ function ScreenFor({ step, lesson, lang, t, values, typed }) {
   const inputHere = step.kind === 'input';
 
   switch (step.screen) {
+    case 'receipt-share':
+      return <ReceiptShare preview={step.preview} payee={payee} amount={amount} lang={lang} />;
+    case 'practice-call':
+    case 'practice-sms':
+      return <SafetyPhone sms={step.screen === 'practice-sms'} lang={lang} />;
     case 'intro':
       return <Intro lesson={lesson} lang={lang} t={t} />;
     case 'phone-home':
