@@ -47,7 +47,7 @@ try {
       await page.locator('.scene-body .btn.primary').click();
       await page.locator('.done-title').waitFor({ timeout: 20000 });
       const seen = await page.evaluate(() => window.__seen);
-      for (const step of l.steps.slice(1)) assert.ok(seen.includes(personalise(step.say[lang])), `Watch missed ${lang} ${l.id} ${step.id}`);
+      for (const step of l.steps.slice(1)) assert.ok(seen.includes(personalise(step.watchSay[lang])), `Watch missed ${lang} ${l.id} ${step.id}`);
       console.log(`PASS automatic Watch ${lang} ${l.id}`);
     }
     assert.deepEqual(errors,[]); await context.close();

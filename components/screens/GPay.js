@@ -605,7 +605,7 @@ export function GpAmount({ payee, amount, keypad, sheet }) {
 // ---------- UPI PIN (the bank's PIN page) ----------
 
 // balance: the PIN asked for a balance check, so nothing is being sent.
-export function GpPin({ payee = {}, amount, typed, full, balance, shown }) {
+export function GpPin({ payee = {}, amount, typed, full, balance, shown, watching = false }) {
   const lang = useScreenLang();
   const filled = full || shown ? 4 : (typed || '').length;
   return (
@@ -653,7 +653,7 @@ export function GpPin({ payee = {}, amount, typed, full, balance, shown }) {
         </div>
       )}
       {!shown && <div className="pin-warn">{PIN_NOTE[lang] || PIN_NOTE.en}</div>}
-      {!full && !shown && <div className="pin-key-hint">{filled < 4 ? T[lang].pressAny(4 - filled) : '\u00a0'}</div>}
+      {!full && !shown && <div className="pin-key-hint">{filled < 4 ? (watching ? T[lang].watchDigits(4 - filled) : T[lang].pressAny(4 - filled)) : '\u00a0'}</div>}
       <Keypad tick />
     </div>
   );

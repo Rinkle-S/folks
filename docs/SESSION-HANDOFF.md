@@ -1,5 +1,11 @@
 # Nook: session handoff (read this first, then `CLAUDE.md`)
 
+## Watch-only wording: 26 Oct 2026
+- Reviewed 129 steps in 15 tutorials before deciding on a separate Watch script rather than rewriting Practice. Added EN/HI/ML `watchSay`, neutral quiz `watchWhy` and `watchClosing` metadata in `lib/watchCopy.js`.
+- Player uses the Watch script for visible text, narration, warmup and quiz explanation. Safety prefaces are separate narration segments so the Watch body sentence highlights match. Watch completion voice credits watching.
+- Watch keypad counters describe progress, not key presses. Narrow Watch status text wraps; all original app labels, quoted fraud requests, safety rules and real playback controls stay intact. Practice/Read data and behavior unchanged.
+- Validation: all 129 scripts/languages, data immutability, all Watch screens at phone/laptop widths, all 45 automatic Watch runs, all tutorial modes/languages and mocked voice/highlight/safety sequencing. Build/ML pass; no actual audio or Sarvam changes. Details: `docs/WATCH-COPY-REVIEW.md`.
+
 ## Onboarding v2 and lesson end: 26 Oct 2026
 - Audited both specs and the eight ZIP mockups before editing; the audit table was delivered in chat. Owner approved Find an old file/photo instead of the hidden Send a photo goal, and direct Stay safe entry for the scam goal.
 - New five-step onboarding includes an inert Pay tap/success, translated copy, labelled name/live preview, larger app choices/None, and one first goal. Starts in the chosen mode picker (explicit onboarding exception to scene-first/default mode); Look around goes Home. Unstarted goals remain in Continue, including Stay safe until its first completed reading lesson.

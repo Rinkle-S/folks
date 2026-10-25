@@ -85,7 +85,7 @@ export default function Screen(props) {
   );
 }
 
-function ScreenFor({ step, lesson, lang, t, values, typed }) {
+function ScreenFor({ step, lesson, lang, t, values, typed, watching = false }) {
   const payee = lesson.payee;
   const amount = values.amount || lesson.amount || '';
   const inputHere = step.kind === 'input';
@@ -106,7 +106,7 @@ function ScreenFor({ step, lesson, lang, t, values, typed }) {
     case 'gen':
       return <GenScreen ui={step.ui} typed={typed} inputHere={inputHere} />;
     case 'kit':
-      return <KitScreen step={step} typed={typed} />;
+      return <KitScreen step={step} typed={typed} watching={watching} />;
 
     // Google Pay
     case 'gp-home':
@@ -127,7 +127,7 @@ function ScreenFor({ step, lesson, lang, t, values, typed }) {
         />
       );
     case 'gp-pin':
-      return <GpPin payee={payee} amount={amount} typed={inputHere ? typed : ''} full={!inputHere} />;
+      return <GpPin payee={payee} amount={amount} typed={inputHere ? typed : ''} full={!inputHere} watching={watching} />;
     case 'gp-success':
       return <GpSuccess payee={payee} amount={amount} title={lesson.successTitle} />;
     case 'gp-share':

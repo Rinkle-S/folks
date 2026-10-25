@@ -119,12 +119,12 @@ export function registerKit(more) {
   Object.assign(KIT, more);
 }
 
-export default function KitScreen({ step, typed }) {
+export default function KitScreen({ step, typed, watching = false }) {
   const C = KIT[step.kit];
   if (!C) return <div className="app" />;
   return (
     <div className="app k-wrap">
-      <C {...(step.p || {})} typed={step.kind === 'input' ? typed : step.p && step.p.typed} />
+      <C {...(step.p || {})} typed={step.kind === 'input' ? typed : step.p && step.p.typed} {...(step.kit === 'gp-pin' ? {watching} : {})} />
       <Overlay ov={step.ov} />
       {step.ov && step.ov.custom === 'bank-pp' && <M.PayBankSheet brand="#5f259f" label="PAY ₹500" />}
     </div>

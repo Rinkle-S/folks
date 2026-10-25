@@ -322,6 +322,13 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; }
 .ptop-btn { width: 48px; height: 48px; flex: none; border-radius: 50%; border: none; background: var(--surface); box-shadow: 0 0 0 1.5px var(--line) inset; display: grid; place-items: center; text-decoration: none; color: var(--ink); }
 .progress { flex: 1; min-width: 0; }
 .progress small { display: block; text-align: center; color: var(--ink-2); font-size: 14px; margin-top: 4px; white-space: normal; line-height: 1.25; }
+.is-watching .progress small { overflow-wrap: anywhere; }
+@media (max-width: 359px) {
+  .is-watching .ptop { display: grid; grid-template-columns: minmax(0,1fr) 48px 48px; gap: 8px 12px; }
+  .is-watching .ptop-leave { grid-column: 1; grid-row: 1; justify-self: start; }
+  .is-watching .ptop-btn { grid-row: 1; }
+  .is-watching .progress { grid-column: 1 / -1; grid-row: 2; }
+}
 .bar { height: 10px; background: var(--line); border-radius: 99px; overflow: hidden; }
 .bar span { display: block; height: 100%; background: var(--peacock); border-radius: 99px; transition: width 0.35s ease; }
 

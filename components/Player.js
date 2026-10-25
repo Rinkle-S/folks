@@ -82,10 +82,13 @@ function PlayerInner({ id }) {
   const t = T[lang || 'en'];
   const total = lesson.steps.length;
   const watching = mode === 'watch';
+  const stepText = watching ? (step.watchSay?.[lang || 'en'] || step.say[lang || 'en']) : step.say[lang || 'en'];
   const safetyCheck = Boolean(step.safety) || (id === 'qr-pay' && ['scam-quiz', 'decline'].includes(step.id));
   const safetyQuestion = safetyCheck && step.kind === 'quiz';
   const safetySub = step.safety?.sub?.[lang || 'en'] || t.practiceSafetySub;
-  const instruction = idx === 0 && !mode ? t.modeTitle : safetyQuestion ? `${t.safetyHeading} ${safetySub} ${step.say[lang || 'en']}` : step.say[lang || 'en'];
+  const safetyPreface = `${t.safetyHeading} ${safetySub}`;
+  const instruction = idx === 0 && !mode ? t.modeTitle : safetyQuestion ? `${safetyPreface} ${stepText}` : stepText;
+  const watchNarration = safetyQuestion ? [safetyPreface, stepText] : stepText;
 
   useEffect(() => setFrom(getFrom()), []);
   useEffect(() => onSpeechProgress(setSpoken), []);
@@ -190,19 +193,19 @@ function PlayerInner({ id }) {
     let label = null;
     if (step.kind === 'tap') {
       sel = `[data-t="${step.target}"]`;
-      label = tt.tapHere;
+      label = watching ? tt.watchTarget : tt.tapHere;
     }
     if (step.kind === 'input' && step.anyDigits) {
       const left = step.expected.length - typed.length;
       if (left > 0) {
         sel = '[data-key]:not([data-key="back"])';
-        label = tt.pressAny(left);
+        label = watching ? tt.watchCount(left) : tt.pressAny(left);
       }
     } else if (step.kind === 'input') {
       const k = step.expected[typed.length];
       if (k) {
         sel = `[data-key="${k}"]`;
-        label = tt.press(k);
+        label = watching ? tt.watchKey(k) : tt.press(k);
       }
     }
     if (!sel) return;
@@ -294,7 +297,7 @@ function PlayerInner({ id }) {
   // Watch mode: play each step by itself. Each step waits for its voice to finish before the next one.
   useEffect(() => {
     if (!step.autoAdvanceMs || done || leaveOpen || showScene !== false || mode === 'follow' || !mode || (watching && paused)) return;
-    if (watching) speak(instruction, lang);
+    if (watching) speak(watchNarration, lang);
     const timer = setTimeout(() => advance(), step.autoAdvanceMs);
     return () => clearTimeout(timer);
   }, [idx, mode, paused, showScene, done, leaveOpen]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -312,17 +315,17 @@ function PlayerInner({ id }) {
     const wait = (ms) => new Promise((r) => timers.current.push(setTimeout(r, ms)));
     const s = step;
     const nxt = lesson.steps[idx + 1];
-    if (nxt) prefetchSpeech(nxt.say[lang], lang);
+    if (nxt) prefetchSpeech(nxt.watchSay?.[lang] || nxt.say[lang], lang);
     (async () => {
       await wait(WATCH.settle); // a moment to see the new screen before anything is said
       if (cancelled) return;
       if (s.kind === 'info') {
-        await speak(s.say[lang], lang);
+        await speak(watchNarration, lang);
         await wait(WATCH.rest);
         if (!cancelled) advance();
         return;
       }
-      await speak(instruction, lang);
+      await speak(watchNarration, lang);
       if (cancelled) return;
       if (s.kind === 'tap') {
         await wait(WATCH.beforeTap); // look at the glowing spot
@@ -348,8 +351,9 @@ function PlayerInner({ id }) {
         const right = s.options.find((o) => o.correct);
         await wait(WATCH.beforeTap);
         if (cancelled) return;
-        setQuiz({ correct: true, why: right.why[lang] });
-        await speak(right.why[lang], lang);
+        const why = s.watchWhy?.[lang] || right.why[lang];
+        setQuiz({ correct: true, why });
+        await speak(why, lang);
         await wait(WATCH.rest);
         if (!cancelled) advance();
       }
@@ -393,7 +397,7 @@ function PlayerInner({ id }) {
     setDone(true);
     stopSpeaking();
     clearTimers();
-    if (lesson.closing && mode !== 'follow') speak(lesson.closing[lang], lang);
+    if (lesson.closing && mode !== 'follow') speak((watching ? lesson.watchClosing : lesson.closing)[lang], lang);
     track('lesson_complete', { lesson: id, meta: { mode } });
     track('lesson_completed', {lesson:id,meta:{lessonId:id,mode:mode === 'practice' ? 'try' : mode === 'follow' ? 'read' : 'watch'}});
     markDone(id);
@@ -606,11 +610,11 @@ function PlayerInner({ id }) {
     );
   }
 
-  const coachText = showHint && step.hint ? step.hint[lang] : step.say[lang];
+  const coachText = showHint && step.hint ? step.hint[lang] : stepText;
   const choosing = !mode && idx === 0;
 
   return (
-    <div className={`player stage ${step.kind === 'quiz' ? 'is-quiz' : ''} ${safetyCheck ? 'safety-check' : ''} ${step.screen === 'gp-pin' || step.kit === 'gp-pin' ? 'pin-stage' : ''} ${['practice-sms', 'practice-call', 'practice-police', 'practice-bank', 'receipt-share'].includes(step.screen) ? 'extras-stage' : ''}`}>
+    <div className={`player stage ${watching ? 'is-watching' : ''} ${step.kind === 'quiz' ? 'is-quiz' : ''} ${safetyCheck ? 'safety-check' : ''} ${step.screen === 'gp-pin' || step.kit === 'gp-pin' ? 'pin-stage' : ''} ${['practice-sms', 'practice-call', 'practice-police', 'practice-bank', 'receipt-share'].includes(step.screen) ? 'extras-stage' : ''}`}>
       <div className="ptop">
         <button className="ptop-leave" onClick={askLeave}>
           <Icon name="close" size={20} /> {t.leaveBtn}
@@ -635,7 +639,7 @@ function PlayerInner({ id }) {
         onClick={onScreenClick}
       >
         {id === 'qr-pay' && step.id === 'check-name' && <div className="shop-board"><span aria-hidden="true">🏪</span> {t.shopBoard}</div>}
-        <Screen step={step} lesson={lesson} lang={lang} t={t} values={values} typed={typed} />
+        <Screen step={step} lesson={lesson} lang={lang} t={t} values={values} typed={typed} watching={watching} />
         <div className="practice-mark" lang={lang} aria-hidden="true">
           <span>{t.practiceMark}</span>
         </div>
