@@ -61,7 +61,10 @@ export default function Send() {
   const m = MSG[lang] || MSG.en;
   const message = mode === 'setup' ? m.setup(link, sign) : kind === 'g' ? m.guide(title, link, sign) : m.lesson(title, link, sign);
   const toggleApp = (a) => setApps(apps.includes(a) ? apps.filter((x) => x !== a) : [...apps, a]);
-  const via = (v) => track('link_created', { lesson: mode === 'item' ? id : undefined, meta: { lang, via: v, mode, kind } });
+  const via = (v) => {
+    track('link_created', { lesson: mode === 'item' ? id : undefined, meta: { lang, via: v, mode, kind } });
+    if (appFilter && mode === 'item') track('lesson_send',{lesson:id,meta:{lessonId:id,from:'app_page',via:v}});
+  };
 
   return (
     <div className="page send has-nav">

@@ -59,8 +59,8 @@ try{
     }
     await p.getByRole('button',{name:LESSONS['yono-balance'].steps.at(-1).options.find(o=>o.correct).text[lang],exact:true}).click();await p.locator('.options .btn.primary').click();
     await p.locator('.completed-lesson').waitFor();assert.equal(await p.locator('.completed-lesson b').textContent(),LESSONS['yono-balance'].title[lang]);
-    assert.equal(await p.locator('.done-title').count(),1);assert.equal(await p.locator('.takeaways').isVisible(),false);
-    await p.locator('.completion-tips summary').click();assert.ok(await p.locator('.takeaways').isVisible());await p.locator('.completion-tips summary').click();
+    assert.equal(await p.locator('.done-title').count(),1);assert.equal(await p.locator('.end-tips li').count(),3);
+    assert.equal(await p.locator('.completion-tips, .completion-feedback, .acts').count(),0);
     if(output)await p.screenshot({path:`${output}/${lang}-${width}-completed.png`,fullPage:true});
     await p.goto(`${base}/send?app=yono&lang=${lang}`);await p.locator('.send-back').waitFor();assert.equal(await p.locator('.send-back').getAttribute('href'),'/app/yono');
     await p.locator('.bottomnav a[href="/"]').click();await p.locator('.learn-home').waitFor();

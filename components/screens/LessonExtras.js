@@ -8,7 +8,7 @@ const words = {
 export function ReceiptShare({ preview, payee, amount, lang }) {
   const w = words[lang];
   return <div className="app receipt-share"><Status /><div className="extras-bar"><Icon name="back" /> <b>{preview ? w.preview : w.share}</b></div>
-    {preview ? <><div className="extras-recipient"><Icon name="check" /> {payee.name}</div><div className="receipt-preview"><Icon name="check" color="#128c7e" size={48} /><h2>{w.screenshot}</h2><strong>₹{amount}</strong><p>{w.sent}</p><b>{payee.name}</b></div><div className="receipt-send" data-t="send-receipt"><span>{w.send}</span><Icon name="arrow" /></div></> : <div className="extras-recipient" data-t="recipient"><span className="extras-avatar">S</span><div><b>{payee.name}</b><small>{payee.phone || payee.sub}</small></div></div>}
+    {preview ? <><div className="extras-recipient"><Icon name="check" /> {payee.name}</div><div className="receipt-preview"><Icon name="check" color="#128c7e" size={48} /><h2>{w.screenshot}</h2><strong>₹{amount}</strong><p>{w.sent}</p><b>{payee.name}</b></div><div className="receipt-send" data-t="send-receipt"><span>{w.send}</span><Icon name="share" /></div></> : <div className="extras-recipient" data-t="recipient"><span className="extras-avatar">S</span><div><b>{payee.name}</b><small>{payee.phone || payee.sub}</small></div></div>}
   </div>;
 }
 export function SafetyPhone({ sms, lang, kind }) {

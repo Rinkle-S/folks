@@ -1,5 +1,14 @@
 # Nook: session handoff (read this first, then `CLAUDE.md`)
 
+## Onboarding v2 and lesson end: 26 Oct 2026
+- Audited both specs and the eight ZIP mockups before editing; the audit table was delivered in chat. Owner approved Find an old file/photo instead of the hidden Send a photo goal, and direct Stay safe entry for the scam goal.
+- New five-step onboarding includes an inert Pay tap/success, translated copy, labelled name/live preview, larger app choices/None, and one first goal. Starts in the chosen mode picker (explicit onboarding exception to scene-first/default mode); Look around goes Home. Unstarted goals remain in Continue, including Stay safe until its first completed reading lesson.
+- Shared `LessonEnd` shows all three numbered tips, safety styling, one visible feedback question and measured pinned next/repeat actions. Mode-specific next actions follow the existing app-page ordering. No end accordions/Send row/real-app prompt. Five two-tip guide lessons now have three concise completion tips.
+- End Print generates a one-page three-tip handout; existing app/full-step printing is preserved. Mode picker has native Share with cancellation/copy fallback; app sharing retains its approved existing flow. Connected-dot Send icons throughout, including simulated screens; corresponding receipt hint corrected.
+- New event types use the durable outbox and existing endpoint. Legacy completion/feedback events retained for Stats. No schema or Sarvam changes.
+- Completed Learn v2 layout/items preserved apart from the missing onboarding-resume logic, new mode Send/minimum typography and sharing instrumentation. Deferred graphics stash untouched. Source/acceptance/interpretations: `docs/onboarding-v2/`.
+- Validation passes: build/ML, all onboarding branches in EN/HI/ML with loaded fonts and contrast/targets, visible tips/pinned actions across phone/landscape/laptop/large text, all tutorial modes/languages, 45 automatic Watch runs, Learn v2/QR/Help/hand/search/event/offline regressions. All 45 tip PDFs verified one page. Browser audio, native print/share and API writes mocked; real iOS dialogs still need physical-device verification.
+
 ## Tutorial screenshot fixes: 25 Oct 2026
 - Owner clarified mismatched car/driver details: stay outside, check booking, contact the booked driver and wait safely for the matching car; help/cancel if unresolved or unsafe. Updated practice, Read copy and guides. Corrected cancellation reason, Google Pay icon description, receive-money PIN wording and recharge wording.
 - Shared quiz choices now have space, 19px text, 56px minimum height and 12px gaps. Quiz panels use page scrolling. WhatsApp rupee icons are round again.

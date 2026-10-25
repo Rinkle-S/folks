@@ -80,7 +80,7 @@ try {
         await page.locator('.options .btn.primary').click();
       }
     }
-    await page.locator('.done-title').waitFor();assert.equal(await page.locator('.done-sub').textContent(),T[lang].lessonCompleted);
+    await page.locator('.done-title').waitFor();assert.equal(await page.locator('.done-sub').textContent(),T[lang].endTried);
     // Default modes still pass through the scene; Read links/defaults bypass it; resume stays direct.
     for(const mode of ['practice','watch','follow']){
       await page.evaluate(m=>localStorage.setItem('folks_mode',m),mode);await page.goto(base+'/lesson/qr-pay');

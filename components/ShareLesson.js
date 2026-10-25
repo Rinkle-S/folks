@@ -1,11 +1,10 @@
 'use client';
-// Copy a lesson link to send to a parent. It only reacts to a tap exactly on the small round icon (and its words),
-// and it never opens anything by itself: it copies the message with the link and says so. That keeps a parent from
-// sharing by mistake. Adult children paste it into WhatsApp.
+// Explicit sharing only: existing uses copy a message; the mode picker can open native sharing with a copy fallback.
 import { useState } from 'react';
 import { MSG } from '@/lib/shareMsg';
 import { track } from '@/lib/client';
 import { getProfile } from '@/lib/profile';
+import Icon from './Icons';
 
 // The round "share" mark: white dots joined by lines on a dark circle.
 export function ShareMark({ size = 40 }) {
@@ -51,10 +50,17 @@ export function lessonMessage({ id, kind = 'lesson', title, lang }) {
 }
 
 // look: "icon" (default, only the round mark), "text" (mark and a few words, under a card) or "act" (mark with a label, in the end-of-lesson row).
-export default function ShareLesson({ id, kind, title, lang, t, where, look = 'icon', text }) {
+export default function ShareLesson({ id, kind, title, lang, t, where, look = 'icon', text, native = false }) {
   const [state, setState] = useState(''); // '' | copied | failed
   const style = look === 'text' || text ? 'text' : look;
   async function go() {
+    if (native) {
+      track('lesson_send', {lesson:id,meta:{lessonId:id,from:where}});
+      if (navigator.share) {
+        try { await navigator.share({title,text:lessonMessage({id,kind,title,lang})}); return; }
+        catch (error) { if (error.name === 'AbortError') return; }
+      }
+    }
     const ok = await copyText(lessonMessage({ id, kind, title, lang }));
     track('share', { lesson: id, meta: { where, via: 'copy', ok, lang, kind } });
     setState(ok ? 'copied' : 'failed');
@@ -71,7 +77,7 @@ export default function ShareLesson({ id, kind, title, lang, t, where, look = 'i
       ) : style === 'text' ? (
         <span className="share-text">
           <button type="button" className="share-link" onClick={go} aria-label={label}>
-            <ShareMark size={28} /> {t.shareLesson}
+            {native ? <Icon name="share" size={26}/> : <ShareMark size={28} />} {typeof text === 'string' ? text : t.shareLesson}
           </button>
         </span>
       ) : (

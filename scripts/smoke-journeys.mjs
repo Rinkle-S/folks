@@ -64,6 +64,8 @@ try {
         else await page.locator('.coach > .btn.primary').click();
       }
       await page.locator('.done-title').waitFor();
+      assert.equal(await page.locator('.end-tips li').count(),3,`${lesson.id}: three visible tips`);
+      assert.equal(await page.locator('.lesson-end-v2 details').count(),0,`${lesson.id}: no collapsed completion content`);
       assert.equal(errors.length, 0, errors.join('\n'));
       // Every lesson's real-phone guide must also have complete text and render through to its end.
       const cards = buildCards(lesson, lang);
@@ -72,6 +74,8 @@ try {
       await page.locator('.read-list').waitFor();
       await page.getByRole('button', { name: T[lang].followFinish, exact: true }).click();
       await page.locator('.done-title').waitFor();
+      assert.equal(await page.locator('.end-tips li').count(),3,`${lesson.id}: three visible tips`);
+      assert.equal(await page.locator('.lesson-end-v2 details').count(),0,`${lesson.id}: no collapsed completion content`);
       await openLesson(`${base}/lesson/${lesson.id}?mode=watch`);
       // Test manual controls while paused; autonomous playback has its own completion regression.
       await page.locator('.coach-actions button.big').click();
@@ -80,6 +84,8 @@ try {
         await page.locator('.coach-actions').getByRole('button', { name: T[lang].next, exact: true }).click();
       }
       await page.locator('.done-title').waitFor();
+      assert.equal(await page.locator('.end-tips li').count(),3,`${lesson.id}: three visible tips`);
+      assert.equal(await page.locator('.lesson-end-v2 details').count(),0,`${lesson.id}: no collapsed completion content`);
       assert.equal(errors.length, 0, errors.join('\n'));
       console.log(`PASS ${lang} ${lesson.id}: practice + read + watch controls`); passed++;
     }

@@ -2,6 +2,7 @@
 // Home: ask by voice or typing, see progress, practise scam-spotting, and pick a lesson by app.
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import Settings from './Settings';
 import AppIcon from './AppIcon';
 import AppsPicker from './AppsPicker';
@@ -25,6 +26,7 @@ import {
   track,
   getApps,
   saveApps,
+  saveGoalResume,
   getDone,
   getResume,
   isOnboarded,
@@ -32,6 +34,7 @@ import {
 } from '@/lib/client';
 
 export default function Home() {
+  const router = useRouter();
   const [lang, setLang] = useLang();
   const [muted, toggleMute] = useMute();
   const [onboarded, setOb] = useState(undefined);
@@ -96,7 +99,7 @@ export default function Home() {
       <Onboarding
         lang={lang}
         setLang={setLang}
-        onDone={(apps) => {
+        onDone={(apps, goal, lookAround = false) => {
           setFluency(effectiveFluency(getProfile().fluency));
     setSkills(getProfile().skills || []);
           setProfileName(getProfile().name);
@@ -109,6 +112,11 @@ export default function Home() {
           }
           setOnboarded();
           setOb(true);
+          if (goal) {
+            saveGoalResume(goal);
+            setResumeState(getResume());
+            if (!lookAround) router.push(goal === 'safe' ? '/scams' : `/lesson/${goal}?onboarding=1`);
+          }
         }}
       />
     );
@@ -332,7 +340,7 @@ export default function Home() {
   // Never suggest something already learned, except a lesson they struggled with a few days ago.
   const review = orderedLessons.find((l) => reviewIds.includes(l.id));
   const next = review || orderedLessons.find((l) => !done.includes(l.id) && !l.id.startsWith('gd-')) || orderedLessons.find((l) => !done.includes(l.id));
-  const resumeLesson = resume && LESSONS[resume.id] && resume.idx < LESSONS[resume.id].steps.length ? LESSONS[resume.id] : null;
+  const resumeLesson = resume?.id === 'safe' ? {id:'safe', app:'safe', title:{[lang]:t.obGoals[3]}} : resume && LESSONS[resume.id] && resume.idx < LESSONS[resume.id].steps.length ? LESSONS[resume.id] : null;
   const pct = Math.round((doneCount / lessons.length) * 100);
 
   return (
@@ -464,12 +472,12 @@ export default function Home() {
         )}
 
         {resumeLesson ? (
-          <Link className="resume-card" href={`/lesson/${resumeLesson.id}?resume=1`}>
-            <AppIcon app={resumeLesson.app} size={60} />
+          <Link className="resume-card" href={resumeLesson.id === 'safe' ? '/scams' : `/lesson/${resumeLesson.id}?${resume.goal ? 'onboarding=1' : 'resume=1'}`}>
+            {resumeLesson.id === 'safe' ? <Icon name="shieldCheck" size={48}/> : <AppIcon app={resumeLesson.app} size={60} />}
             <span className="resume-tx">
               <small>{t.resumeTitle}</small>
               <b>{resumeLesson.title[lang]}</b>
-              <small>{t.resumeStep(resume.idx, resumeLesson.steps.length - 1)}</small>
+              <small>{resume.goal ? t.obContinueGoal : t.resumeStep(resume.idx, resumeLesson.steps.length - 1)}</small>
             </span>
             <span className="resume-go">
               <Icon name="play" size={26} />

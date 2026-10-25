@@ -3,7 +3,6 @@
 //  practice: the parent taps through practice screens themselves (default)
 //  watch:    plays by itself like a video, with voice and glowing taps
 //  follow:   one step at a time, worded for the real app, so they can do it on their own phone
-import { canOpenApp, openRealApp } from '@/lib/openApp';
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -16,16 +15,15 @@ import { levelOf } from '@/lib/levels';
 import { sentences } from '@/lib/sentences';
 import { prepareRingtone, startRingtone } from '@/lib/ringtone';
 import Settings from './Settings';
+import LessonEnd from './LessonEnd';
 import FollowView from './FollowView';
 import LessonPrint from './LessonPrint';
 import Icon from './Icons';
 import AppIcon from './AppIcon';
 import { LESSONS } from '@/lib/lessons';
 import { T } from '@/lib/i18n';
-import FeedbackAsk, { FeedbackBox } from './FeedbackAsk';
-import RateApp from './RateApp';
 import ShareLesson from './ShareLesson';
-import { useLang, useMute, speak, stopSpeaking, prefetchSpeech, onSpeaking, track, getFrom, whatsappLink, markDone, shouldAskRate, getResume, saveResume, clearResume, vibrate, getLearnMode, addRecent, onSpeechProgress } from '@/lib/client';
+import { useLang, useMute, speak, stopSpeaking, prefetchSpeech, onSpeaking, track, getFrom, markDone, getResume, saveResume, clearResume, vibrate, getLearnMode, addRecent, onSpeechProgress } from '@/lib/client';
 
 // Watch-first pacing (milliseconds). Slower than before: older viewers need time to see the screen, then the pointer,
 // then the tap. Research on older listeners favours clear speech (about 140 words a minute or less) and pauses.
@@ -57,12 +55,6 @@ function PlayerInner({ id }) {
   const [shake, setShake] = useState(false);
   const [tapFx, setTapFx] = useState(false);
   const [paused, setPaused] = useState(false);
-  const [feedback, setFeedback] = useState(null);
-  const [fbReasons, setFbReasons] = useState([]);
-  const [fbNote, setFbNote] = useState('');
-  const [fbSent, setFbSent] = useState(false);
-  const [askRate, setAskRate] = useState(false); // after the second finished lesson, once
-  const [realTry, setRealTry] = useState(false);
   const [from, setFrom] = useState('');
   const [bubble, setBubble] = useState(null);
   const router = useRouter();
@@ -127,10 +119,12 @@ function PlayerInner({ id }) {
     try {
       const q = new URLSearchParams(window.location.search);
       const m = q.get('mode');
-      const selected = ['watch', 'follow', 'practice'].includes(m) ? m : getLearnMode();
+      const onboarding = q.get('onboarding') === '1';
+      const selected = onboarding ? 'ask' : ['watch', 'follow', 'practice'].includes(m) ? m : getLearnMode();
       const saved = q.get('resume') === '1' ? getResume() : null;
-      setShowScene(Boolean(lesson.scene && !(saved && saved.id === id && saved.idx < lesson.steps.length)));
-      if (saved && saved.id === id && saved.idx < lesson.steps.length) {
+      setShowScene(Boolean(lesson.scene && !onboarding && !(saved && saved.id === id && saved.idx < lesson.steps.length && !saved.goal)));
+      if (saved?.goal && saved.id === id) setShowScene(false);
+      if (saved && !saved.goal && saved.id === id && saved.idx < lesson.steps.length) {
         // Carry on where the person left off: straight back to that step, in practice mode.
         setMode('practice');
         // Reconstruct practice values needed by later screens, without storing any entered PIN.
@@ -401,9 +395,9 @@ function PlayerInner({ id }) {
     clearTimers();
     if (lesson.closing && mode !== 'follow') speak(lesson.closing[lang], lang);
     track('lesson_complete', { lesson: id, meta: { mode } });
+    track('lesson_completed', {lesson:id,meta:{lessonId:id,mode:mode === 'practice' ? 'try' : mode === 'follow' ? 'read' : 'watch'}});
     markDone(id);
     clearResume(id);
-    setAskRate(shouldAskRate());
     if (mode === 'practice') recordPerf({ id, level: levelOf(lesson), wrong: wrongRef.current, hints: helpRef.current, steps: total });
   }
 
@@ -501,11 +495,6 @@ function PlayerInner({ id }) {
     setQuiz(null);
     setShowHint(false);
     setDone(false);
-    setFeedback(null);
-    setFbReasons([]);
-    setFbNote('');
-    setFbSent(false);
-    setRealTry(false);
     setShowScene(Boolean(lesson.scene));
     spokenRef.current = '';
     setMode(m);
@@ -589,134 +578,12 @@ function PlayerInner({ id }) {
           ['watch', 'play', t.learnModeWatch, t.learnModeWatchSub],
           ['follow', 'list', t.modeFollow, t.learnModeReadSub],
         ].map(([m, ic, title, sub]) => <button key={m} className="mode-card" onClick={() => chooseMode(m)}><span className="mode-ic"><Icon name={ic} size={28} /></span><span className="mode-tx"><b>{title}</b><small>{sub}</small></span><Icon name="chevron" size={20} /></button>)}
+        <div className="mode-sharing"><p>{t.modeHelper}</p><ShareLesson id={id} title={lesson.title[lang]} lang={lang} t={t} where="mode_picker" look="text" text={t.modeSend} native /></div>
       </main>
     </div>
   );
 
-  if (done) {
-    return (
-      <div className="page done has-nav">
-        <div className="done-medal">
-          <Icon name="check" size={56} stroke={3} />
-        </div>
-        <h1 className="done-title">{t.doneTitle}</h1>
-        <div className="learn-lesson-context completed-lesson"><AppIcon app={lesson.app} size={52} /><div><p className="done-sub">{t.lessonCompleted}</p><b>{lesson.title[lang]}</b></div></div>
-        <details className="completion-tips"><summary>{t.remember}</summary>
-        <ul className="takeaways">
-          {lesson.takeaways[lang].map((k, i) => (
-            <li key={i}>{k}</li>
-          ))}
-        </ul>
-        </details>
-
-        {mode !== 'practice' ? (
-          <button className="btn primary" onClick={() => restart('practice')}>
-            <Icon name="hand" size={22} /> {t.nowPractise}
-          </button>
-        ) : (
-          !realTry && (
-            <button
-              className="btn primary"
-              onClick={() => {
-                setRealTry(true);
-                track('real_try', { lesson: id });
-              }}
-            >
-              <Icon name="recharge" size={22} /> {t.tryReal}
-            </button>
-          )
-        )}
-        {realTry && (
-          <>
-            <p className="note">{lesson.realTry[lang]}</p>
-            {canOpenApp(lesson.app) && (
-              <button
-                className="btn primary"
-                onClick={() => {
-                  track('open_real_app', { lesson: id, meta: { app: lesson.app } });
-                  openRealApp(lesson.app);
-                }}
-              >
-                <Icon name="play" size={22} /> {t.openRealApp(lesson.appName || lesson.app)}
-              </button>
-            )}
-            <button className="btn ghost" onClick={() => restart('follow')}>
-              <Icon name="list" size={22} /> {t.modeFollow}
-            </button>
-          </>
-        )}
-
-        <div className="acts">
-          <LessonPrint lesson={lesson} lang={lang} t={t} variant="act" />
-          <button type="button" className="act" onClick={() => restart(mode || 'practice')}>
-            <span className="act-ic"><Icon name="refresh" size={26} /></span>
-            {t.actAgain}
-          </button>
-          <ShareLesson look="act" id={id} title={lesson.title[lang]} lang={lang} t={t} where="lesson_end" />
-        </div>
-
-        <details className="completion-feedback"><summary>{t.completionFeedback}</summary><div className="feedback">
-          <p>{t.howWasIt}</p>
-          {feedback && (feedback !== 'hard' || fbSent) ? (
-            <>
-              <p className="thanks">{t.thanks}</p>
-              {feedback !== 'hard' && <FeedbackAsk t={t} lang={lang} lesson={id} where="lesson_end" v={feedback} />}
-            </>
-          ) : feedback ? (
-            <div className="fb-more">
-              <p>{t.fbWhy}</p>
-              <div className="fb-reasons">
-                {['stuck', 'mismatch', 'words', 'other'].map((k) => (
-                  <button
-                    key={k}
-                    className={`chip ${fbReasons.includes(k) ? 'talking' : ''}`}
-                    aria-pressed={fbReasons.includes(k)}
-                    onClick={() => setFbReasons(fbReasons.includes(k) ? fbReasons.filter((x) => x !== k) : [...fbReasons, k])}
-                  >
-                    {t['fbr_' + k]}
-                  </button>
-                ))}
-              </div>
-              <FeedbackBox t={t} lang={lang} value={fbNote} onChange={setFbNote} />
-              <button
-                className="btn primary"
-                onClick={() => {
-                  track('feedback_detail', { lesson: id, meta: { v: feedback, reasons: fbReasons, note: fbNote.trim().slice(0, 600), lang, mode, steps: total, where: 'lesson_end' } });
-                  setFbSent(true);
-                }}
-              >
-                {t.fbSend}
-              </button>
-            </div>
-          ) : (
-            <div className="fb-row">
-              {[
-                ['easy', '😊', t.easy],
-                ['okay', '😐', t.okay],
-                ['hard', '😟', t.hard],
-              ].map(([v, e, label]) => (
-                <button
-                  key={v}
-                  className="fb"
-                  onClick={() => {
-                    setFeedback(v);
-                    track('feedback', { lesson: id, meta: { v, mode, lang } });
-                  }}
-                >
-                  <span>{e}</span>
-                  {label}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {askRate && feedback && <RateApp t={t} lang={lang} where="lesson_end" canSnooze />}
-        </details>
-        <BottomNav active="learn" t={t} />
-      </div>
-    );
-  }
+  if (done) return <LessonEnd lesson={lesson} lang={lang} t={t} mode={mode} onRestart={restart} />;
 
   if (mode === 'follow') {
     return (
