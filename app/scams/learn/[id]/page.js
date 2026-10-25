@@ -147,7 +147,7 @@ function Lesson({ params }) {
   return (
     <div className="page ss ss-fit" style={{ paddingBottom: 0 }}>
       <Top u={u} onListen={() => speak(readText(), lang)} />
-      <div style={{ padding: '0 4px' }}>
+      <div>
         {page <= 4 && (
           <>
             {meta}
@@ -157,8 +157,9 @@ function Lesson({ params }) {
 
         {page === 1 && (
           <>
-            <h1 style={{ marginTop: 18, fontSize: 30 }}>{L.spot.h[lang]}</h1>
-            <div style={{ marginTop: 14 }}>
+            <h1>{L.spot.h[lang]}</h1>
+            <p className="ss-sub">{L.spot.remember[lang]}</p>
+            <div>
               <Sample s={L.spot} lang={lang} />
             </div>
             <ol className="ss-flags">
@@ -169,17 +170,13 @@ function Lesson({ params }) {
                 </li>
               ))}
             </ol>
-            <div className="ss-rem">
-              <small>{u.remember}</small>
-              <b>{L.spot.remember[lang]}</b>
-            </div>
           </>
         )}
 
         {page === 2 && (
           <>
-            <h1 style={{ marginTop: 18, fontSize: 30 }}>{{ en: 'How they trick you', hi: 'वे कैसे फँसाते हैं', ml: 'അവർ എങ്ങനെ കബളിപ്പിക്കുന്നു' }[lang]}</h1>
-            <p className="ss-lead" style={{ fontSize: 19, color: '#4A5550' }}>{L.how.sub[lang]}</p>
+            <h1>{{ en: 'How they trick you', hi: 'वे कैसे फँसाते हैं', ml: 'അവർ എങ്ങനെ കബളിപ്പിക്കുന്നു' }[lang]}</h1>
+            <p className="ss-sub">{L.how.remember[lang]}</p>
             <div className="ss-steps">
               {L.how.steps.map((s, i) => (
                 <div className="ss-step" key={i}>
@@ -195,17 +192,13 @@ function Lesson({ params }) {
                 </div>
               ))}
             </div>
-            <div className="ss-rem" style={{ marginTop: 6 }}>
-              <small>{u.remember}</small>
-              <b>{L.how.remember[lang]}</b>
-            </div>
           </>
         )}
 
         {page === 3 && (
           <>
-            <h1 style={{ marginTop: 18, fontSize: 30 }}>{u.todoH}</h1>
-            <div className="ss-gold" style={{ marginTop: 14 }}>
+            <h1>{u.todoH}</h1>
+            <div className="ss-gold">
               <div className="ic" aria-hidden="true">🛑</div>
               <div>
                 <small>{u.golden}</small>
@@ -235,14 +228,14 @@ function Lesson({ params }) {
 
         {page === 4 && (
           <>
-            <h1 style={{ marginTop: 16, fontSize: 30 }}>{u.realQ}</h1>
-            <p className="ss-lead" style={{ fontSize: 18, color: '#4A5550', margin: '0 0 16px' }}>{u.noReal}</p>
+            <h1>{u.realQ}</h1>
+            <p className="ss-sub">{u.noReal}</p>
             <div className="ss-card">
               <div className="ss-who">
                 <div className="av" aria-hidden="true">👤</div>
                 <div>{L.check.from[lang]}</div>
               </div>
-              <div className="ss-bub">{L.check.msg[lang]}</div>
+              <div className={`ss-bub${picked ? ' ss-clamp' : ''}`}>{L.check.msg[lang]}</div>
             </div>
             {!picked ? (
               <div className="ss-q">
@@ -260,8 +253,8 @@ function Lesson({ params }) {
 
         {page === 5 && (
           <>
-            <h1 style={{ marginTop: 22, fontSize: 30 }}>{next ? '✓ ' + u.done : u.allDone}</h1>
-            <p className="ss-lead">{next ? L.title[lang] : u.allDoneSub}</p>
+            <h1>{next ? '✓ ' + u.done : u.allDone}</h1>
+            <p className="ss-sub">{next ? L.title[lang] : u.allDoneSub}</p>
             <div className="ss-h">{u.tips}</div>
             <ul className="ss-tips">
               {(tips.current || []).map((r, i) => (

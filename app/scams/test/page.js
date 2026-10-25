@@ -134,8 +134,8 @@ export default function Test() {
           <i key={n} className={n <= i ? 'on' : ''} />
         ))}
       </div>
-      <h1 style={{ marginTop: 16, fontSize: 30 }}>{u.realQ}</h1>
-      {c.context && <p className="ss-lead" style={{ fontSize: 18, color: '#4A5550', margin: '0 0 12px' }}>{c.context[lang]}</p>}
+      <h1>{u.realQ}</h1>
+      {c.context && <p className="ss-sub">{c.context[lang]}</p>}
       <div className="ss-card">
         <div className="ss-who">
           <div className="av" aria-hidden="true">{c.kind === 'call' ? '📞' : '💬'}</div>
