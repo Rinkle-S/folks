@@ -12,7 +12,7 @@ try {
   for (const lang of ['en', 'hi', 'ml']) for (const [width, height] of sizes) {
     const context = await browser.newContext({ viewport: { width, height } });
     await context.addInitScript((lang) => {
-      for (const [k,v] of Object.entries({ folks_lang:lang, folks_onboarded:'1', folks_practice_note:'off', folks_mute_v2:'1' })) localStorage.setItem(k,v);
+      for (const [k,v] of Object.entries({ folks_lang:lang, folks_onboarded:'1', folks_mute_v2:'1' })) localStorage.setItem(k,v);
       if (window.speechSynthesis) { window.speechSynthesis.speak = () => {}; window.speechSynthesis.cancel = () => {}; }
       window.Audio = class { play() { return Promise.resolve(); } pause() {} addEventListener() {} removeEventListener() {} };
     }, lang);
@@ -20,6 +20,7 @@ try {
     const page = await context.newPage();
     const errors = []; page.on('pageerror', (e) => errors.push(e.message));
     await page.goto(`${process.env.TEST_URL || 'http://127.0.0.1:3110'}/lesson/qr-pay?mode=practice`);
+    await page.locator('.scene-body .btn.primary').click();
     await page.locator('.screen [data-t="app-gpay"]').click();
     await page.locator('.g2-chips').waitFor();
     await page.evaluate(() => document.fonts.ready);
@@ -50,6 +51,7 @@ try {
         assert.ok(m.coach.bottom+m.scrollY<=m.pageHeight+1, `coach unreachable by scrolling: ${lang} ${width}`);
         assert.ok(Math.abs(m.tint.left-m.visibleTarget.left)<2 && Math.abs(m.tint.top-m.visibleTarget.top)<2, `misaligned tint: ${lang} ${width}`);
         assert.ok(m.hand.left>=m.screen.left && m.hand.right<=m.screen.right && m.hand.top>=m.screen.top && m.hand.bottom<=m.screen.bottom, `clipped hand: ${lang} ${width}`);
+        assert.ok(m.hand.right<=m.target.left || m.hand.left>=m.target.right || m.hand.bottom<=m.target.top || m.hand.top>=m.target.bottom, `hand covers target: ${lang} ${width}`);
       };
       check(before);
       if (width>=720) assert.ok(before.markFont>before.screen.width*0.12, `laptop watermark too small: ${lang} ${width}`);

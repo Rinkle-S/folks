@@ -1,5 +1,22 @@
 # Nook: session handoff (read this first, then `CLAUDE.md`)
 
+## QR scene and lesson update: 25 Oct 2026
+- QR has a narrated, unnumbered scene with Ready before mode selection. Saved Practise/Watch defaults still pass through it.
+  Direct/default Read mode bypasses the scene; a valid resume link continues directly at its saved step.
+  Lessons without `scene` keep their original introduction. The old PracticeIntro card and its Settings/storage logic are removed.
+- `lib/qrPractice.js` applies the supplied three-language script after shared plain-word/PIN helpers.
+  Only the Google Pay find-app instruction/hint is shared across lessons. The chat requested the other new wording for QR only;
+  the subsequently added brief's broader shared-copy note was not used to expand that scope.
+- Any quiz answer now shows its reason and Next. A wrong pick gets a soft red cross and reveals the green correct answer.
+- `lib/handPosition.js` keeps the hand outside the target and inside the practice frame, with edge fallbacks and a below-arrow position.
+- QR step 4 shows the shop board; steps 11/12 use the teal pretend-call banner, with a shield/preface only on step 11.
+- Help still speaks the hint and refocuses the target. Listen again restores/speaks the original step instruction, without another button.
+- QR closing/takeaways/realTry use the supplied copy. Read mode keeps its ordinary completion label because it is for the real phone.
+Validation: build, Malayalam and regression checks; all 18 lessons at 320x568 in three languages (wrong quiz answers),
+all 18 at 1366x768 in English (right quiz answers), and supporting pages. Responsive checks cover seven sizes x three languages.
+`node scripts/test-qr-flow.mjs` checks scene/default modes/Read/resume, wrong-answer feedback, shop-name visibility, safety styling,
+PIN acceptance, closing, hand bounds, and mocked speech sequencing. Speech/audio and API writes are mocked; Sarvam stays off.
+
 ## Responsive layout fix: 25 Oct 2026
 Watermark follow-up: the owner wants the earlier larger laptop appearance. At 720px and above,
 the mark now grows up to 84px while still fitting its container height/width; Malayalam has a lower width factor.

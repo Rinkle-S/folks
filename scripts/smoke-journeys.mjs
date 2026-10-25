@@ -18,7 +18,7 @@ try {
     globalThis.localStorage = { getItem: (key) => key === 'folks_lang' ? lang : null };
     const context = await browser.newContext({ viewport: { width: Number(process.env.TEST_WIDTH || 390), height: Number(process.env.TEST_HEIGHT || 844) } });
     await context.addInitScript((lang) => {
-      for (const [k, v] of Object.entries({ folks_lang: lang, folks_onboarded: '1', folks_practice_note: 'off', folks_mute_v2: '1' })) localStorage.setItem(k, v);
+      for (const [k, v] of Object.entries({ folks_lang: lang, folks_onboarded: '1', folks_mute_v2: '1' })) localStorage.setItem(k, v);
       // Accelerate the player's 450ms success flash, without changing app code.
       const timer = window.setTimeout;
       window.setTimeout = (fn, ms, ...args) => timer(fn, ms === 450 ? 1 : ms, ...args);
@@ -28,10 +28,15 @@ try {
     }, lang);
     await context.route('**/api/**', (route) => route.fulfill({ json: { ok: true, stored: true, enabled: false } }));
     const page = await context.newPage(); const errors = [];
+    const openLesson = async (url) => {
+      await page.goto(url);
+      await page.locator('.scene-body, .coach, .read').first().waitFor();
+      if (await page.locator('.scene-body').count()) await page.locator('.scene-body .btn.primary').click();
+    };
     page.on('pageerror', (e) => errors.push(e.message));
     for (const lesson of Object.values(LESSONS)) {
       if (process.env.TEST_LESSON && lesson.id !== process.env.TEST_LESSON) continue;
-      await page.goto(`${base}/lesson/${lesson.id}?mode=practice`);
+      await openLesson(`${base}/lesson/${lesson.id}?mode=practice`);
       for (let i = 1; i < lesson.steps.length; i++) {
         const step = lesson.steps[i];
         try {
@@ -47,7 +52,8 @@ try {
         else if (step.kind === 'input') {
           for (const key of step.expected) await page.locator(`.screen [data-key="${key}"]`).first().click();
         } else if (step.kind === 'quiz') {
-          await page.getByRole('button', { name: personalise(step.options.find((o) => o.correct).text[lang]), exact: true }).click();
+          const answer = step.options.find((o) => process.env.WRONG_QUIZZES ? !o.correct : o.correct) || step.options.find((o) => o.correct);
+          await page.getByRole('button', { name: personalise(answer.text[lang]), exact: true }).click();
           await page.locator('.options .btn.primary').click();
         } else await page.locator('.coach > .btn.primary').click();
       }
@@ -56,11 +62,11 @@ try {
       // Every lesson's real-phone guide must also have complete text and render through to its end.
       const cards = buildCards(lesson, lang);
       assert.ok(cards.every((c) => c.text?.trim()), `${lesson.id}: missing reading text (${lang})`);
-      await page.goto(`${base}/lesson/${lesson.id}?mode=follow`);
+      await openLesson(`${base}/lesson/${lesson.id}?mode=follow`);
       await page.locator('.read-list').waitFor();
       await page.getByRole('button', { name: T[lang].followFinish, exact: true }).click();
       await page.locator('.done-title').waitFor();
-      await page.goto(`${base}/lesson/${lesson.id}?mode=watch`);
+      await openLesson(`${base}/lesson/${lesson.id}?mode=watch`);
       for (let i = 1; i < lesson.steps.length; i++) {
         await page.waitForFunction((text) => document.querySelector('.coach-text')?.textContent.trim() === text, personalise(lesson.steps[i].say[lang]));
         await page.locator('.coach-actions').getByRole('button', { name: T[lang].next, exact: true }).click();

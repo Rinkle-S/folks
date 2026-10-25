@@ -2,19 +2,18 @@
 // Settings sheet: language and sound. Labels are bilingual so anyone can find their language.
 import { useState } from 'react';
 import useInstall from './useInstall';
-import { getPracticeNote, setPracticeNote, speak, unlockAudio, getLearnMode, setLearnMode, getVoiceChoice, setVoiceChoice, diagnoseVoice } from '@/lib/client';
+import { speak, unlockAudio, getLearnMode, setLearnMode, getVoiceChoice, setVoiceChoice, diagnoseVoice } from '@/lib/client';
 import { voiceStatus } from '@/lib/voice';
 import { T } from '@/lib/i18n';
 import { LANGS } from '@/lib/langs';
 
-export default function Settings({ lang, setLang, muted, toggleMute, onClose, onApps, appsLabel, onPracticeInfo, onMismatch }) {
+export default function Settings({ lang, setLang, muted, toggleMute, onClose, onApps, appsLabel, onMismatch }) {
   const [canInstall, install] = useInstall();
   const [tested, setTested] = useState(false);
   const [mode, setMode] = useState(getLearnMode());
   const [voice, setVoice] = useState(getVoiceChoice());
   const [diag, setDiag] = useState(null);
   const [told, setTold] = useState(false);
-  const [note, setNote] = useState(getPracticeNote());
   const t = T[lang] || T.en;
   // English plus the chosen language, so a Malayalam parent never sees Hindi here.
   const bi = (en, hi, ml) => `${en} / ${lang === 'ml' ? ml : hi}`;
@@ -124,19 +123,6 @@ export default function Settings({ lang, setLang, muted, toggleMute, onClose, on
             </button>
           </div>
         )}
-        <div className="settings-row">
-          <span>{t.practiceNoteRow}</span>
-          <button
-            className={`toggle ${note ? 'on' : ''}`}
-            onClick={() => {
-              setNote(!note);
-              setPracticeNote(!note);
-            }}
-            aria-pressed={note}
-          >
-            {note ? bi('On', 'चालू', 'ഓൺ') : bi('Off', 'बंद', 'ഓഫ്')}
-          </button>
-        </div>
         {onMismatch && (
           <div className="settings-row">
             <span>{told ? t.mismatchThanks : t.mismatchQ}</span>
@@ -151,14 +137,6 @@ export default function Settings({ lang, setLang, muted, toggleMute, onClose, on
                 {t.mismatchBtn}
               </button>
             )}
-          </div>
-        )}
-        {onPracticeInfo && (
-          <div className="settings-row">
-            <span>{t.practiceWhat}</span>
-            <button className="toggle" onClick={onPracticeInfo}>
-              {t.practiceShow}
-            </button>
           </div>
         )}
         {canInstall && (

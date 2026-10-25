@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Screen from './Screens';
-import PracticeIntro from './PracticeIntro';
+import { handPosition } from '@/lib/handPosition';
 import { BottomNav } from './AppShell';
 import { watchPersona, personalise } from '@/lib/persona';
 import { recordPerf } from '@/lib/adapt';
@@ -23,7 +23,7 @@ import { T } from '@/lib/i18n';
 import FeedbackAsk, { FeedbackBox } from './FeedbackAsk';
 import RateApp from './RateApp';
 import ShareLesson from './ShareLesson';
-import { useLang, useMute, speak, stopSpeaking, prefetchSpeech, onSpeaking, track, getFrom, whatsappLink, markDone, shouldAskRate, getResume, saveResume, clearResume, vibrate, getLearnMode, addRecent, getPracticeNote, setPracticeNote, setPracticeSeen, onSpeechProgress } from '@/lib/client';
+import { useLang, useMute, speak, stopSpeaking, prefetchSpeech, onSpeaking, track, getFrom, whatsappLink, markDone, shouldAskRate, getResume, saveResume, clearResume, vibrate, getLearnMode, addRecent, onSpeechProgress } from '@/lib/client';
 
 // Watch-first pacing (milliseconds). Slower than before: older viewers need time to see the screen, then the pointer,
 // then the tap. Research on older listeners favours clear speech (about 140 words a minute or less) and pauses.
@@ -70,7 +70,7 @@ function PlayerInner({ id }) {
     stepWrongRef.current = 0;
   }, [idx]);
   const [showSettings, setShowSettings] = useState(false);
-  const [showIntro, setShowIntro] = useState(false);
+  const [showScene, setShowScene] = useState(null); // null until direct links/default mode are resolved
   const [talking, setTalking] = useState(false);
   const screenRef = useRef(null);
   const coachRef = useRef(null);
@@ -88,6 +88,9 @@ function PlayerInner({ id }) {
   const t = T[lang || 'en'];
   const total = lesson.steps.length;
   const watching = mode === 'watch';
+  const safetyCheck = id === 'qr-pay' && ['scam-quiz', 'decline'].includes(step.id);
+  const safetyQuestion = safetyCheck && step.id === 'scam-quiz';
+  const instruction = safetyQuestion ? `${t.safetyHeading} ${t.safetySub} ${step.say[lang || 'en']}` : step.say[lang || 'en'];
 
   useEffect(() => setFrom(getFrom()), []);
   useEffect(() => onSpeechProgress(setSpoken), []);
@@ -116,26 +119,21 @@ function PlayerInner({ id }) {
     const el = document.querySelector('.coach-text .say-now');
     if (el) el.scrollIntoView({ block: 'nearest' }); // keep the sentence being spoken in view
   }, [spoken]);
-  // A short "this is practice" card at the start of every lesson, until the person turns it off.
-  useEffect(() => setShowIntro(getPracticeNote()), []);
-
   // Allow links that open straight into a mode (?mode=watch|follow|practice).
   useEffect(() => {
     try {
       const q = new URLSearchParams(window.location.search);
       const m = q.get('mode');
+      const selected = ['watch', 'follow', 'practice'].includes(m) ? m : getLearnMode();
       const saved = q.get('resume') === '1' ? getResume() : null;
+      setShowScene(Boolean(lesson.scene && selected !== 'follow' && !(saved && saved.id === id && saved.idx < lesson.steps.length)));
       if (saved && saved.id === id && saved.idx < lesson.steps.length) {
         // Carry on where the person left off: straight back to that step, in practice mode.
         setMode('practice');
         setIdx(saved.idx);
         track('mode_pick', { lesson: id, meta: { mode: 'practice', resumed: saved.idx } });
-      } else if (m === 'watch' || m === 'follow' || m === 'practice') chooseMode(m);
-      else {
-        const pref = getLearnMode();
-        if (pref !== 'ask') chooseMode(pref);
-      }
-    } catch {}
+      } else if (selected !== 'ask') chooseMode(selected);
+    } catch { setShowScene(Boolean(lesson.scene)); }
     addRecent(id);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -146,22 +144,25 @@ function PlayerInner({ id }) {
     }
   }, [lang, id]);
 
-  // Practice: read each step aloud when it appears, and get the next one ready.
-  // Nothing is said while the "this is practice" card is open: the voice starts when it is dismissed.
+  // Scene narration is the only voice allowed before Ready. Read mode bypasses it.
+  useEffect(() => {
+    if (!showScene || !lang) return;
+    speak(lesson.scene.say[lang], lang);
+    return () => stopSpeaking();
+  }, [showScene, lang]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Practice: Ready releases this gate, including a previously saved default mode.
   const spokenRef = useRef('');
   useEffect(() => {
     if (!lang || done || mode === 'follow' || mode === 'watch') return;
-    if (showIntro) {
-      stopSpeaking();
-      return;
-    }
+    if (showScene !== false) return;
     const key = `${idx}:${mode}:${lang}`;
-    if (spokenRef.current === key) return; // the card was opened again from Settings: do not repeat the step
+    if (spokenRef.current === key) return;
     spokenRef.current = key;
-    speak(step.say[lang], lang);
+    speak(instruction, lang);
     const nxt = lesson.steps[idx + 1];
     if (nxt) prefetchSpeech(nxt.say[lang], lang);
-  }, [idx, lang, done, mode, showIntro]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [idx, lang, done, mode, showScene]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Remember the step, so Home can offer "Continue where you left off" after leaving halfway.
   useEffect(() => {
@@ -179,7 +180,7 @@ function PlayerInner({ id }) {
   // Always glow the element to tap, with a small "Tap here" label next to it.
   useEffect(() => {
     const root = screenRef.current;
-    if (!root || !lang || mode === 'follow') return;
+    if (!root || !lang || mode === 'follow' || showScene !== false) return;
     root.querySelectorAll('.hl').forEach((el) => el.classList.remove('hl'));
     setBubble(null);
     if (done) return;
@@ -249,12 +250,12 @@ function PlayerInner({ id }) {
         const up = r.bottom <= oy + H / 2;
         next = { edge: up ? 'up' : 'down', x: Math.min(Math.max(r.left + r.width / 2 - ox, 34), W - 34), y: up ? 34 : H - 34, label };
       } else if (step.kind === 'tap') {
-        // A small hand on the corner of the button: it never covers a neighbouring icon or its name.
+        // Keep the hand outside the target, falling back/flipping at screen edges.
+        const hand = handPosition({ left: vis.left - ox, right: vis.right - ox, top: vis.top - oy, bottom: vis.bottom - oy }, W, H);
         next = {
           compact: true,
           box: { x: vis.left - ox, y: vis.top - oy, w: visW, h: visH },
-          x: Math.min(Math.max(vis.right - ox - 8, 34), W - 34),
-          y: Math.min(Math.max(vis.bottom - oy - 6, 34), H - 34),
+          hand,
           label,
         };
       } else {
@@ -284,16 +285,14 @@ function PlayerInner({ id }) {
       window.removeEventListener('resize', place);
       root.removeEventListener('scroll', place, true);
     };
-  }, [idx, typed, lang, done, mode, showHint, helpTick]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [idx, typed, lang, done, mode, showHint, helpTick, showScene]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Watch mode: play each step by itself. Each step waits for its voice to finish before the next one.
   useEffect(() => {
     clearTimers();
     if (!watching || done || !lang) return;
-    if (paused || showIntro) {
-      stopSpeaking();
-      return;
-    }
+    if (showScene !== false) return;
+    if (paused) { stopSpeaking(); return; }
     let cancelled = false;
     const wait = (ms) => new Promise((r) => timers.current.push(setTimeout(r, ms)));
     const s = step;
@@ -308,7 +307,7 @@ function PlayerInner({ id }) {
         if (!cancelled) advance();
         return;
       }
-      await speak(s.say[lang], lang);
+      await speak(instruction, lang);
       if (cancelled) return;
       if (s.kind === 'tap') {
         await wait(WATCH.beforeTap); // look at the glowing spot
@@ -344,9 +343,9 @@ function PlayerInner({ id }) {
       cancelled = true;
       clearTimers();
     };
-  }, [watching, paused, idx, done, lang, showIntro]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [watching, paused, idx, done, lang, showScene]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  if (!lang) return <div className="page" />;
+  if (!lang || showScene === null) return <div className="page" />;
 
   function clearTimers() {
     timers.current.forEach(clearTimeout);
@@ -364,6 +363,7 @@ function PlayerInner({ id }) {
   }
 
   function advance() {
+    stopSpeaking();
     lockRef.current = false;
     setShowHint(false);
     setQuiz(null);
@@ -376,6 +376,7 @@ function PlayerInner({ id }) {
     setDone(true);
     stopSpeaking();
     clearTimers();
+    if (lesson.closing && mode !== 'follow') speak(lesson.closing[lang], lang);
     track('lesson_complete', { lesson: id, meta: { mode } });
     markDone(id);
     clearResume(id);
@@ -457,7 +458,7 @@ function PlayerInner({ id }) {
   }
 
   function pickOption(o) {
-    if (quiz && quiz.correct) return;
+    if (quiz) return;
     if (o.correct) track('step_done', { lesson: id, step: idx, meta: { id: step.id } });
     else {
       wrongRef.current++;
@@ -481,6 +482,8 @@ function PlayerInner({ id }) {
     setFbNote('');
     setFbSent(false);
     setRealTry(false);
+    setShowScene(Boolean(lesson.scene && m !== 'follow'));
+    spokenRef.current = '';
     setMode(m);
     setPaused(false);
     setIdx(m === 'follow' ? 0 : 1);
@@ -531,22 +534,24 @@ function PlayerInner({ id }) {
   );
 
   const settings = showSettings && (
-    <Settings lang={lang} setLang={setLang} muted={muted} toggleMute={toggleMute} onClose={() => setShowSettings(false)} onPracticeInfo={() => { setShowSettings(false); setShowIntro(true); }} onMismatch={() => track('screen_mismatch', { lesson: id, step: idx, meta: { id: step.id, screen: step.screen, kit: step.kit || null, lang, mode } })} />
+    <Settings lang={lang} setLang={setLang} muted={muted} toggleMute={toggleMute} onClose={() => setShowSettings(false)} onMismatch={() => track('screen_mismatch', { lesson: id, step: idx, meta: { id: step.id, screen: step.screen, kit: step.kit || null, lang, mode } })} />
   );
 
-  const intro = showIntro && (
-    <PracticeIntro
-      t={t}
-      onClose={() => {
-        setPracticeSeen();
-        setShowIntro(false);
-      }}
-      onNever={() => {
-        setPracticeNote(false);
-        setPracticeSeen();
-        setShowIntro(false);
-      }}
-    />
+  if (showScene) return (
+    <div className="player scene-player">
+      <div className="ptop">
+        <button className="ptop-leave" onClick={askLeave}><Icon name="close" size={20} /> {t.leaveBtn}</button>
+      </div>
+      <main className="scene-body">
+        <div className="practice-tag">{t.practiceTag}</div>
+        <div className="scene-art" aria-hidden="true">🏪 🥕🥬</div>
+        <h1>{t.sceneHeading}</h1>
+        <div className="scene-copy">{lesson.scene.say[lang].split(/\n\n/).map((p, i) => <p key={i}>{p}</p>)}</div>
+        <button className="btn primary" onClick={() => { stopSpeaking(); setShowScene(false); }}>{t.sceneReady}</button>
+        <button className="link-btn scene-listen" onClick={() => speak(lesson.scene.say[lang], lang, { force: true })}>{t.listen}</button>
+      </main>
+      {leaveDialog}
+    </div>
   );
 
   if (done) {
@@ -556,7 +561,7 @@ function PlayerInner({ id }) {
           <Icon name="check" size={56} stroke={3} />
         </div>
         <h1 className="done-title">{t.doneTitle}</h1>
-        <p className="done-sub">{t.doneSub}</p>
+        <p className="done-sub">{lesson.closing && mode !== 'follow' ? lesson.closing[lang] : t.doneSub}</p>
         <p className="done-lesson">{lesson.title[lang]}</p>
         <ul className="takeaways">
           {lesson.takeaways[lang].map((k, i) => (
@@ -688,7 +693,6 @@ function PlayerInner({ id }) {
         <FollowView lesson={lesson} lang={lang} t={t} onDone={finish} onPractice={() => restart('practice')} />
         <BottomNav active="learn" t={t} />
         {settings}
-        {intro}
         {leaveDialog}
       </div>
     );
@@ -698,7 +702,7 @@ function PlayerInner({ id }) {
   const choosing = !mode && idx === 0;
 
   return (
-    <div className={`player stage ${step.kind === 'quiz' ? 'is-quiz' : ''}`}>
+    <div className={`player stage ${step.kind === 'quiz' ? 'is-quiz' : ''} ${safetyCheck ? 'safety-check' : ''}`}>
       <div className="ptop">
         <button className="ptop-leave" onClick={askLeave}>
           <Icon name="close" size={20} /> {t.leaveBtn}
@@ -716,12 +720,13 @@ function PlayerInner({ id }) {
       </div>
 
       <div className="screen-wrap">
-      <div className="practice-tag">{t.practiceTag}</div>
+      <div className="practice-tag">{safetyCheck ? t.safetyBanner : t.practiceTag}</div>
       <div
-        className={`screen ${flash ? 'flash' : ''} ${tapFx ? 'tapfx' : ''} ${shake ? 'shake' : ''} ${watching ? 'watching' : ''}`}
+        className={`screen ${flash ? 'flash' : ''} ${tapFx ? 'tapfx' : ''} ${shake ? 'shake' : ''} ${watching ? 'watching' : ''} ${id === 'qr-pay' && step.id === 'check-name' ? 'with-shop-board' : ''}`}
         ref={screenRef}
         onClick={onScreenClick}
       >
+        {id === 'qr-pay' && step.id === 'check-name' && <div className="shop-board"><span aria-hidden="true">🏪</span> {t.shopBoard}</div>}
         <Screen step={step} lesson={lesson} lang={lang} t={t} values={values} typed={typed} />
         <div className="practice-mark" lang={lang} aria-hidden="true">
           <span>{t.practiceMark}</span>
@@ -735,9 +740,7 @@ function PlayerInner({ id }) {
           bubble.compact ? (
             <>
               <div className="tap-tint" style={{ left: bubble.box.x, top: bubble.box.y, width: bubble.box.w, height: bubble.box.h }} aria-hidden="true" />
-              <div className="tap-hand" style={{ left: bubble.x, top: bubble.y }} aria-hidden="true">
-                👆
-              </div>
+              {bubble.hand && <div className={`tap-hand target-hand hand-${bubble.hand.direction}`} style={{ left: bubble.hand.x, top: bubble.hand.y, width: bubble.hand.size, height: bubble.hand.size, marginLeft: -bubble.hand.size / 2, marginTop: -bubble.hand.size / 2 }} aria-hidden="true"><span>👆</span></div>}
             </>
           ) : (
             <div className={`tap-bubble ${bubble.below ? 'below' : ''}`} style={{ left: bubble.x, top: bubble.y }}>
@@ -749,6 +752,7 @@ function PlayerInner({ id }) {
       </div>
 
       <div className={`coach ${showHint ? 'hinting' : ''}`} ref={coachRef}>
+        {safetyQuestion && <div className="safety-heading"><Icon name="shieldCheck" size={30} /><div><h2>{t.safetyHeading}</h2><p>{t.safetySub}</p></div></div>}
         <p className="coach-text">
           {spoken.text === coachText && sentences(coachText).length > 1
             ? sentences(coachText).map((s, i) => (
@@ -787,14 +791,14 @@ function PlayerInner({ id }) {
               .filter((o) => !(quiz && quiz.correct) || o.correct)
               .map((o, i) => (
                 <div key={i} className="opt-wrap">
-                  <button className={`opt ${quiz && quiz.correct && o.correct ? 'right' : ''}`} onClick={() => !watching && pickOption(o)}>
+                  <button className={`opt ${quiz && o.correct ? 'right' : ''} ${quiz && quiz.pick === o && !o.correct ? 'wrong' : ''}`} disabled={Boolean(quiz) || watching} onClick={() => pickOption(o)}>
+                    {quiz && (o.correct || quiz.pick === o) && <span aria-hidden="true">{o.correct ? '✓ ' : '✕ '}</span>}
                     {o.text[lang]}
                   </button>
-                  {quiz && quiz.pick === o && <p className={`why ${quiz.correct ? 'good' : 'bad'}`}>{quiz.why}</p>}
                 </div>
               ))}
-            {quiz && !quiz.pick && <p className={`why ${quiz.correct ? 'good' : 'bad'}`}>{quiz.why}</p>}
-            {quiz && quiz.correct && !watching && (
+            {quiz && <p className="why good">{quiz.why}</p>}
+            {quiz && !watching && (
               <button className="btn primary" onClick={advance}>
                 {t.next}
               </button>
@@ -825,7 +829,7 @@ function PlayerInner({ id }) {
           </div>
         ) : (
           <div className="coach-actions">
-            <button className={`chip ${talking ? 'talking' : ''}`} onClick={() => speak(coachText, lang, { force: true })}>
+            <button className={`chip ${talking ? 'talking' : ''}`} onClick={() => { setShowHint(false); speak(instruction, lang, { force: true }); }}>
               <Icon name="volume" size={20} /> {talking ? t.speakingNow : t.listen}
             </button>
             {mode === 'practice' && idx > 1 && (
@@ -851,7 +855,6 @@ function PlayerInner({ id }) {
         )}
       </div>
       {settings}
-      {intro}
       {leaveDialog}
     </div>
   );
