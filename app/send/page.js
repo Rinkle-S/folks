@@ -12,8 +12,14 @@ import { track, whatsappLink } from '@/lib/client';
 import { getProfile } from '@/lib/profile';
 import { LANGS } from '@/lib/langs';
 import { MSG } from '@/lib/shareMsg';
+import { BottomNav } from '@/components/AppShell';
+import Icon from '@/components/Icons';
+import { T } from '@/lib/i18n';
+import { useLang } from '@/lib/client';
 
 export default function Send() {
+  const [uiLang] = useLang();
+  const t = T[uiLang || 'en'];
   const [mode, setMode] = useState('item'); // item | setup
   const [name, setName] = useState('');
   const [item, setItem] = useState('l:qr-pay');
@@ -58,7 +64,8 @@ export default function Send() {
   const via = (v) => track('link_created', { lesson: mode === 'item' ? id : undefined, meta: { lang, via: v, mode, kind } });
 
   return (
-    <div className="page send">
+    <div className="page send has-nav">
+      <Link className="chip send-back" href={appFilter ? `/app/${appFilter}` : '/'}><Icon name="back" size={20} />{t.back}</Link>
       <Link href="/" className="brand">
         <NookLogo height={40} />
       </Link>
@@ -145,6 +152,7 @@ export default function Send() {
       >
         {copied ? 'Link copied' : 'Copy link'}
       </button>
+      <BottomNav active="learn" t={t} />
     </div>
   );
 }

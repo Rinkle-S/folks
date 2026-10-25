@@ -374,7 +374,7 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; }
 .coach.hinting { background: #fffaf0; }
 .coach-text { font-size: 21px; line-height: 1.45; margin: 0; font-weight: 500; }
 .coach-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
-.options { margin-top: 6px; }
+.options { display: grid; gap: 12px; padding: 8px 0; margin-top: 6px; }
 .opt { display: block; width: 100%; min-height: 58px; margin-top: 10px; border-radius: var(--r-btn); border: none; box-shadow: 0 0 0 2px var(--line) inset; background: #fff; font-size: 19px; font-weight: 600; text-align: left; padding: 10px 16px; }
 .opt:active { background: var(--peacock-soft); }
 .opt.right { box-shadow: 0 0 0 2.5px var(--safe) inset; background: var(--safe-soft); }
@@ -696,7 +696,7 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; }
 .coach-text { font-size: 19px; line-height: 1.35; }
 .coach-actions { margin-top: 8px; }
 .coach .chip { min-height: 40px; font-size: 16px; padding: 4px 12px; }
-.coach .opt { font-size: 17px; min-height: 0; margin-top: 0; padding: 9px 14px; }
+.coach .opt { font-size: 19px; line-height: 1.4; min-height: 56px; margin-top: 0; padding: 12px 16px; overflow-wrap: anywhere; }
 .opt-wrap { display: grid; gap: 6px; }
 .why { margin: 0; font-size: 16px; }
 .ev-mark { outline: 3px solid #f2a33a; outline-offset: 3px; border-radius: 8px; }
@@ -734,7 +734,8 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; }
 @media print {
   html, body { background: #fff !important; }
   body > *:not(.print-root) { display: none !important; }
-  .print-root { display: block; font-family: Arial, sans-serif; color: #000; }
+  .print-root[data-print-active] { display: block; font-family: var(--font); color: #000; }
+  .print-root:not([data-print-active]) { display: none !important; }
   .print-head { font-size: 12pt; color: #555; border-bottom: 1px solid #ccc; padding-bottom: 6px; margin-bottom: 12px; }
   .print-guide { break-inside: avoid; page-break-inside: avoid; border: 1px solid #bbb; border-radius: 6px; padding: 12px 16px; margin: 0 0 14px; }
   .print-guide h2 { font-size: 20pt; margin: 0 0 2px; }
@@ -1273,3 +1274,32 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; }
   .learn-page .up-next .lesson-start { grid-column: 2; justify-self: start; }
   .learn-mode-v2 .mode-card { padding-inline: 12px; gap: 10px; }
 }
+/* Tutorial screenshot review: give questions and answers their own space. */
+.player.is-quiz { height: auto; min-height: 100dvh; }
+.player.is-quiz:not(.extras-stage) .screen-wrap { flex: none; height: clamp(340px, 45dvh, 420px); }
+.player.is-quiz .coach { flex: none; max-height: none; overflow: visible; }
+.options .why { margin: 0; font-size: 18px; line-height: 1.45; }
+.scene-copy .say-now { background: #ffe08a; border-radius: 5px; padding: 1px 2px; margin-inline: -2px; }
+.settings .voice-speed { align-items: flex-start; gap: 12px; }
+.voice-speed > span { flex: 1; min-width: 0; }
+.voice-speed small { display: block; font-size: 16px; line-height: 1.4; margin-top: 5px; color: var(--ink-2); }
+.voice-speed select { max-width: 50%; min-height: 56px; font-size: 18px; }
+.done .done-medal { width: 88px; height: 88px; margin-bottom: 12px; }
+.completed-lesson { text-align: left; margin: 18px 0; }
+.completed-lesson .done-sub { margin: 0 0 3px; font-size: 16px; line-height: 1.4; color: #4B5652; }
+.completed-lesson .app-icon.has-image > svg { visibility: hidden; }
+.completion-tips, .completion-feedback { margin-top: 14px; text-align: left; }
+.completion-tips > summary, .completion-feedback > summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 56px; padding: 12px 16px; border: 1px solid var(--line); border-radius: 16px; background: #fff; font-size: 18px; font-weight: 600; cursor: pointer; }
+.completion-tips > summary::after, .completion-feedback > summary::after { content: '+'; flex: none; }
+.completion-tips[open] > summary::after, .completion-feedback[open] > summary::after { content: '−'; }
+.completion-tips .takeaways { margin-top: 12px; }
+.completion-feedback .feedback { margin-top: 12px; }
+.send-back { width: fit-content; margin-bottom: 18px; text-decoration: none; }
+.send .brand { display: flex; width: fit-content; }
+.print-toast a { display: inline-block; padding: 10px 4px; min-height: 44px; text-decoration: underline; }
+@media (max-width: 359px) {
+  .voice-speed { flex-direction: column; }
+  .voice-speed select { max-width: 100%; width: 100%; }
+}
+.player.is-quiz .options > .btn.primary { position: static; }
+.send .field select { width: 100%; min-height: 56px; padding: 12px; border: 1.5px solid var(--line); border-radius: 14px; background: #fff; color: var(--ink); font: inherit; font-size: 18px; }

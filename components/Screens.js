@@ -91,6 +91,9 @@ function ScreenFor({ step, lesson, lang, t, values, typed }) {
   const inputHere = step.kind === 'input';
 
   switch (step.screen) {
+    case 'practice-police':
+    case 'practice-bank':
+      return <SafetyPhone kind={step.screen === 'practice-police' ? 'police' : 'bank'} lang={lang} />;
     case 'receipt-share':
       return <ReceiptShare preview={step.preview} payee={payee} amount={amount} lang={lang} />;
     case 'practice-call':

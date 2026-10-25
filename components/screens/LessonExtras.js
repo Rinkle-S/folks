@@ -11,10 +11,15 @@ export function ReceiptShare({ preview, payee, amount, lang }) {
     {preview ? <><div className="extras-recipient"><Icon name="check" /> {payee.name}</div><div className="receipt-preview"><Icon name="check" color="#128c7e" size={48} /><h2>{w.screenshot}</h2><strong>₹{amount}</strong><p>{w.sent}</p><b>{payee.name}</b></div><div className="receipt-send" data-t="send-receipt"><span>{w.send}</span><Icon name="arrow" /></div></> : <div className="extras-recipient" data-t="recipient"><span className="extras-avatar">S</span><div><b>{payee.name}</b><small>{payee.phone || payee.sub}</small></div></div>}
   </div>;
 }
-export function SafetyPhone({ sms, lang }) {
+export function SafetyPhone({ sms, lang, kind }) {
   const w = words[lang];
-  return <div className={`app extras-safety ${sms ? 'extras-sms' : ''}`}><Status /><div className="extras-bar"><Icon name={sms ? 'chats' : 'phone'} /><b>{sms ? 'AX-JIOSIM' : w.call}</b></div>
+  const copy = {
+    en: {police: 'Caller claiming to be police', bank: 'Caller claiming to be from SBI', policeMessage: 'You are under “digital arrest”. Pay money now.', bankMessage: 'Your account will be blocked. Tell me your MPIN.', call: 'Pretend call'},
+    hi: {police: 'पुलिस होने का दावा करने वाला कॉलर', bank: 'SBI से होने का दावा करने वाला कॉलर', policeMessage: 'आप “डिजिटल अरेस्ट” में हैं। अभी पैसे दीजिए।', bankMessage: 'आपका खाता बंद हो जाएगा। अपना MPIN बताइए।', call: 'नकली कॉल'},
+    ml: {police: 'പോലീസ് എന്ന് അവകാശപ്പെടുന്ന കോളർ', bank: 'SBI-യിൽ നിന്നെന്ന് അവകാശപ്പെടുന്ന കോളർ', policeMessage: 'നിങ്ങൾ “ഡിജിറ്റൽ അറസ്റ്റിൽ” ആണ്. ഇപ്പോൾ പണം നൽകൂ.', bankMessage: 'അക്കൗണ്ട് ബ്ലോക്ക് ചെയ്യും. നിങ്ങളുടെ MPIN പറയൂ.', call: 'സാങ്കൽപ്പിക കോൾ'},
+  }[lang];
+  return <div className={`app extras-safety ${sms ? 'extras-sms' : ''}`}><Status /><div className="extras-bar"><Icon name={sms ? 'chats' : kind === 'police' ? 'video' : 'phone'} /><b>{sms ? 'AX-JIOSIM' : kind ? copy[kind] : w.call}</b></div>
     {!sms && <p className="extras-muted">{w.number}</p>}
-    <div className="extras-message"><p>{sms ? w.message : w.request}</p>{sms && <span className="inert-link">jio-sim-help.xyz</span>}</div><p className="extras-muted">{w.pretend}</p>
+    <div className="extras-message"><p>{sms ? w.message : kind ? copy[`${kind}Message`] : w.request}</p>{sms && <span className="inert-link">jio-sim-help.xyz</span>}</div><p className="extras-muted">{sms ? w.pretend : copy.call}</p>
   </div>;
 }

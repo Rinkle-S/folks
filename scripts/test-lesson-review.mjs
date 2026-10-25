@@ -39,13 +39,12 @@ try {
     const page = await context.newPage(); const errors=[]; page.on('pageerror', e => errors.push(e.message));
     for (const l of Object.values(LESSONS)) {
       await page.goto(`${base}/lesson/${l.id}?mode=watch`);
-      await page.locator('.scene-body .btn.primary').click();
-      await page.locator('.coach-text').waitFor();
       await page.evaluate(() => {
         window.__seen = [];
         const record = () => { const text = document.querySelector('.coach-text')?.textContent.trim(); if (text) window.__seen.push(text); };
-        record(); new MutationObserver(record).observe(document.querySelector('.player'),{ childList:true,subtree:true,characterData:true });
+        record(); new MutationObserver(record).observe(document.body,{ childList:true,subtree:true,characterData:true });
       });
+      await page.locator('.scene-body .btn.primary').click();
       await page.locator('.done-title').waitFor({ timeout: 20000 });
       const seen = await page.evaluate(() => window.__seen);
       for (const step of l.steps.slice(1)) assert.ok(seen.includes(personalise(step.say[lang])), `Watch missed ${lang} ${l.id} ${step.id}`);

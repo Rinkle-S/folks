@@ -14,6 +14,7 @@ import { watchPersona, personalise } from '@/lib/persona';
 import { recordPerf } from '@/lib/adapt';
 import { levelOf } from '@/lib/levels';
 import { sentences } from '@/lib/sentences';
+import { prepareRingtone, startRingtone } from '@/lib/ringtone';
 import Settings from './Settings';
 import FollowView from './FollowView';
 import LessonPrint from './LessonPrint';
@@ -91,7 +92,7 @@ function PlayerInner({ id }) {
   const watching = mode === 'watch';
   const safetyCheck = Boolean(step.safety) || (id === 'qr-pay' && ['scam-quiz', 'decline'].includes(step.id));
   const safetyQuestion = safetyCheck && step.kind === 'quiz';
-  const safetySub = step.safety?.sub?.[lang || 'en'] || t.safetySub;
+  const safetySub = step.safety?.sub?.[lang || 'en'] || t.practiceSafetySub;
   const instruction = idx === 0 && !mode ? t.modeTitle : safetyQuestion ? `${t.safetyHeading} ${safetySub} ${step.say[lang || 'en']}` : step.say[lang || 'en'];
 
   useEffect(() => setFrom(getFrom()), []);
@@ -118,7 +119,7 @@ function PlayerInner({ id }) {
     if (w) w.scrollIntoView({ block: 'nearest' }); // the explanation under the tapped answer stays in view
   }, [quiz]);
   useEffect(() => {
-    const el = document.querySelector('.coach-text .say-now');
+    const el = document.querySelector('.coach-text .say-now, .scene-copy .say-now');
     if (el) el.scrollIntoView({ block: 'nearest' }); // keep the sentence being spoken in view
   }, [spoken]);
   // Allow links that open straight into a mode (?mode=watch|follow|practice).
@@ -298,10 +299,21 @@ function PlayerInner({ id }) {
 
   // Watch mode: play each step by itself. Each step waits for its voice to finish before the next one.
   useEffect(() => {
+    if (!step.autoAdvanceMs || done || leaveOpen || showScene !== false || mode === 'follow' || !mode || (watching && paused)) return;
+    if (watching) speak(instruction, lang);
+    const timer = setTimeout(() => advance(), step.autoAdvanceMs);
+    return () => clearTimeout(timer);
+  }, [idx, mode, paused, showScene, done, leaveOpen]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (!step.autoAdvanceMs || muted || done || leaveOpen || showScene !== false || mode === 'follow' || !mode || (watching && paused)) return;
+    return startRingtone();
+  }, [idx, mode, paused, showScene, done, muted, leaveOpen]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
     clearTimers();
     if (!watching || done || !lang) return;
     if (showScene !== false) return;
     if (paused) { stopSpeaking(); return; }
+    if (step.autoAdvanceMs) return; // Ringing has one fixed timer, in both Practice and Watch.
     let cancelled = false;
     const wait = (ms) => new Promise((r) => timers.current.push(setTimeout(r, ms)));
     const s = step;
@@ -363,6 +375,7 @@ function PlayerInner({ id }) {
 
   function chooseMode(m) {
     stopSpeaking();
+    if (m === 'watch' && lesson.steps.some(s => s.autoAdvanceMs) && !muted) prepareRingtone();
     setMode(m);
     track('mode_pick', { lesson: id, meta: { mode: m } });
     if (m === 'practice') setIdx(1);
@@ -395,6 +408,7 @@ function PlayerInner({ id }) {
   }
 
   function correct() {
+    if (lesson.steps[idx + 1]?.autoAdvanceMs && !muted) prepareRingtone();
     track('step_done', { lesson: id, step: idx, meta: { id: step.id } });
     lockRef.current = true;
     vibrate(25);
@@ -556,8 +570,8 @@ function PlayerInner({ id }) {
         <div className="practice-tag">{t.practiceTag}</div>
         <div className={`scene-art art-${lesson.scene.art || 0}`} aria-hidden="true" />
         <h1>{t.sceneHeading}</h1>
-        <div className="scene-copy">{lesson.scene.say[lang].split(/\n\n/).map((p, i) => <p key={i}>{p}</p>)}</div>
-        <button className="btn primary" onClick={() => { stopSpeaking(); setShowScene(false); }}>{t.sceneReady}</button>
+        <div className="scene-copy">{(() => { let offset = 0; return lesson.scene.say[lang].split(/\n\n/).map((p, i) => <p key={i}>{sentences(p).map((s, j) => { const at = offset++; return <span key={j} className={spoken.text === lesson.scene.say[lang] && spoken.index === at ? 'say-now' : undefined}>{s}{' '}</span>; })}</p>); })()}</div>
+        <button className="btn primary" onClick={() => { stopSpeaking(); if (lesson.steps.some(s => s.autoAdvanceMs) && !muted) prepareRingtone(); setShowScene(false); }}>{t.sceneReady}</button>
         <button className="link-btn scene-listen" onClick={() => speak(lesson.scene.say[lang], lang, { force: true })}>{t.listen}</button>
       </main>
       {leaveDialog}
@@ -586,13 +600,14 @@ function PlayerInner({ id }) {
           <Icon name="check" size={56} stroke={3} />
         </div>
         <h1 className="done-title">{t.doneTitle}</h1>
-        <p className="done-sub">{lesson.closing && mode !== 'follow' ? lesson.closing[lang] : t.doneSub}</p>
-        <p className="done-lesson">{lesson.title[lang]}</p>
+        <div className="learn-lesson-context completed-lesson"><AppIcon app={lesson.app} size={52} /><div><p className="done-sub">{t.lessonCompleted}</p><b>{lesson.title[lang]}</b></div></div>
+        <details className="completion-tips"><summary>{t.remember}</summary>
         <ul className="takeaways">
           {lesson.takeaways[lang].map((k, i) => (
             <li key={i}>{k}</li>
           ))}
         </ul>
+        </details>
 
         {mode !== 'practice' ? (
           <button className="btn primary" onClick={() => restart('practice')}>
@@ -640,7 +655,7 @@ function PlayerInner({ id }) {
           <ShareLesson look="act" id={id} title={lesson.title[lang]} lang={lang} t={t} where="lesson_end" />
         </div>
 
-        <div className="feedback">
+        <details className="completion-feedback"><summary>{t.completionFeedback}</summary><div className="feedback">
           <p>{t.howWasIt}</p>
           {feedback && (feedback !== 'hard' || fbSent) ? (
             <>
@@ -697,6 +712,7 @@ function PlayerInner({ id }) {
         </div>
 
         {askRate && feedback && <RateApp t={t} lang={lang} where="lesson_end" canSnooze />}
+        </details>
         <BottomNav active="learn" t={t} />
       </div>
     );
@@ -727,7 +743,7 @@ function PlayerInner({ id }) {
   const choosing = !mode && idx === 0;
 
   return (
-    <div className={`player stage ${step.kind === 'quiz' ? 'is-quiz' : ''} ${safetyCheck ? 'safety-check' : ''} ${step.screen === 'gp-pin' || step.kit === 'gp-pin' ? 'pin-stage' : ''} ${['practice-sms', 'practice-call', 'receipt-share'].includes(step.screen) ? 'extras-stage' : ''}`}>
+    <div className={`player stage ${step.kind === 'quiz' ? 'is-quiz' : ''} ${safetyCheck ? 'safety-check' : ''} ${step.screen === 'gp-pin' || step.kit === 'gp-pin' ? 'pin-stage' : ''} ${['practice-sms', 'practice-call', 'practice-police', 'practice-bank', 'receipt-share'].includes(step.screen) ? 'extras-stage' : ''}`}>
       <div className="ptop">
         <button className="ptop-leave" onClick={askLeave}>
           <Icon name="close" size={20} /> {t.leaveBtn}
@@ -745,7 +761,7 @@ function PlayerInner({ id }) {
       </div>
 
       <div className="screen-wrap">
-      <div className="practice-tag">{safetyCheck ? (step.safety?.banner?.[lang] || t.safetyBanner) : t.practiceTag}</div>
+      <div className="practice-tag">{safetyCheck ? (step.safety?.banner?.[lang] || t.practiceSafetyBanner) : t.practiceTag}</div>
       <div
         className={`screen ${flash ? 'flash' : ''} ${tapFx ? 'tapfx' : ''} ${shake ? 'shake' : ''} ${watching ? 'watching' : ''} ${id === 'qr-pay' && step.id === 'check-name' ? 'with-shop-board' : ''}`}
         ref={screenRef}
@@ -831,7 +847,7 @@ function PlayerInner({ id }) {
           </div>
         )}
 
-        {mode === 'practice' && step.kind === 'info' && idx > 0 && (
+        {mode === 'practice' && step.kind === 'info' && idx > 0 && !step.autoAdvanceMs && (
           <button className="btn primary" onClick={advance}>
             {(step.button && step.button[lang]) || t.next}
           </button>

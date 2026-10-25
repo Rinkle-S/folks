@@ -420,7 +420,7 @@ export function UbCancel() {
 }
 
 // "Cancel trip?" reasons page. Tapping a reason finishes the cancel.
-export function UbWhy() {
+export function UbWhy({ reasonIndex = 2 }) {
   const reasons = ['Could not find driver', 'Driver arrived early', 'Wait time was too long', 'Driver asked me to cancel or ride off app', 'Driver not getting closer', 'Other'];
   return (
     <div className="app ub">
@@ -432,7 +432,7 @@ export function UbWhy() {
       <div className="ub-h big">Why do you want to cancel?</div>
       <div className="ub-reasons">
         {reasons.map((r, i) => (
-          <div key={r} data-t={i === 2 ? 'reason' : undefined}>
+            <div key={r} data-t={i === reasonIndex ? 'reason' : undefined}>
             <Icon name={['user', 'car', 'timer', 'user', 'location', 'dots'][i]} size={20} />
             {r}
           </div>

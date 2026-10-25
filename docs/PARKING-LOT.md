@@ -1,5 +1,10 @@
 # Parking lot
 
+## Next pass: app detection (owner requested 25 Oct 2026)
+- Research whether a future native Android/iOS wrapper can offer a small, consent-based app check. Do not build this in the current pass or request app-list permissions during web onboarding.
+- A website cannot enumerate arbitrary installed third-party apps. Chrome's [Installed Related Apps API](https://developer.chrome.com/docs/capabilities/get-installed-related-apps) only exposes apps with a verified relationship to the website; it is not a general WhatsApp/Google Pay inventory API.
+- Keep the current manual app selection as the reliable fallback. Evaluate platform support, app-store policy and data minimisation before proposing implementation. This is research, not a promised browser permission prompt.
+
 Things asked for or thought of that are outside the buildathon priorities (see `CLAUDE.md`). Nothing here is built until the
 owner confirms. "Delays" is what it would take time from.
 

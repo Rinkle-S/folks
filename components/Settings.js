@@ -7,12 +7,14 @@ import { speak, unlockAudio, getLearnMode, setLearnMode, getVoiceChoice, setVoic
 import { voiceStatus } from '@/lib/voice';
 import { T } from '@/lib/i18n';
 import { LANGS } from '@/lib/langs';
+import { getVoiceRate, setVoiceRate } from '@/lib/voiceSpeed';
 
 export default function Settings({ lang, setLang, muted, toggleMute, onClose, onApps, appsLabel, onMismatch }) {
   const [canInstall, install] = useInstall();
   const [tested, setTested] = useState(false);
   const [mode, setMode] = useState(getLearnMode());
   const [voice, setVoice] = useState(getVoiceChoice());
+  const [rate, setRate] = useState(getVoiceRate());
   const [diag, setDiag] = useState(null);
   const [told, setTold] = useState(false);
   const t = T[lang] || T.en;
@@ -56,6 +58,12 @@ export default function Settings({ lang, setLang, muted, toggleMute, onClose, on
             {muted ? bi('Off', 'बंद', 'ഓഫ്') : bi('On', 'चालू', 'ഓൺ')}
           </button>
         </div>
+        <label className="settings-row voice-speed">
+          <span>{t.voiceSpeed}<small>{t.voiceSpeedHelp}</small></span>
+          <select value={rate} onChange={(e) => { setRate(Number(e.target.value)); setVoiceRate(e.target.value); }}>
+            <option value="0.6">{t.voiceSlower}</option><option value="0.8">{t.voiceDefault}</option><option value="1">{t.voiceNormal}</option>
+          </select>
+        </label>
         <details className="more-sound">
           <summary>{t.moreSound}</summary>
         <div className="settings-row">

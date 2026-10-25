@@ -109,7 +109,8 @@
 .bub span { display: block; text-align: right; font-size: 10.5px; color: #667781; }
 .wa-input { display: flex; gap: 6px; padding: 6px 8px; background: #efeae2; align-items: center; }
 .wa-pill { flex: 1; display: flex; align-items: center; gap: 10px; background: #fff; border-radius: 999px; padding: 10px 12px; color: #54656f; }
-.wa-pill span { flex: 1; }
+.wa-pill > span:not(.wa-rs) { flex: 1; min-width: 0; }
+.wa-pill .wa-rs { flex: 0 0 auto; aspect-ratio: 1; }
 .wa-mic { width: 46px; height: 46px; border-radius: 50%; background: #1daa61; display: grid; place-items: center; }
 
 .info { text-align: center; }

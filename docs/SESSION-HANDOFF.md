@@ -1,5 +1,15 @@
 # Nook: session handoff (read this first, then `CLAUDE.md`)
 
+## Tutorial screenshot fixes: 25 Oct 2026
+- Owner clarified mismatched car/driver details: stay outside, check booking, contact the booked driver and wait safely for the matching car; help/cancel if unresolved or unsafe. Updated practice, Read copy and guides. Corrected cancellation reason, Google Pay icon description, receive-money PIN wording and recharge wording.
+- Shared quiz choices now have space, 19px text, 56px minimum height and 12px gaps. Quiz panels use page scrolling. WhatsApp rupee icons are round again.
+- Video-call ringing moves ahead automatically after five seconds in Practice and Watch. Local gentle tone only with sound on; leaving/Previous/pause cleans up. Audio was mocked in tests, never played.
+- All tutorial impersonation calls/SMS use teal safety practice treatment. Police/bank questions get matching inert pretend call screens. Split practiceSafetySub from the unrelated Stay safe translation key that had overwritten it.
+- Completion uses a completed-lesson card and expandable reminders/feedback. Removed duplicate terminal Well done cards. Scene sentences highlight in all languages. Stay safe page numbers remain visual but are not narrated.
+- Home Settings offers persistent voice speed. Synchronous print handlers commit one active handout before calling print; corrected iOS help. Physical iPhone native print/share sheet still needs owner verification.
+- Send pages now have Back and bottom navigation; missing-page/invalid safety-lesson links offer Home exits. App detection is research TODO only in PARKING-LOT.md.
+- Detailed checklist, sources and validation: `docs/TUTORIAL-REVIEW.md`. Production build/ML checks pass; all 15 lessons in three modes/languages, all 45 automatic Watch runs, QR/Help/hand checks, seven viewport responsive matrix, Learn v2 regressions, voice mocks, mobile print media and EN/HI/ML PDFs pass. No external writes or real audio in browser tests. Graphics stash untouched.
+
 ## Learn redesign v2: 25 Oct 2026
 - Fetched and preserved the owner's Stay safe changes and v2 spec/mockups from `dcddd16`. Applied the three-screen Learn redesign with existing components and icons; no practice scene artwork changes.
 - Home has labelled Settings, profile in Settings, shorter heading/greeting, a labelled Search action, all six app tiles in stable saved order with three progress states, and always-visible topics. App pages have labelled Back, Up next/Start, the request card and bottom helper actions. Mode choice adds lesson context and neutral, matching options.

@@ -55,7 +55,7 @@ try {
         assert.ok(await page.locator('.g2-paying').evaluate(e=>{const r=e.getBoundingClientRect(),a=e.closest('.app').getBoundingClientRect();return r.top>=a.top&&r.bottom<=a.bottom;}), 'Shop name must remain visible for comparison');
       }
       if(['scam-quiz','decline'].includes(step.id)){
-        assert.equal(await page.locator('.practice-tag').textContent(),T[lang].safetyBanner);
+        assert.equal(await page.locator('.practice-tag').textContent(),T[lang].practiceSafetyBanner);
         assert.equal(await page.locator('.practice-tag').evaluate(e=>getComputedStyle(e).backgroundColor),'rgb(43, 127, 114)');
         assert.equal(await page.locator('.safety-heading').count(),step.id==='scam-quiz'?1:0);
         assert.equal(await page.locator('.g2-warn-t').evaluate(e=>getComputedStyle(e).color),'rgb(107, 67, 0)');
@@ -80,7 +80,7 @@ try {
         await page.locator('.options .btn.primary').click();
       }
     }
-    await page.locator('.done-title').waitFor();assert.equal(await page.locator('.done-sub').textContent(),qr.closing[lang]);
+    await page.locator('.done-title').waitFor();assert.equal(await page.locator('.done-sub').textContent(),T[lang].lessonCompleted);
     // Default modes still pass through the scene; Read links/defaults bypass it; resume stays direct.
     for(const mode of ['practice','watch','follow']){
       await page.evaluate(m=>localStorage.setItem('folks_mode',m),mode);await page.goto(base+'/lesson/qr-pay');
@@ -101,10 +101,10 @@ try {
   await p.evaluate(()=>{window.__holdSpeech=false;});await p.locator('.mode-card').first().click();
   await p.locator('.coach-actions button').last().click();assert.equal(await p.locator('.coach-text').textContent(),qr.steps[1].hint.en);
   await p.locator('.coach-actions button').first().click();assert.equal(await p.locator('.coach-text').textContent(),qr.steps[1].say.en);
-  await p.waitForFunction(()=>window.__spoken.some(t=>t.includes('Find the Google Pay icon')));
+  await p.waitForFunction(()=>window.__spoken.some(t=>t.includes('Find Google Pay')));
   await c.addInitScript(()=>{window.__holdSpeech=false;});
   const safetyIndex=qr.steps.findIndex(s=>s.id==='scam-quiz');await p.evaluate(idx=>localStorage.setItem('folks_resume',JSON.stringify({id:'qr-pay',idx,at:Date.now()})),safetyIndex);
   await p.goto(base+'/lesson/qr-pay?resume=1');await p.locator('.safety-heading').waitFor();await p.waitForFunction(()=>window.__spoken.some(t=>t.includes('One more thing')));
-  const calls=await p.evaluate(()=>window.__spoken.join(' '));assert.ok(calls.indexOf(T.en.safetyHeading)<calls.indexOf('One more thing'));assert.ok(calls.indexOf(T.en.safetySub)<calls.indexOf('One more thing'));
+  const calls=await p.evaluate(()=>window.__spoken.join(' '));assert.ok(calls.indexOf(T.en.safetyHeading)<calls.indexOf('One more thing'));assert.ok(calls.indexOf(T.en.practiceSafetySub)<calls.indexOf('One more thing'));
   console.log('PASS mocked speech sequencing: Ready interrupts scene, Help restores original, safety preface precedes question');await c.close();
 } finally {await browser.close();}

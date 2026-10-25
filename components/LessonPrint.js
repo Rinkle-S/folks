@@ -2,8 +2,10 @@
 // Print or save one lesson, with a picture of the screen beside each step. Pictures are on unless the parent switched them off
 // ("Hide all pictures" in Read the steps). The handout is only built when asked, so lessons stay light.
 // variant "bar" is a full-width button on a guide page, "icon" is the printer button in the lesson top bar, "card" is the question at the end of a lesson.
-import { useState } from 'react';
-import { createPortal } from 'react-dom';
+import { useState, useRef } from 'react';
+import { createPortal, flushSync } from 'react-dom';
+import Link from 'next/link';
+import { printHandout } from '@/lib/printHandout';
 import Icon from './Icons';
 import StepPicture from './StepPicture';
 import { buildCards } from '@/lib/followCards';
@@ -20,13 +22,13 @@ const picsOn = () => {
 export default function LessonPrint({ lesson, lang, t, variant = 'icon' }) {
   const [job, setJob] = useState(null); // { pics } once asked
   const [msg, setMsg] = useState(false);
+  const handout = useRef(null);
 
   const go = () => {
     const pics = picsOn();
     track('print', { lesson: lesson.id, meta: { pics, from: variant } });
-    setJob({ pics });
-    setMsg(true);
-    setTimeout(() => window.print(), 1200);
+    flushSync(() => { setJob({ pics }); setMsg(true); });
+    printHandout(handout.current);
     setTimeout(() => setMsg(false), 4500);
   };
 
@@ -59,11 +61,12 @@ export default function LessonPrint({ lesson, lang, t, variant = 'icon' }) {
       {msg && (
         <div className="print-toast no-print" role="status">
           {t.printToast}
+          {' '}<Link href="/help/print">{t.printHelp}</Link>
         </div>
       )}
       {job &&
         createPortal(
-          <div className="print-root">
+          <div className="print-root" ref={handout}>
             <div className="print-head">Nook · {lesson.title[lang]}</div>
             <h2 className="print-title">{lesson.title[lang]}</h2>
             <small className="print-app">{lesson.appName}</small>

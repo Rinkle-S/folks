@@ -2,7 +2,7 @@
 // One Stay safe lesson: three reading pages, a one-card quick check, then the next lesson starts by itself.
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import Icon from '@/components/Icons';
 import { SAFE_LESSONS, SAFE_UI, markDone } from '@/lib/safeLessons';
 import { T } from '@/lib/i18n';
@@ -61,14 +61,15 @@ function Sample({ s, lang }) {
   );
 }
 
-export default function LessonPage({ params }) {
-  return <Lesson key={params.id} params={params} />;
+export default function LessonPage() {
+  const { id } = useParams();
+  return <Lesson key={id} id={id} />;
 }
 
-function Lesson({ params }) {
+function Lesson({ id }) {
   const [lang] = useLang();
   const router = useRouter();
-  const idx = SAFE_LESSONS.findIndex((l) => l.id === params.id);
+  const idx = SAFE_LESSONS.findIndex((l) => l.id === id);
   const L = SAFE_LESSONS[idx];
   const next = SAFE_LESSONS[idx + 1];
   const [page, setPage] = useState(1); // 1 to 3 reading pages, 4 quick check, 5 up next
@@ -82,7 +83,7 @@ function Lesson({ params }) {
     if (!L) return [];
     const u = SAFE_UI[lang];
     if (page === 1) return [L.spot.h[lang], ...(L.spot.msg.map((p) => p.t[lang])), ...L.spot.flags.map((f) => f[lang]), L.spot.remember[lang]];
-    if (page === 2) return [u.pageOf(2), L.how.sub[lang], ...L.how.steps.flatMap((s) => [s.t[lang], s.d[lang]]), L.how.remember[lang]];
+    if (page === 2) return [{en:'How they trick you',hi:'वे कैसे फँसाते हैं',ml:'അവർ എങ്ങനെ കബളിപ്പിക്കുന്നു'}[lang], L.how.sub[lang], ...L.how.steps.flatMap((s) => [s.t[lang], s.d[lang]]), L.how.remember[lang]];
     if (page === 3) return [u.todoH, L.todo.rule[lang], ...L.todo.acts.map((a) => a[lang].replace(/<[^>]+>/g, '')), u.already];
     if (page === 4) return [u.realQ, L.check.msg[lang]];
     return [];
@@ -109,8 +110,7 @@ function Lesson({ params }) {
 
   if (!lang) return <div className="page" />;
   if (!L) {
-    router.replace('/scams');
-    return <div className="page" />;
+    return <main className="page"><Link href="/scams" className="btn primary">{SAFE_UI[lang].lessonsBack}</Link><Link href="/" className="btn ghost">{T[lang].home}</Link></main>;
   }
   const u = SAFE_UI[lang];
   const t = T[lang];

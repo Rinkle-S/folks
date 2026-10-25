@@ -52,10 +52,16 @@ try {
         else if (step.kind === 'input') {
           for (const key of step.expected) await page.locator(`.screen [data-key="${key}"]`).first().click();
         } else if (step.kind === 'quiz') {
+          assert.ok(await page.locator('.options').evaluate(e => {
+            const gap = parseFloat(getComputedStyle(e).gap);
+            return gap >= 12 && [...e.querySelectorAll('.opt')].every(b => { const s=getComputedStyle(b); return parseFloat(s.paddingTop)>=12&&parseFloat(s.paddingLeft)>=16&&b.getBoundingClientRect().height>=56; });
+          }), `${lesson.id}/${step.id}: quiz spacing or tap target`);
+          if(step.safety) assert.equal(await page.locator('.safety-heading p').textContent(),step.safety.sub?.[lang] || T[lang].practiceSafetySub);
           const answer = step.options.find((o) => process.env.WRONG_QUIZZES ? !o.correct : o.correct) || step.options.find((o) => o.correct);
           await page.getByRole('button', { name: personalise(answer.text[lang]), exact: true }).click();
           await page.locator('.options .btn.primary').click();
-        } else await page.locator('.coach > .btn.primary').click();
+        } else if (step.autoAdvanceMs) await page.waitForFunction(text => document.querySelector('.coach-text')?.textContent.trim() !== text, personalise(step.say[lang]));
+        else await page.locator('.coach > .btn.primary').click();
       }
       await page.locator('.done-title').waitFor();
       assert.equal(errors.length, 0, errors.join('\n'));
