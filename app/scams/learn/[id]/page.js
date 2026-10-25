@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useParams } from 'next/navigation';
 import Icon from '@/components/Icons';
+import ScamHelpEntry from '@/components/ScamHelpEntry';
 import { SAFE_LESSONS, SAFE_UI, markDone } from '@/lib/safeLessons';
 import { T } from '@/lib/i18n';
 import { useLang, speak, stopSpeaking, track, vibrate, whatsappLink } from '@/lib/client';
@@ -23,9 +24,9 @@ function Top({ u, onListen }) {
   );
 }
 
-function Bars({ at }) {
+function Bars({ at, label }) {
   return (
-    <div className="ss-bars">
+    <div className="ss-bars" role="progressbar" aria-label={label} aria-valuenow={at} aria-valuemin={1} aria-valuemax={3}>
       {[1, 2, 3].map((n) => (
         <i key={n} className={n <= at ? 'on' : ''} />
       ))}
@@ -77,6 +78,7 @@ function Lesson({ id }) {
   const [left, setLeft] = useState(AUTO_SECONDS);
   const [auto, setAuto] = useState(true);
   const tips = useRef(null);
+  const scroll = useRef(null);
 
   // The page text read aloud for the current page.
   function readText() {
@@ -93,6 +95,7 @@ function Lesson({ id }) {
     if (!lang || !L) return;
     speak(readText(), lang);
     window.scrollTo(0, 0);
+    scroll.current?.scrollTo(0,0);
   }, [page, lang]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => () => stopSpeaking(), []);
@@ -147,13 +150,13 @@ function Lesson({ id }) {
   return (
     <div className="page ss ss-fit" data-l={lang} style={{ paddingBottom: 0 }}>
       <Top u={u} onListen={() => speak(readText(), lang)} />
-      <div>
+      <div className="ss-content" ref={scroll}>
         {page <= 4 && (
           <>
             {meta}
-            {page <= 3 && <Bars at={bars} />}
           </>
         )}
+        <Bars at={bars} label={L.title[lang]}/>
 
         {page === 1 && (
           <>
@@ -215,13 +218,7 @@ function Lesson({ id }) {
             </div>
             <div className="ss-help">
               <p>{u.already}</p>
-              <a href="tel:1930" className="ss-sos" onClick={() => track('cheated_call')}>
-                <span className="ic"><Icon name="phone" size={24} /></span>
-                <span>
-                  <b>{u.callBig}</b>
-                  <small>{u.callSub}</small>
-                </span>
-              </a>
+              <ScamHelpEntry lang={lang} from={`lesson-${L.id}`}/>
             </div>
           </>
         )}
@@ -260,6 +257,7 @@ function Lesson({ id }) {
                 </li>
               ))}
             </ul>
+            <ScamHelpEntry lang={lang} from={`lesson-end-${L.id}`}/>
             <a
               className="ss-btn soft"
               style={{ marginTop: 12 }}

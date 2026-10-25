@@ -13,11 +13,11 @@ export default function PhoneApp() {
   const [host, setHost] = useState('');
 
   useEffect(() => {
-    setHost(window.location.host);
-    QRCode.toString(window.location.origin + path, { type: 'svg', margin: 0, color: { dark: '#142420', light: '#ffffff' } })
+    setHost('nook-learn.vercel.app');
+    QRCode.toString('https://nook-learn.vercel.app/', { type: 'svg', margin: 0, color: { dark: '#142420', light: '#ffffff' } })
       .then(setQr)
       .catch(() => {});
-  }, [path]);
+  }, []);
 
   if (!lang || path.startsWith('/stats')) return null;
   const t = T[lang];

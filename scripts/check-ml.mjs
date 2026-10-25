@@ -42,6 +42,7 @@ walk(LESSONS, 'LESSONS');
 walk(REAL, 'REAL');
 walk(SCAMS, 'SCAMS');
 walk(GUIDES, 'GUIDES');
+walk((await load('lib/scamHelp.js')).SCAM_HELP, 'SCAM_HELP');
 for (const s of ML_MISSING) problems.push(`no Malayalam translation yet: ${s.slice(0, 70)}`);
 for (const k of Object.keys(T.en)) if (!(k in ML_UI)) problems.push(`UI text missing in lib/i18nMl.js: ${k}`);
 for (const [k, v] of Object.entries(ML_UI)) if (typeof v === 'string' && DEVANAGARI.test(v)) problems.push(`Hindi letters in UI text: ${k}`);

@@ -1399,14 +1399,13 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; }
 .end-tip-number { flex: none; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: #DDEFE9; color: #0F6B5C; font-size: 18px; font-weight: 700; }
 .end-tips li > div { min-width: 0; }
 .end-tips p { margin: 0; font-size: 18px; line-height: 1.5; overflow-wrap: anywhere; }
-.end-tips .safety-tip { background: #fff1d7; }
-.safety-tip .end-tip-number { background: #f9dfab; color: #704600; }
 .end-safety-label { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; min-width: 0; overflow-wrap: anywhere; color: #704600; margin-bottom: 5px; font-size: 18px; }
 .end-safety-label svg { flex: none; }
 .end-feedback { margin: 26px 0 20px; }
 .end-rating { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 10px; margin-top: 12px; }
 .end-rating button { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 8px; min-height: 58px; padding: 12px 6px; border: 1px solid #c7cec7; border-radius: 16px; background: white; color: var(--ink); font-size: 18px; font-weight: 700; overflow-wrap: anywhere; }
 .end-rating button[aria-pressed="true"] { border: 2px solid #0F6B5C; background: #DDEFE9; }
+.rating-emoji { font-family: 'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif; font-size: 30px; line-height: 1.2; }
 .end-next { position: fixed; z-index: 19; bottom: var(--end-nav-height); left: 50%; transform: translateX(-50%); width: min(100%,480px); padding: 14px 20px 8px; background: #F2F3EF; box-shadow: 0 -4px 14px rgba(20,36,32,.05); }
 .end-next .btn.primary { margin: 0; min-height: 62px; font-size: 20px; line-height: 1.35; padding: 14px; white-space: normal; overflow-wrap: anywhere; }
 .end-repeat { display: flex; justify-content: center; align-items: center; gap: 10px; width: 100%; min-height: 56px; font-size: 18px; font-weight: 700; color: #0F6B5C; }

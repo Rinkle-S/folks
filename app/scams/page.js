@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Icon from '@/components/Icons';
+import ScamHelpEntry from '@/components/ScamHelpEntry';
 import { AppBar, BottomNav } from '@/components/AppShell';
 import { SAFE_LESSONS, SAFE_UI, readDone } from '@/lib/safeLessons';
 import { T } from '@/lib/i18n';
@@ -30,9 +31,9 @@ export default function StaySafe() {
           <b>{u.progress}</b>
           <span>{u.doneOf(doneCount)}</span>
         </div>
-        <div className="ss-bars">
-          {SAFE_LESSONS.map((l) => (
-            <i key={l.id} className={done.includes(l.id) ? 'on' : ''} />
+        <div className="ss-bars" role="progressbar" aria-label={u.progress} aria-valuenow={doneCount} aria-valuemin={0} aria-valuemax={SAFE_LESSONS.length}>
+          {SAFE_LESSONS.map((l,i) => (
+            <i key={l.id} className={i < doneCount ? 'on' : ''} />
           ))}
         </div>
 
@@ -60,14 +61,7 @@ export default function StaySafe() {
           <span className="ss-pill dark">{u.start}</span>
         </Link>
 
-        <a href="tel:1930" className="ss-sos" onClick={() => track('cheated_call')}>
-          <span className="ic"><Icon name="phone" size={22} /></span>
-          <span style={{ flex: 1 }}>
-            <small>{u.lost}</small>
-            <b>{u.call}</b>
-          </span>
-          <Icon name="chevron" size={22} />
-        </a>
+        <ScamHelpEntry lang={lang} from="home"/>
       </main>
       <BottomNav active="safe" t={t} />
     </div>

@@ -21,12 +21,16 @@ import '@fontsource/roboto/700.css';
 import './globals.css';
 import './screens.css';
 import './kit.css';
+import './scam-help.css';
 import PwaBoot from '@/components/PwaBoot';
 import PhoneApp from '@/components/PhoneApp';
 
 export const metadata = {
+  metadataBase: new URL('https://nook-learn.vercel.app'),
   title: 'Nook | Your cozy corner for everyday learning',
-  description: 'Safe, voice-guided practice for everyday phone tasks. No real money, in Hindi and English.',
+  description: 'Learn everyday phone tasks with safe practice, step-by-step guidance and scam checks. English, Hindi and Malayalam.',
+  openGraph: { type:'website', url:'/', siteName:'Nook', title:'Nook | Learn everyday phone tasks safely', description:'Practise on a pretend phone, watch a lesson or read the steps. English, Hindi and Malayalam.' },
+  twitter: { card:'summary_large_image', title:'Nook | Learn everyday phone tasks safely', description:'Safe practice and step-by-step help for everyday phone tasks.' },
 };
 
 export const viewport = {

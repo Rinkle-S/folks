@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import Icon from '@/components/Icons';
+import ScamHelpEntry from '@/components/ScamHelpEntry';
 import { BottomNav } from '@/components/AppShell';
 import { SCAMS } from '@/lib/scams';
 import { SAFE_UI } from '@/lib/safeLessons';
@@ -105,6 +106,7 @@ export default function Test() {
             <Icon name="share" size={22} /> {u.share}
           </a>
         </div>
+        <ScamHelpEntry lang={lang} from="test-end"/>
         <BottomNav active="safe" t={t} />
       </div>
     );
@@ -121,6 +123,7 @@ export default function Test() {
         </Link>
         <span style={{ fontSize: 16, color: '#4A5550', paddingRight: 8 }}><b>{u.testOf(i + 1, cards.length)}</b></span>
       </div>
+      <div className="ss-content" key={i}>
       <div className="ss-bars ss-q-bars" style={{ gridTemplateColumns: `repeat(${cards.length}, minmax(0, 1fr))` }}>
         {cards.map((_, n) => (
           <i key={n} className={n <= i ? 'on' : ''} />
@@ -151,6 +154,7 @@ export default function Test() {
         </div>
       )}
 
+      </div>
       <div className="ss-foot">
         {!picked ? (
           <>

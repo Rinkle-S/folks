@@ -5,6 +5,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { NookLogo } from '@/components/Logo';
+import { THEMES } from '@/lib/themes';
 import { LESSONS } from '@/lib/lessons';
 import { GUIDE_LIST } from '@/lib/guides';
 import { ALL_APPS } from '@/lib/apps';
@@ -28,6 +29,9 @@ export default function Send() {
   const [origin, setOrigin] = useState('');
   const [copied, setCopied] = useState(false);
   const [appFilter, setAppFilter] = useState(null);
+  const [topicFilter, setTopicFilter] = useState(null);
+  const topic = THEMES.find(x=>x.id===topicFilter);
+  const available = topic ? topic.lessons.map(id=>LESSONS[id]).filter(Boolean) : Object.values(LESSONS).filter(x=>!appFilter || x.app===appFilter);
 
   useEffect(() => {
     setOrigin(window.location.origin);
@@ -37,6 +41,8 @@ export default function Send() {
     const app = params.get('app');
     const first = Object.values(LESSONS).find((l) => l.app === app);
     if (first) { setAppFilter(app); setItem(`l:${first.id}`); }
+    const theme = THEMES.find(x=>x.id===params.get('topic'));
+    if(theme){setTopicFilter(theme.id);setAppFilter(null);setItem(`l:${theme.lessons.find(id=>LESSONS[id])}`);}
     if (LANGS.some((l) => l.id === params.get('lang'))) setLang(params.get('lang'));
   }, []);
 
@@ -68,7 +74,7 @@ export default function Send() {
 
   return (
     <div className="page send has-nav">
-      <Link className="chip send-back" href={appFilter ? `/app/${appFilter}` : '/'}><Icon name="back" size={20} />{t.back}</Link>
+      <Link className="chip send-back" href={topic ? `/theme/${topic.id}` : appFilter ? `/app/${appFilter}` : '/'}><Icon name="back" size={20} />{t.back}</Link>
       <Link href="/" className="brand">
         <NookLogo height={40} />
       </Link>
@@ -108,14 +114,14 @@ export default function Send() {
           <span>What should they learn?</span>
           <select value={item} onChange={(e) => setItem(e.target.value)}>
             <optgroup label="Practice lessons (fake screens)">
-              {Object.values(LESSONS).filter((x) => !x.id.startsWith('gd-') && (!appFilter || x.app === appFilter)).map((x) => (
+              {available.filter(x=>topic || !x.id.startsWith('gd-')).map((x) => (
                 <option key={x.id} value={`l:${x.id}`}>
                   {x.title.en}
                 </option>
               ))}
             </optgroup>
             <optgroup label="More practice lessons">
-              {GUIDE_LIST.filter((x) => !appFilter || (x.app === appFilter && LESSONS[`gd-${x.id}`])).map((x) => (
+              {GUIDE_LIST.filter((x) => !topic && LESSONS[`gd-${x.id}`] && (!appFilter || x.app === appFilter)).map((x) => (
                 <option key={x.id} value={`l:gd-${x.id}`}>
                   {x.appName}: {x.title.en}
                 </option>

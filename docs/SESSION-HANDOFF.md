@@ -1,5 +1,14 @@
 # Nook: session handoff (read this first, then `CLAUDE.md`)
 
+## Scam help, completion and sharing: 26 Oct 2026
+- Built `/scams/help` from the supplied six-step brief and six mockups, reusing Icons, PrintBar and tracking. Home, reading-page help, reading completions and test completion open step 1. Every step has a real 1930 link, a takeaway and pinned Back/Next; final step has Print/Send/Done. All new UI in EN/HI/ML.
+- Verified official RBI/helpline/Chakshu/StopNCII sources and corrected overbroad claims. Current NCRP entry says Register a Complaint; a separate financial-fraud category label was not exposed before consent, so no unverified placeholder was used. See `docs/SCAM-HELP-REVIEW.md` for sources and acceptance results.
+- Removed Settings install row. End tips now uniform, with real colourful emoji feedback. Owner confirmed Watch/Read still lead to Nook Practice (explicit button copy); Practice opens the real app, with official web fallback. Install opens Play Store; common-icons uses the real-phone Read checklist. Native launch still requires physical-device verification.
+- Desktop QR always encodes https://nook-learn.vercel.app/. Both topics now have the existing bottom helper Send/Print pattern, scoped and ordered lesson sharing, labelled Back. General Send excludes nonexistent guide wrappers.
+- Stay safe content scrolls without shrinking fonts/hiding advice; fixed overlap with bottom nav on short Home screens. Home progress fills by completed count, reading progress stays visible on quiz/end, and next lesson resets correctly.
+- Social previews: public branded 1200×630 PNG, site-wide OG/Twitter fallback and meaningful metadata/canonical URLs for shared routes. No caregiver names/typed/private content in previews. Client apps control display and caching.
+- Validation: build/ML pass; all 15 tutorials × 3 languages × 3 modes, 12-case completion layout matrix, 12-case guide/Stay safe/topic matrix, auto-next, sharing/printing, QR, Learn v2, search/outbox regression and crawler/platform-link checks pass. Audio, native dialogs, helpline calls and external writes mocked; Sarvam stays off. PDFs and screenshots in ../layout-checks/scam-help/. Raw user ZIPs/SPEC remain untracked and preserved; deferred graphics stash untouched.
+
 ## Watch-only wording: 26 Oct 2026
 - Reviewed 129 steps in 15 tutorials before deciding on a separate Watch script rather than rewriting Practice. Added EN/HI/ML `watchSay`, neutral quiz `watchWhy` and `watchClosing` metadata in `lib/watchCopy.js`.
 - Player uses the Watch script for visible text, narration, warmup and quiz explanation. Safety prefaces are separate narration segments so the Watch body sentence highlights match. Watch completion voice credits watching.

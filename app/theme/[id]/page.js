@@ -8,7 +8,6 @@ import AppIcon from '@/components/AppIcon';
 import { AppBar, BottomNav } from '@/components/AppShell';
 import PrintBar from '@/components/PrintBar';
 import JourneyArticle from '@/components/JourneyArticle';
-import ShareLesson from '@/components/ShareLesson';
 import { T } from '@/lib/i18n';
 import { useLang, getDone } from '@/lib/client';
 import { THEMES } from '@/lib/themes';
@@ -25,8 +24,8 @@ export default function Theme() {
   if (!th) return <div className="page">Not found</div>;
   const lessons = th.lessons.map((id) => LESSONS[id]).filter(Boolean);
   return (
-    <div className="shell">
-      <AppBar back="/themes" />
+    <div className="shell learn-page learn-topic">
+      <AppBar back="/themes" learn t={t} />
       <main className="shell-main">
         <header className="app-head">
           <span className="theme-big">{th.icon}</span>
@@ -35,7 +34,6 @@ export default function Theme() {
             <p className="muted">{th.lead[lang]}</p>
           </div>
         </header>
-        <PrintBar lang={lang} t={t} ids={th.lessons} heading={th.title[lang]} />
 
         <div className="section-h">
           <span>{t.goodToKnow}</span>
@@ -72,7 +70,6 @@ export default function Theme() {
                   <Icon name="chevron" size={22} />
                 </span>
               </Link>
-              <ShareLesson id={l.id} title={l.title[lang]} lang={lang} t={t} where="topic_list" />
               </div>
             );
           })}
@@ -90,6 +87,11 @@ export default function Theme() {
             </Link>
           ))}
         </div>
+        <section className="learn-helper" aria-labelledby="topic-helper-title">
+          <h2 id="topic-helper-title">{t.appHelperTitle}</h2>
+          <Link className="btn helper-send" href={`/send?topic=${encodeURIComponent(th.id)}&lang=${lang}`}><Icon name="share" size={22}/>{t.topicSendLesson}</Link>
+          <PrintBar lang={lang} t={t} ids={th.lessons} heading={th.title[lang]}/>
+        </section>
       </main>
       <BottomNav active="learn" t={t} />
     </div>

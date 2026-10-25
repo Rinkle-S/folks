@@ -2,7 +2,6 @@
 // Settings sheet: language and sound. Labels are bilingual so anyone can find their language.
 import { useState } from 'react';
 import Link from 'next/link';
-import useInstall from './useInstall';
 import { speak, unlockAudio, getLearnMode, setLearnMode, getVoiceChoice, setVoiceChoice, diagnoseVoice } from '@/lib/client';
 import { voiceStatus } from '@/lib/voice';
 import { T } from '@/lib/i18n';
@@ -10,7 +9,6 @@ import { LANGS } from '@/lib/langs';
 import { getVoiceRate, setVoiceRate } from '@/lib/voiceSpeed';
 
 export default function Settings({ lang, setLang, muted, toggleMute, onClose, onApps, appsLabel, onMismatch }) {
-  const [canInstall, install] = useInstall();
   const [tested, setTested] = useState(false);
   const [mode, setMode] = useState(getLearnMode());
   const [voice, setVoice] = useState(getVoiceChoice());
@@ -147,14 +145,6 @@ export default function Settings({ lang, setLang, muted, toggleMute, onClose, on
                 {t.mismatchBtn}
               </button>
             )}
-          </div>
-        )}
-        {canInstall && (
-          <div className="settings-row">
-            <span>{T[lang].installApp}</span>
-            <button className="toggle on" onClick={install}>
-              {T[lang].install}
-            </button>
           </div>
         )}
         <button className="btn primary" onClick={onClose}>
