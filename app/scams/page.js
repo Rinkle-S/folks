@@ -22,7 +22,7 @@ export default function StaySafe() {
   return (
     <div className="shell">
       <AppBar />
-      <main className="shell-main ss">
+      <main className="shell-main ss ss-home">
         <h1>{u.title}</h1>
         <p className="ss-lead">{u.lead}</p>
 
@@ -51,18 +51,14 @@ export default function StaySafe() {
           );
         })}
 
-        <div className="ss-test">
-          <div className="row">
-            <div className="ic" aria-hidden="true">❓</div>
-            <div>
-              <b>{u.testTitle}</b>
-              <span>{u.testSub}</span>
-            </div>
+        <Link href="/scams/test" className="ss-tile ss-testtile" onClick={() => track('safe_test_open')}>
+          <div className="ic" aria-hidden="true">❓</div>
+          <div className="tx">
+            <b>{u.testTitle}</b>
+            <span>{u.testSub}</span>
           </div>
-          <Link href="/scams/test" className="ss-btn dark" onClick={() => track('safe_test_open')}>
-            {u.testStart}
-          </Link>
-        </div>
+          <span className="ss-pill dark">{u.start}</span>
+        </Link>
 
         <a href="tel:1930" className="ss-sos" onClick={() => track('cheated_call')}>
           <span className="ic"><Icon name="phone" size={22} /></span>

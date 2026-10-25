@@ -122,7 +122,7 @@ export default function Test() {
   const label = c.kind === 'sms' ? t.scamSms : c.kind === 'call' ? t.scamCall : 'WhatsApp';
 
   return (
-    <div className="page ss has-nav">
+    <div className="page ss ss-fit">
       <div className="ss-top">
         <Link href="/scams" className="ss-back" onClick={() => stopSpeaking()}>
           <span style={{ display: 'inline-flex', transform: 'rotate(180deg)' }}><Icon name="chevron" size={22} /></span> {u.title}
@@ -145,7 +145,7 @@ export default function Test() {
             <small>{label}</small>
           </div>
         </div>
-        <div className="ss-bub">{c.msg[lang]}</div>
+        <div className={`ss-bub${picked ? ' ss-clamp' : ''}`}>{c.msg[lang]}</div>
       </div>
 
       {!picked ? (
@@ -165,10 +165,9 @@ export default function Test() {
           <button className="ss-btn" style={{ marginTop: 16 }} onClick={next}>{t.next}</button>
         </>
       )}
-      <a href="tel:1930" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, minHeight: 52, marginTop: 8, fontSize: 18, fontWeight: 700, color: '#A4262C', textDecoration: 'none' }}>
+      <a href="tel:1930" className="ss-opt" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, minHeight: 48, marginTop: 4, fontSize: 18, fontWeight: 700, color: '#A4262C', textDecoration: 'none' }}>
         <Icon name="phone" size={20} /> {u.lostShort}
       </a>
-      <BottomNav active="safe" t={t} />
     </div>
   );
 }

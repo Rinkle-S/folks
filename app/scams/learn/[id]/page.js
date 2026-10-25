@@ -145,7 +145,7 @@ function Lesson({ params }) {
   );
 
   return (
-    <div className="page ss" style={{ paddingBottom: 0 }}>
+    <div className="page ss ss-fit" style={{ paddingBottom: 0 }}>
       <Top u={u} onListen={() => speak(readText(), lang)} />
       <div style={{ padding: '0 4px' }}>
         {page <= 4 && (
@@ -230,16 +230,6 @@ function Lesson({ params }) {
                 </span>
               </a>
             </div>
-            <a
-              className="ss-btn soft"
-              style={{ marginTop: 14 }}
-              href={whatsappLink(u.shareMsg + '\n' + window.location.origin + '/scams')}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => track('share', { meta: { from: 'safe-lesson' } })}
-            >
-              <Icon name="share" size={22} /> {u.share}
-            </a>
           </>
         )}
 
@@ -281,6 +271,16 @@ function Lesson({ params }) {
                 </li>
               ))}
             </ul>
+            <a
+              className="ss-btn soft"
+              style={{ marginTop: 12 }}
+              href={whatsappLink(u.shareMsg + '\n' + window.location.origin + '/scams')}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => track('share', { meta: { from: 'safe-lesson' } })}
+            >
+              <Icon name="share" size={22} /> {u.share}
+            </a>
             {next && (
               <div className="ss-next">
                 <small>{u.upNext.toUpperCase()}</small>
@@ -315,7 +315,7 @@ function Lesson({ params }) {
         {page === 4 && (
           <div style={{ gridColumn: '1 / -1', display: 'flex', flexDirection: 'column', gap: 6 }}>
             {picked && <button className="ss-btn" onClick={finish}>{u.finish}</button>}
-            <a href="tel:1930" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, minHeight: 52, fontSize: 18, fontWeight: 700, color: '#A4262C', textDecoration: 'none' }}>
+            <a href="tel:1930" className="ss-opt" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, minHeight: 48, fontSize: 18, fontWeight: 700, color: '#A4262C', textDecoration: 'none' }}>
               <Icon name="phone" size={20} /> {u.lostShort}
             </a>
           </div>
