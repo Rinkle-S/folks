@@ -1,6 +1,12 @@
 # Nook: session handoff (read this first, then `CLAUDE.md`)
 
 ## Responsive layout fix: 25 Oct 2026
+Watermark follow-up: the owner wants the earlier larger laptop appearance. At 720px and above,
+the mark now grows up to 84px while still fitting its container height/width; Malayalam has a lower width factor.
+Phone sizing remains unchanged. The decorative wrapper carries its language to select the fit rule.
+Verified: build, Malayalam check, seven viewport sizes x three languages (Help, scrolling, pointers and resize),
+and phone/laptop quiz screens in all three languages. No player interaction logic changed.
+
 Targeted CSS changes only; the player and highlight/hand/Help logic were preserved.
 - Google Pay shortcuts use tighter spacing below 400px and wrap as a fallback; Rewards is no longer clipped.
 - The practice banner can wrap and the diagonal watermark sizes to its own screen in all three languages.

@@ -32,6 +32,7 @@ try {
       const bounds=rect(screen);
       const visibleTarget={ left:Math.max(target.left,bounds.left+screen.clientLeft,scroll.left), top:Math.max(target.top,bounds.top+screen.clientTop,scroll.top) };
       return { screen:rect(screen), mark:rect(document.querySelector('.practice-mark span')),
+        markFont:parseFloat(getComputedStyle(document.querySelector('.practice-mark span')).fontSize),
         chips:rect(chips), items:[...chips.children].map(rect),
         tagFits:tag.scrollWidth<=tag.clientWidth, bodyFits:document.documentElement.scrollWidth<=innerWidth,
         coach:rect(coach), target, visibleTarget, tint:rect(document.querySelector('.tap-tint')),
@@ -51,6 +52,8 @@ try {
         assert.ok(m.hand.left>=m.screen.left && m.hand.right<=m.screen.right && m.hand.top>=m.screen.top && m.hand.bottom<=m.screen.bottom, `clipped hand: ${lang} ${width}`);
       };
       check(before);
+      if (width>=720) assert.ok(before.markFont>before.screen.width*0.12, `laptop watermark too small: ${lang} ${width}`);
+      else assert.ok(before.markFont<=before.screen.width*0.12+1, `phone watermark unexpectedly enlarged: ${lang} ${width}`);
       // Opening Help changes the available screen height. The existing overlay must follow it.
       await page.locator('.coach-actions button').last().click();
       await page.waitForTimeout(500);

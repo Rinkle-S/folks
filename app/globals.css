@@ -825,6 +825,12 @@ h1, h2, h3 { line-height: 1.2; letter-spacing: -0.01em; }
    Only the absolute overlay is a size container; the app, scroll areas and tap coordinates stay unchanged. */
 .practice-mark { position: absolute; inset: 0; z-index: 2; display: grid; place-items: center; overflow: hidden; container-type: size; pointer-events: none; user-select: none; }
 .practice-mark span { display: block; transform: rotate(-24deg); font-size: clamp(16px, min(12cqw, 24cqh), 64px); font-weight: 900; letter-spacing: 0.06em; color: rgba(217, 93, 57, 0.2); -webkit-text-stroke: 3px rgba(255, 255, 255, 0.26); white-space: nowrap; }
+/* Restore the larger laptop watermark; phones keep the fitted size above.
+   Malayalam needs more width per word, so its desktop limit is a little lower. */
+@media (min-width: 720px) {
+  .practice-mark span { font-size: clamp(16px, min(18cqw, 24cqh), 84px); }
+  .practice-mark[lang="ml"] span { font-size: clamp(16px, min(15cqw, 24cqh), 84px); }
+}
 
 /* Written steps are for the real phone: say so, so practice numbers never get typed into a real app. */
 .follow-real { margin: 10px 0 0; padding: 12px 14px; border-radius: 14px; background: #e6f3ec; color: #11401f; font-size: 18px; font-weight: 600; line-height: 1.4; }

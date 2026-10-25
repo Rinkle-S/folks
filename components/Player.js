@@ -723,7 +723,7 @@ function PlayerInner({ id }) {
         onClick={onScreenClick}
       >
         <Screen step={step} lesson={lesson} lang={lang} t={t} values={values} typed={typed} />
-        <div className="practice-mark" aria-hidden="true">
+        <div className="practice-mark" lang={lang} aria-hidden="true">
           <span>{t.practiceMark}</span>
         </div>
         {bubble && bubble.edge && (
