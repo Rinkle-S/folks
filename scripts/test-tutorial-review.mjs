@@ -25,7 +25,7 @@ async function setup(lang='en',width=390,height=844,voice=false,iphone=false,ser
     localStorage.setItem('folks_lang',lang);localStorage.setItem('folks_mute_v2',voice?'0':'1');localStorage.setItem('folks_onboarded','1');
     window.__spoken=[];window.__audioRates=[];window.__hold=false;window.__ringStarts=0;window.__ringStops=0;window.__prints=[];
     window.SpeechSynthesisUtterance=class{constructor(text){this.text=text;}};
-    speechSynthesis.getVoices=()=>[];speechSynthesis.resume=()=>{};speechSynthesis.cancel=()=>{};
+    speechSynthesis.getVoices=()=>['en-IN','hi-IN','ml-IN'].map(lang=>({lang,name:lang+' test voice',localService:true}));speechSynthesis.resume=()=>{};speechSynthesis.cancel=()=>{};
     speechSynthesis.speak=u=>{if(u.text.trim()){window.__spoken.push({text:u.text,rate:u.rate});window.__utterance=u;}if(!window.__hold)setTimeout(()=>u.onend?.(),0);};
     window.Audio=class{paused=true;playbackRate=1;load(){}play(){this.paused=false;if(this.src?.startsWith('/api/tts')){window.__audioRates.push(this.playbackRate);setTimeout(()=>this.onended?.(),0);}return Promise.resolve();}pause(){this.paused=true;}addEventListener(){}removeEventListener(){}};
     window.AudioContext=class{state='running';currentTime=0;destination={};resume(){return Promise.resolve();}createOscillator(){return{frequency:{},connect(){},start(){window.__ringStarts++;},stop(){window.__ringStops++;},disconnect(){}};}createGain(){return{gain:{setValueAtTime(){},linearRampToValueAtTime(){}},connect(){},disconnect(){}};}};
@@ -62,7 +62,7 @@ try{
     assert.equal(await p.locator('.done-title').count(),1);assert.equal(await p.locator('.end-tips li').count(),3);
     assert.equal(await p.locator('.completion-tips, .completion-feedback, .acts').count(),0);
     if(output)await p.screenshot({path:`${output}/${lang}-${width}-completed.png`,fullPage:true});
-    await p.goto(`${base}/send?app=yono&lang=${lang}`);await p.locator('.send-back').waitFor();assert.equal(await p.locator('.send-back').getAttribute('href'),'/app/yono');
+    await p.goto(`${base}/send?app=yono&lang=${lang}`);await p.waitForFunction(()=>document.querySelector('.send-back')?.getAttribute('href')==='/app/yono');assert.equal(await p.locator('.send-back').getAttribute('href'),'/app/yono');
     await p.locator('.bottomnav a[href="/"]').click();await p.locator('.learn-home').waitFor();
     assert.deepEqual(errors,[]);console.log(`PASS tutorial layout ${lang} ${width}x${height}`);await c.close();
   }

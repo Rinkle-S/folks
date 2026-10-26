@@ -15,6 +15,8 @@ import { getProfile } from '@/lib/profile';
 import { GUIDES, GUIDE_LIST } from '@/lib/guides';
 import { T } from '@/lib/i18n';
 import { langCode } from '@/lib/langs';
+import VoiceNotice from './VoiceNotice';
+import {VOICE_MESSAGES} from '@/lib/voiceMessages';
 import ThemeList from './ThemeList';
 import ShareLesson from './ShareLesson';
 import { orderForFluency } from '@/lib/levels';
@@ -287,6 +289,7 @@ export default function Home() {
         if (e.error === 'not-allowed' || e.error === 'service-not-allowed') setMicMsg(inApp ? t.micInApp : t.micDenied);
         else if (e.error === 'no-speech') setMicMsg(t.micNoSpeech);
         else if (e.error === 'network') setMicMsg(t.micBrowser);
+        else if (e.error === 'language-not-supported') setMicMsg(VOICE_MESSAGES.mic[lang]);
         else if (e.error !== 'aborted') setMicMsg(t.micUnsupported);
       };
       rec.onend = () => {
@@ -347,6 +350,7 @@ export default function Home() {
     <div className="shell learn-page learn-home">
       <AppBar learn t={t} onSettings={() => setShowSettings(true)} />
       <main className="shell-main">
+        <VoiceNotice lang={lang}/>
         <p className="greet">{t[greet].replace(/\s*🙏/g, '')}{profileName ? `, ${profileName}` : ''}</p>
         <h1 className="home-h">{t.learnHomeTitle}</h1>
 

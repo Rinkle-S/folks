@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import Icon from '@/components/Icons';
+import VoiceNotice from '@/components/VoiceNotice';
 import ScamHelpEntry from '@/components/ScamHelpEntry';
 import { BottomNav } from '@/components/AppShell';
 import { SCAMS } from '@/lib/scams';
@@ -123,7 +124,7 @@ export default function Test() {
         </Link>
         <span style={{ fontSize: 16, color: '#4A5550', paddingRight: 8 }}><b>{u.testOf(i + 1, cards.length)}</b></span>
       </div>
-      <div className="ss-content" key={i}>
+      <div className="ss-content" key={i}><VoiceNotice lang={lang}/>
       <div className="ss-bars ss-q-bars" style={{ gridTemplateColumns: `repeat(${cards.length}, minmax(0, 1fr))` }}>
         {cards.map((_, n) => (
           <i key={n} className={n <= i ? 'on' : ''} />

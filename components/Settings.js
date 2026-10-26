@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { speak, unlockAudio, getLearnMode, setLearnMode, getVoiceChoice, setVoiceChoice, diagnoseVoice } from '@/lib/client';
 import { voiceStatus } from '@/lib/voice';
+import VoiceNotice from './VoiceNotice';
 import { T } from '@/lib/i18n';
 import { LANGS } from '@/lib/langs';
 import { getVoiceRate, setVoiceRate } from '@/lib/voiceSpeed';
@@ -147,6 +148,7 @@ export default function Settings({ lang, setLang, muted, toggleMute, onClose, on
             )}
           </div>
         )}
+        <VoiceNotice lang={lang}/>
         <button className="btn primary" onClick={onClose}>
           {T[lang].appsSave}
         </button>

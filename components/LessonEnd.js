@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { BottomNav } from './AppShell';
 import AppIcon from './AppIcon';
 import Icon from './Icons';
-import PrintBar from './PrintBar';
+import LessonPrint from './LessonPrint';
 import { getProfile } from '@/lib/profile';
 import { track } from '@/lib/client';
 import { realAppHref } from '@/lib/openApp';
@@ -32,7 +32,7 @@ export default function LessonEnd({lesson, lang, t, mode, onRestart}) {
     <div className="done-medal"><Icon name="check" size={44} stroke={3}/></div>
     <h1 className="done-title">{t.wellDoneName(profile.name?.trim())}</h1>
     <div className="learn-lesson-context completed-lesson" data-app={lesson.app}><AppIcon app={lesson.app} size={52}/><div><p className="done-sub">{label}</p><b>{lesson.title[lang]}</b></div></div>
-    <section className="end-remember" aria-labelledby="end-remember-heading"><div className="end-section-heading"><h2 id="end-remember-heading">{t.remember}</h2><PrintBar variant="tips" label={t.endPrint} lang={lang} t={t} heading={lesson.title[lang]} entries={[{id:lesson.id,title:lesson.title[lang],app:'',steps:lesson.tips.map(tip=>tip.text[lang])}]} onPrint={()=>action('print')}/></div>
+    <section className="end-remember" aria-labelledby="end-remember-heading"><div className="end-section-heading"><h2 id="end-remember-heading">{t.remember}</h2><LessonPrint variant="end" label={t.endPrint} lesson={lesson} lang={lang} t={t} onPrint={()=>action('print')}/></div>
       <ol className="end-tips">{lesson.tips.map((tip,i)=><li key={i}><span className="end-tip-number">{i+1}</span><div><p>{tip.text[lang]}</p></div></li>)}</ol>
     </section>
     <section className="end-feedback" aria-labelledby="end-feedback-heading"><h2 id="end-feedback-heading">{t.endQuestion}</h2><div className="end-rating">{['easy','okay','hard'].map((value,i)=><button key={value} aria-pressed={rating===value} onClick={()=>{

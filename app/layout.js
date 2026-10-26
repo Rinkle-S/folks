@@ -22,6 +22,7 @@ import './globals.css';
 import './screens.css';
 import './kit.css';
 import './scam-help.css';
+import './yono.css';
 import PwaBoot from '@/components/PwaBoot';
 import PhoneApp from '@/components/PhoneApp';
 

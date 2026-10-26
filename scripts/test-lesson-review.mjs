@@ -58,7 +58,7 @@ try {
       localStorage.setItem('folks_lang','en');localStorage.setItem('folks_mute_v2','1');localStorage.setItem('folks_onboarded','1');
       window.__spoken=[]; window.__hold=false;
       window.SpeechSynthesisUtterance=class {constructor(text){this.text=text;}};
-      speechSynthesis.getVoices=()=>[];speechSynthesis.cancel=()=>{};speechSynthesis.resume=()=>{};
+      speechSynthesis.getVoices=()=>['en-IN','hi-IN','ml-IN'].map(lang=>({lang,name:lang+' test voice',localService:true}));speechSynthesis.cancel=()=>{};speechSynthesis.resume=()=>{};
       speechSynthesis.speak=u=>{if(u.text.trim())window.__spoken.push(u.text);setTimeout(()=>u.onend?.(),0);};
     });
     await context.route('**/api/**',r=>r.fulfill({json:{ok:true,stored:true,enabled:false}}));

@@ -29,7 +29,7 @@ const setup=async(lang,width,voice=false)=>{
     localStorage.setItem('folks_lang',lang);localStorage.setItem('folks_mute_v2',voice?'0':'1');
     window.__spoken=[];window.__cancelled=0;window.__holdSpeech=voice;
     window.SpeechSynthesisUtterance=class{constructor(text){this.text=text;}};
-    if(window.speechSynthesis){speechSynthesis.getVoices=()=>[];speechSynthesis.resume=()=>{};speechSynthesis.cancel=()=>{window.__cancelled++;};speechSynthesis.speak=(u)=>{if(u.text.trim())window.__spoken.push(u.text);if(!window.__holdSpeech)setTimeout(()=>u.onend?.(),0);};}
+    if(window.speechSynthesis){speechSynthesis.getVoices=()=>['en-IN','hi-IN','ml-IN'].map(lang=>({lang,name:lang+' test voice',localService:true}));speechSynthesis.resume=()=>{};speechSynthesis.cancel=()=>{window.__cancelled++;};speechSynthesis.speak=(u)=>{if(u.text.trim())window.__spoken.push(u.text);if(!window.__holdSpeech)setTimeout(()=>u.onend?.(),0);};}
     window.Audio=class{play(){return Promise.resolve();}pause(){}addEventListener(){}removeEventListener(){}};
     const timer=window.setTimeout;window.setTimeout=(fn,ms,...args)=>timer(fn,ms===450?1:ms,...args);
   },{lang,voice});
@@ -104,7 +104,7 @@ try {
   await p.waitForFunction(()=>window.__spoken.some(t=>t.includes('Find Google Pay')));
   await c.addInitScript(()=>{window.__holdSpeech=false;});
   const safetyIndex=qr.steps.findIndex(s=>s.id==='scam-quiz');await p.evaluate(idx=>localStorage.setItem('folks_resume',JSON.stringify({id:'qr-pay',idx,at:Date.now()})),safetyIndex);
-  await p.goto(base+'/lesson/qr-pay?resume=1');await p.locator('.safety-heading').waitFor();await p.waitForFunction(()=>window.__spoken.some(t=>t.includes('One more thing')));
-  const calls=await p.evaluate(()=>window.__spoken.join(' '));assert.ok(calls.indexOf(T.en.safetyHeading)<calls.indexOf('One more thing'));assert.ok(calls.indexOf(T.en.practiceSafetySub)<calls.indexOf('One more thing'));
+  await p.goto(base+'/lesson/qr-pay?resume=1');await p.locator('.safety-heading').waitFor();await p.waitForFunction(()=>window.__spoken.some(t=>t.includes('Someone phones and says')));
+  const calls=await p.evaluate(()=>window.__spoken.join(' '));assert.ok(calls.indexOf(T.en.safetyHeading)<calls.indexOf('Someone phones and says'));assert.ok(calls.indexOf(T.en.practiceSafetySub)<calls.indexOf('Someone phones and says'));
   console.log('PASS mocked speech sequencing: Ready interrupts scene, Help restores original, safety preface precedes question');await c.close();
 } finally {await browser.close();}

@@ -1,0 +1,83 @@
+/* YONO only. Content scrolls within the existing practice frame; no global phone scaling. */
+.voice-notice { margin:12px 0; border:1px solid #b8d5cb; background:#edf5f1; border-radius:14px; padding:14px; text-align:left; }
+.voice-notice p { font-size:18px; line-height:1.5; margin:0; color:#243f36; }
+.voice-notice a { display:inline-flex; align-items:center; min-height:56px; font-size:18px; color:#0a5145; font-weight:700; }
+.app.yono { --yono:#4b1683; background:#f6f4f9; color:#33313a; font-family:Roboto,'Noto Sans',sans-serif; }
+.app.yono.home,.app.yono.welcome { overflow:hidden; }
+.screen .yono > .yono-scroll,.yono > .yono-scroll { height:auto; min-height:0; flex:1 1 0; overflow-y:auto; background:inherit; color:inherit; }
+.yono > .yono-scroll > * { flex-shrink:0; }
+.yono button { font:inherit; cursor:pointer; }
+.yono-logo { display:flex; flex-direction:column; align-items:center; line-height:1; color:white; }
+.yono-logo > b { font-size:48px; font-weight:800; letter-spacing:1px; }
+.yono-logo > span { display:flex; align-items:center; gap:5px; margin-top:5px; font-size:22px; font-weight:800; }
+.yono-logo i { width:18px; height:18px; border-radius:50%; background:#39b6e5; position:relative; }
+.yono-logo i::after { content:''; position:absolute; background:white; width:4px; height:8px; bottom:0; left:7px; }
+.yono-welcome-top { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:16px 20px 36px; background:linear-gradient(125deg,#321265,#6c1ea4); color:white; }
+.yono-welcome-top .yono-logo > b { font-size:34px; }
+.yono-welcome-top > span { display:block; margin-top:12px; font-size:18px; }
+.yono-auth { margin:-20px 16px 0; border-radius:18px; background:white; padding:22px 14px 8px; display:flex; flex-direction:column; align-items:center; color:#6b5a7a; }
+.yono-fingerprint { border:1px solid #b5a5c5; border-radius:30px; padding:9px; width:100%; text-align:center; margin-top:15px; font-size:16px; }
+.yono-or { display:flex; align-items:center; gap:10px; width:100%; color:#81768a; font-size:14px; margin-top:6px; }
+.yono-or::before,.yono-or::after { content:''; height:1px; flex:1; background:#d3cbdc; }
+.yono-auth-options { display:flex; align-items:center; flex-wrap:wrap; gap:10px; justify-content:space-between; width:100%; }
+.yono-auth-options button { background:none; border:0; color:var(--yono); min-height:56px; padding:8px 0; text-decoration:underline; font-size:18px; }
+.yono-auth-options > span { font-size:15px; }
+.yono-view-balance { margin:18px 18px 10px; background:var(--yono); border-radius:22px; padding:9px 16px; color:white; text-align:center; font-weight:700; }
+.yono-tabs { display:flex; justify-content:space-around; align-items:center; gap:12px; padding:16px; font-size:17px; }
+.yono-tabs b { color:var(--yono); border-bottom:3px solid var(--yono); padding-bottom:9px; }
+.yono-shortcuts { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; padding:14px; }
+.yono-shortcuts > div { display:flex; flex-direction:column; align-items:center; gap:10px; text-align:center; min-width:0; color:#746783; }
+.yono-shortcuts span { font-size:14px; line-height:1.3; overflow-wrap:anywhere; }
+.yono-promo { display:flex; flex-direction:column; gap:6px; margin:20px 16px; border-radius:16px; padding:24px 18px; background:linear-gradient(130deg,#f4e6cf,#dacbcc); color:#4b2455; }
+.yono-promo b { font-size:22px; }
+.yono-promo-label { margin-top:8px; padding:7px 14px; background:var(--yono); color:white; border-radius:24px; align-self:flex-start; }
+.yono-nav { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:7px; position:relative; margin-top:auto; padding:16px 8px 12px; background:#f8f6fb; border-top:1px solid #e5deeb; z-index:1; }
+.yono-nav > div { display:flex; flex-direction:column; align-items:center; gap:7px; text-align:center; font-size:12px; color:#82778d; }
+.yono-nav .qr svg { border-radius:50%; padding:8px; width:48px; height:48px; background:var(--yono); color:white; margin-top:-22px; border:3px solid #f8f6fb; }
+.yono.mpin { color:white; text-align:center; background:linear-gradient(135deg,#321265,#6c1ea4); }
+.yono.mpin .yono-logo { margin:20px 0 14px; }
+.yono.mpin h2 { font-size:23px; margin:12px; }
+.yono.mpin p { margin:0 12px 16px; font-size:18px; }
+.yono.mpin .k-dots { margin:12px 0 16px; }
+.yono-practice-pin { padding:8px 16px; font-size:18px; }
+.yono.mpin .k-keys { margin-top:auto; padding:16px 22px; }
+.yono.mpin .k-keys span { min-height:56px; background:rgba(255,255,255,.17); color:white; }
+.yono-home-top { display:flex; align-items:center; justify-content:space-between; padding:12px 20px; color:var(--yono); }
+.yono-home-top .yono-logo { color:var(--yono); align-items:flex-start; }
+.yono-home-top .yono-logo > b { font-size:30px; }
+.yono-home-top .yono-logo > span { font-size:16px; }
+.yono-stories { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; padding:12px 16px; }
+.yono-stories > div { display:flex; flex-direction:column; align-items:center; gap:6px; text-align:center; }
+.yono-stories > div > span { width:52px; height:52px; display:grid; place-items:center; border:2px solid #a99ac0; border-radius:50%; color:var(--yono); background:#e5ddec; }
+.yono-stories small { font-size:13px; }
+.yono-account-cards { display:grid; grid-template-columns:minmax(250px,80%) minmax(170px,55%); gap:12px; overflow-x:auto; overflow-y:hidden; padding:14px 16px 24px; }
+.yono-transaction,.yono-loans { border-radius:18px; padding:16px; color:white; background:radial-gradient(ellipse at 130% 105%,#a512a4 0 48%,transparent 49%),linear-gradient(120deg,#8c1f89,#690969); }
+.yono-card-label { display:flex; align-items:center; gap:6px; }
+.yono-card-label > span { flex:1; font-size:13px; }
+.yono-card-label button,.yono-savings-row button { min-width:56px; min-height:56px; display:grid; place-items:center; border:0; background:transparent; color:inherit; flex-shrink:0; padding:4px; }
+.yono-transaction small { display:block; margin-top:5px; font-size:16px; }
+.yono-amount { display:block; margin-top:8px; font-size:25px; }
+.yono-card-links { display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-top:12px; }
+.yono-card-links button { border:0; background:transparent; text-decoration:underline; color:white; font-size:18px; min-height:56px; padding:4px 0; font-weight:700; }
+.yono-card-links > span { text-decoration:underline; font-size:15px; }
+.yono-loans { display:flex; flex-direction:column; gap:16px; background:linear-gradient(135deg,#7050a2,#44318b); }
+.yono-loans > b { font-size:25px; }
+.yono.home h3 { font-size:18px; margin:0; }
+.yono.home > h3 { padding:0 16px; }
+.yono-transfer-tabs { display:flex; flex-wrap:wrap; justify-content:space-around; gap:16px; padding:20px 16px 10px; font-size:16px; }
+.yono-dots { text-align:center; color:var(--yono); letter-spacing:6px; }
+.yono-deposits-heading { display:flex; justify-content:space-between; padding:18px 16px 4px; }
+.yono-accounts-header { display:flex; gap:24px; align-items:center; padding:20px; background:#fff; font-size:24px; }
+.yono-accounts-hero { background:radial-gradient(ellipse at 130% 100%,#981bc8 0 50%,transparent 51%),linear-gradient(130deg,#571693,#580c8b); padding:26px 20px 52px; color:white; }
+.yono-accounts-hero p { margin:0 0 15px; font-size:18px; }
+.yono-accounts-hero p span { display:inline-grid; place-items:center; width:26px; height:26px; background:rgba(255,255,255,.2); border-radius:50%; }
+.yono-accounts-hero h2 { font-size:28px; margin:0 0 25px; }
+.yono-accounts-hero > span { font-size:18px; }
+.yono-account-total { display:block; font-size:36px; margin-top:12px; }
+.yono-savings { border-radius:28px 28px 0 0; background:#fff; margin-top:-24px; padding:26px 18px; flex:1; }
+.yono-savings h3 { font-size:22px; font-weight:400; margin:0 0 18px; }
+.yono-savings-row { display:flex; flex-wrap:wrap; align-items:center; gap:4px; border-bottom:1px solid #eee7f1; padding-bottom:24px; color:var(--yono); }
+.yono-account-number { color:#817e85; font-size:18px; }
+.yono-savings-row > b { margin-left:auto; font-size:23px; }
+.yono-apply { display:grid; gap:34px; padding:30px 4px; font-size:18px; color:var(--yono); text-decoration:underline; text-align:center; }
+@media(max-width:359px){.yono-shortcuts{gap:8px;padding-inline:10px}.yono-accounts-hero{padding-inline:16px}.yono-savings{padding-inline:14px}}

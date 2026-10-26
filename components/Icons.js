@@ -1,5 +1,6 @@
 // Simple line icons (no brand logos).
 const P = {
+  fingerprint: <><path d="M5 12a7 7 0 0 1 14 0v3M3 10a9.3 9.3 0 0 1 18 0M7 14v-2a5 5 0 0 1 10 0v4c0 2-.5 3.5-1.5 5M10 21c1.5-2 2-4.5 2-7v-2M7 18c.8-1.5 1-3 1-5M4 15c0 2-1 3-1 3M15 12a3 3 0 0 0-6 0v1M12 3v0"/></>,
   search: <><circle cx="11" cy="11" r="7" /><path d="M21 21l-4.35-4.35" /></>,
   back: <path d="M19 12H5M12 19l-7-7 7-7" />,
   more: <><circle cx="12" cy="5" r="1.3" fill="currentColor" /><circle cx="12" cy="12" r="1.3" fill="currentColor" /><circle cx="12" cy="19" r="1.3" fill="currentColor" /></>,

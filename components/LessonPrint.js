@@ -19,12 +19,13 @@ const picsOn = () => {
   }
 };
 
-export default function LessonPrint({ lesson, lang, t, variant = 'icon' }) {
+export default function LessonPrint({ lesson, lang, t, variant = 'icon', label, onPrint }) {
   const [job, setJob] = useState(null); // { pics } once asked
   const [msg, setMsg] = useState(false);
   const handout = useRef(null);
 
   const go = () => {
+    onPrint?.();
     const pics = picsOn();
     track('print', { lesson: lesson.id, meta: { pics, from: variant } });
     flushSync(() => { setJob({ pics }); setMsg(true); });
@@ -38,7 +39,9 @@ export default function LessonPrint({ lesson, lang, t, variant = 'icon' }) {
 
   return (
     <>
-      {variant === 'bar' ? (
+      {variant === 'end' ? (
+        <div className="print-bar no-print tips-print"><button className="link-btn print-open" onClick={go}><Icon name="printer" size={24}/> {label || t.printBtn}</button></div>
+      ) : variant === 'bar' ? (
         <div className="print-bar no-print">
           <button className="btn ghost print-open" onClick={go}>
             <Icon name="printer" size={24} /> {t.printBtn}

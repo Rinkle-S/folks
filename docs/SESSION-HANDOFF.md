@@ -1,5 +1,14 @@
 # Nook: session handoff (read this first, then `CLAUDE.md`)
 
+## Full-lesson printing, YONO and voice availability: 26 Oct 2026
+- Owner clarified every Print must print the current lesson or the app/topic lesson set. End Print now uses full LessonPrint; app sets match visible ordering; current Read scripts take precedence over older guide copies. Supersedes the older three-tip-handout note below.
+- Rebuilt YONO only from owner screenshots: Login with MPIN, six practice digits, View Accounts, visible balances, safety check. Home eye masks combined balance; Accounts eye masks account number. Removed invented extra balance action and transactions panel. Scroll content/nav separated to protect highlights; tested at 320/360/390/393/1366 widths in EN/HI/ML.
+- Removed redundant safety-script lead-ins, Title Cased lost-money Next labels, renamed topic Common Icons & Play Store. Owner explicitly deferred the red lost-money card; no edits to its component/styles in this release.
+- Added distinct per-lesson OG preview PNGs, preserving canonical copied links. Messaging apps may cache old previews.
+- Real native voice inventory here contained English only; live TTS/STT probes are disabled. Missing HI/ML voices previously allowed browser default-language fallback. Now wait for delayed voices, require a matching language, show translated Sound help and pause Watch on failure. FAQ covers Samsung/Android/iPhone voice setup, volume and separate microphone recognition. Sarvam stays off. No physical Samsung audible-pronunciation/microphone claim; controlled voice fixtures cover supported/missing/error paths.
+- Build/ML pass; 135 tutorial control runs, 45 automatic Watch completions, onboarding/end/Learn/Stay safe regressions, 45 full lesson PDFs, exact app/topic print scope/order, per-lesson previews, voice routing/Help/replay and narrow YONO checks pass. Native audio/dialogs/API writes mocked except the silent native voice-inventory investigation. See `docs/LESSON-AUDIT-2026-10-26.md` for evidence, sources and limits.
+- Owner-added PDF/image/ZIP/SPEC files remain untracked and preserved. QA artifacts are outside repo in ../layout-checks/audit-round/. Deferred graphics stash untouched.
+
 ## Lost-money entry card spacing: 26 Oct 2026
 - Owner clarified the red lost-money card, not bottom navigation. Made the shared entry card at least 152px tall with 20px padding, a top-aligned phone icon, separate question/Call 1930/supporting lines and a centred chevron. Keeps opening the same guide at step 1.
 - EN/HI/ML new question string supplied. Verified Home, reading-page help and completion placements at 320/390/538/1366 widths, all text inside the card and reachable above navigation. Build and Malayalam check pass. No navigation or practice-player changes.

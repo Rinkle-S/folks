@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useParams } from 'next/navigation';
 import Icon from '@/components/Icons';
+import VoiceNotice from '@/components/VoiceNotice';
 import ScamHelpEntry from '@/components/ScamHelpEntry';
 import { SAFE_LESSONS, SAFE_UI, markDone } from '@/lib/safeLessons';
 import { T } from '@/lib/i18n';
@@ -150,7 +151,7 @@ function Lesson({ id }) {
   return (
     <div className="page ss ss-fit" data-l={lang} style={{ paddingBottom: 0 }}>
       <Top u={u} onListen={() => speak(readText(), lang)} />
-      <div className="ss-content" ref={scroll}>
+      <div className="ss-content" ref={scroll}><VoiceNotice lang={lang}/>
         {page <= 4 && (
           <>
             {meta}

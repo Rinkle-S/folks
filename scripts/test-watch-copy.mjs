@@ -25,7 +25,7 @@ async function context(lang,width,voice=false){
   await c.addInitScript(({lang,voice})=>{
     localStorage.setItem('folks_lang',lang);localStorage.setItem('folks_mute_v2',voice?'0':'1');localStorage.setItem('folks_onboarded','1');
     window.__spoken=[];window.__hold='';window.__utterance=null;
-    window.SpeechSynthesisUtterance=class{constructor(text){this.text=text;}};speechSynthesis.getVoices=()=>[];speechSynthesis.cancel=()=>{};speechSynthesis.resume=()=>{};
+    window.SpeechSynthesisUtterance=class{constructor(text){this.text=text;}};speechSynthesis.getVoices=()=>['en-IN','hi-IN','ml-IN'].map(lang=>({lang,name:lang+' test voice',localService:true}));speechSynthesis.cancel=()=>{};speechSynthesis.resume=()=>{};
     speechSynthesis.speak=u=>{if(u.text.trim()){window.__spoken.push(u.text);window.__utterance=u;}if(!window.__hold||!u.text.startsWith(window.__hold))setTimeout(()=>u.onend?.(),0);};
     window.Audio=class{play(){return Promise.resolve()}pause(){}load(){}addEventListener(){}removeEventListener(){}};
     const timer=setTimeout;window.setTimeout=(fn,ms,...args)=>timer(fn,ms===450?1:ms,...args);

@@ -9,6 +9,7 @@ import { LANGS } from '@/lib/langs';
 import { FIRST_GOALS } from '@/lib/flowV2';
 import { saveProfile } from '@/lib/profile';
 import { speak, stopSpeaking, track } from '@/lib/client';
+import VoiceNotice from './VoiceNotice';
 
 export default function Onboarding({ lang, setLang, onDone }) {
   const [step, setStep] = useState(1);
@@ -46,6 +47,7 @@ export default function Onboarding({ lang, setLang, onDone }) {
     </> : <>
       <div className="ob-content"><h1>{t.obTryTitle}</h1><p>{t.obTrySub}</p><div className="ob-phone"><div className="ob-phone-banner">{t.obPracticePhone}</div><div className="ob-phone-body"><span className="ob-shop-icon"><Icon name="shop" size={30}/></span><p>{t.obPaying}</p><b>{t.obShop}</b><strong>₹10</strong><div className="ob-pay-wrap"><button className="btn primary ob-pay" onClick={()=>{stopSpeaking();track('onboarding_try_tapped');setSuccess(true);}}>{t.obPay}</button><span className="ob-point" aria-hidden="true"><Icon name="hand" size={40}/></span></div></div></div>
         <div className="ob-voice"><b>{t.obTapPay}</b><button onClick={()=>speak(t.obTapPay,lang,{force:true})}><Icon name="volume"/>{t.obListen}</button></div>
+        <VoiceNotice lang={lang}/>
       </div><div className="ob-actions">{next(()=>setStep(3),t.obSkip,true)}</div>
     </> : step === 3 ? <>
       <div className="ob-content"><h1>{t.obNameQ}</h1><p>{t.obNameSubV2}</p><label className="ob-name-label" htmlFor="ob-name">{t.obNameLabel}</label><input id="ob-name" className="name-input" value={name} onChange={e=>setName(e.target.value)} maxLength={30} autoComplete="given-name"/>

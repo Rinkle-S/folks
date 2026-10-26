@@ -21,7 +21,7 @@ async function setup(lang,width=390,height=844,onboarded=false){
     const fetchOriginal=window.fetch;window.fetch=(url,options)=>{if(String(url).includes('/api/event')&&options?.body){const events=window.__events;events.push(JSON.parse(options.body));sessionStorage.setItem('__test_events',JSON.stringify(events));}return fetchOriginal(url,options);};
     window.__spoken=[];window.__shares=[];window.__copies=[];window.__print=[];
     window.SpeechSynthesisUtterance=class{constructor(text){this.text=text;}};
-    speechSynthesis.getVoices=()=>[];speechSynthesis.resume=()=>{};speechSynthesis.cancel=()=>{};speechSynthesis.speak=u=>{if(u.text.trim())window.__spoken.push(u.text);setTimeout(()=>u.onend?.(),0);};
+    speechSynthesis.getVoices=()=>['en-IN','hi-IN','ml-IN'].map(lang=>({lang,name:lang+' test voice',localService:true}));speechSynthesis.resume=()=>{};speechSynthesis.cancel=()=>{};speechSynthesis.speak=u=>{if(u.text.trim())window.__spoken.push(u.text);setTimeout(()=>u.onend?.(),0);};
     window.Audio=class{play(){return Promise.resolve()}pause(){}load(){}addEventListener(){}removeEventListener(){}};
     Object.defineProperty(navigator,'share',{configurable:true,value:async data=>{window.__shares.push(data);}});
     Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText:async text=>window.__copies.push(text)}});

@@ -7,6 +7,7 @@ import AppIcon from './AppIcon';
 import { buildCards } from '@/lib/followCards';
 import { speak, track } from '@/lib/client';
 import Icon from './Icons';
+import VoiceNotice from './VoiceNotice';
 
 export default function FollowView({ lesson, lang, t, onDone, onPractice }) {
   const [open, setOpen] = useState({});
@@ -36,6 +37,7 @@ export default function FollowView({ lesson, lang, t, onDone, onPractice }) {
 
   return (
     <div className="read">
+      <VoiceNotice lang={lang}/>
       <div className="read-head">
         <span className="follow-app">
           <AppIcon app={lesson.app} size={30} /> {lesson.appName}

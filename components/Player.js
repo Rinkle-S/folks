@@ -16,6 +16,8 @@ import { sentences } from '@/lib/sentences';
 import { prepareRingtone, startRingtone } from '@/lib/ringtone';
 import Settings from './Settings';
 import LessonEnd from './LessonEnd';
+import VoiceNotice from './VoiceNotice';
+import {voiceStatus} from '@/lib/voice';
 import FollowView from './FollowView';
 import LessonPrint from './LessonPrint';
 import Icon from './Icons';
@@ -175,6 +177,14 @@ function PlayerInner({ id }) {
 
   useEffect(() => () => stopSpeaking(), []);
   useEffect(() => onSpeaking(setTalking), []);
+  useEffect(()=>{
+    if(!watching||muted)return;
+    const check=issue=>{if(issue?.lang===lang)setPaused(true);};
+    check(voiceStatus.issue);
+    const receive=e=>check(e.detail);
+    window.addEventListener('folks-voice-issue',receive);
+    return()=>window.removeEventListener('folks-voice-issue',receive);
+  },[watching,muted,lang]);
 
   useEffect(() => {
     const c = coachRef.current;
@@ -566,6 +576,7 @@ function PlayerInner({ id }) {
         <div className="scene-copy">{(() => { let offset = 0; return lesson.scene.say[lang].split(/\n\n/).map((p, i) => <p key={i}>{sentences(p).map((s, j) => { const at = offset++; return <span key={j} className={spoken.text === lesson.scene.say[lang] && spoken.index === at ? 'say-now' : undefined}>{s}{' '}</span>; })}</p>); })()}</div>
         <button className="btn primary" onClick={() => { stopSpeaking(); if (lesson.steps.some(s => s.autoAdvanceMs) && !muted) prepareRingtone(); setShowScene(false); }}>{t.sceneReady}</button>
         <button className="link-btn scene-listen" onClick={() => speak(lesson.scene.say[lang], lang, { force: true })}>{t.listen}</button>
+        <VoiceNotice lang={lang}/>
       </main>
       {leaveDialog}
     </div>
@@ -664,6 +675,7 @@ function PlayerInner({ id }) {
       </div>
 
       <div className={`coach ${showHint ? 'hinting' : ''}`} ref={coachRef}>
+        <VoiceNotice lang={lang}/>
         {safetyQuestion && <div className="safety-heading"><Icon name="shieldCheck" size={30} /><div><h2>{t.safetyHeading}</h2><p>{safetySub}</p></div></div>}
         <p className="coach-text">
           {spoken.text === coachText && sentences(coachText).length > 1

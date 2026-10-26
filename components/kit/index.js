@@ -6,9 +6,14 @@ import * as M from './Money';
 import * as TR from './Travel';
 import * as L from './Lessons';
 import * as ST from './Store';
+import {YonoWelcome,YonoMpin,YonoHome,YonoAccounts} from '../screens/Yono';
 import { GpScan, GpChat } from '../screens/GPay';
 
 export const KIT = {
+  'yono-welcome':YonoWelcome,
+  'yono-mpin':YonoMpin,
+  'yono-home':YonoHome,
+  'yono-accounts':YonoAccounts,
   'and-home': A.AHome,
   'and-settings': A.SetMain,
   'and-page': A.SetPage,

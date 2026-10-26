@@ -6,7 +6,6 @@ import Icon from './Icons';
 import AppIcon from './AppIcon';
 import { AppBar, BottomNav } from './AppShell';
 import PrintBar from './PrintBar';
-import { idsForApp } from '@/lib/printable';
 import { LESSONS, APPS } from '@/lib/lessons';
 import { ALL_APPS } from '@/lib/apps';
 import { T } from '@/lib/i18n';
@@ -77,7 +76,7 @@ export default function AppLessons({ app }) {
         <section className="learn-helper" aria-labelledby="learn-helper-title">
           <h2 id="learn-helper-title">{t.appHelperTitle}</h2>
           <Link className="btn helper-send" href={`/send?app=${encodeURIComponent(app)}&lang=${lang}`}><Icon name="share" size={22} />{t.appSendLesson}</Link>
-          <PrintBar lang={lang} t={t} ids={idsForApp(app)} heading={info.name} />
+          <PrintBar lang={lang} t={t} ids={list.map(lesson=>lesson.id)} heading={info.name} />
         </section>
       </main>
       <BottomNav active="learn" t={t} />
