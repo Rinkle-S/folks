@@ -63,7 +63,7 @@
 .yono-loans { display:flex; flex-direction:column; gap:16px; background:linear-gradient(135deg,#7050a2,#44318b); }
 .yono-loans > b { font-size:25px; }
 .yono.home h3 { font-size:18px; margin:0; }
-.yono.home > h3 { padding:0 16px; }
+.yono.home > h3,.yono.home > .yono-scroll > h3 { padding:0 16px; }
 .yono-transfer-tabs { display:flex; flex-wrap:wrap; justify-content:space-around; gap:16px; padding:20px 16px 10px; font-size:16px; }
 .yono-dots { text-align:center; color:var(--yono); letter-spacing:6px; }
 .yono-deposits-heading { display:flex; justify-content:space-between; padding:18px 16px 4px; }
