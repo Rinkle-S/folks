@@ -45,6 +45,8 @@ walk(GUIDES, 'GUIDES');
 walk((await load('lib/scamHelp.js')).SCAM_HELP, 'SCAM_HELP');
 walk((await load('lib/help.js')).HELP, 'HELP');
 walk((await load('lib/voiceMessages.js')).VOICE_MESSAGES, 'VOICE_MESSAGES');
+const {VISUAL_UI,VISUAL_CASES}=await load('lib/safeVisuals.js');
+walk(VISUAL_UI,'VISUAL_UI');walk(VISUAL_CASES,'VISUAL_CASES');
 const { SAFE_PROGRESS } = await load('lib/safeLessons.js');
 for (const key of Object.keys(SAFE_PROGRESS.en)) {
   const ml = SAFE_PROGRESS.ml[key];

@@ -7,19 +7,23 @@ import ScamHelpEntry from '@/components/ScamHelpEntry';
 import { AppBar, BottomNav } from '@/components/AppShell';
 import { SAFE_LESSONS, SAFE_UI, readDone, readSafePages, SAFE_PROGRESS } from '@/lib/safeLessons';
 import { T } from '@/lib/i18n';
+import {visualUi,readVisualDone,VISUAL_CASES} from '@/lib/safeVisuals';
 import { useLang, track } from '@/lib/client';
 
 export default function StaySafe() {
   const [lang] = useLang();
   const [done, setDone] = useState([]);
   const [pages,setPages]=useState({});
+  const [visualDone,setVisualDone]=useState([]);
   useEffect(() => {setDone(readDone());setPages(readSafePages());}, []);
+  useEffect(()=>setVisualDone(readVisualDone()),[]);
 
   if (!lang) return <div className="page" />;
   const t = T[lang];
   const u = SAFE_UI[lang];
   const doneCount = SAFE_LESSONS.filter((l) => done.includes(l.id)).length;
   const progress=SAFE_PROGRESS[lang];
+  const visual=visualUi(lang);
 
   return (
     <div className="shell">
@@ -63,6 +67,11 @@ export default function StaySafe() {
           <Icon name="chevron" size={22}/>
         </Link>
 
+        <Link href="/scams/practice" className="ss-tile sv-entry">
+          <div className="ic" aria-hidden="true"><Icon name="hand" size={28}/></div>
+          <div className="tx"><b>{visual.title}</b><span>{visualDone.length===VISUAL_CASES.length?visual.completed:visual.subtitle}</span></div>
+          <Icon name="chevron" size={22}/>
+        </Link>
         <ScamHelpEntry lang={lang} from="home"/>
       </main>
       <BottomNav active="safe" t={t} />

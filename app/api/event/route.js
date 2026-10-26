@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import { authHeaders } from '@/lib/supabase';
 
 const ALLOWED = new Set([
+  'safe_visual_open', 'safe_visual_answer', 'safe_visual_done',
   'lesson_completed', 'lesson_feedback', 'scam_help_opened', 'scam_help_step', 'scam_help_call_1930', 'lesson_end_action', 'lesson_send', 'onboarding_goal', 'onboarding_try_tapped',
   'lesson_start',
   'step_done',
