@@ -1,5 +1,9 @@
 # Nook: session handoff (read this first, then `CLAUDE.md`)
 
+## Visual activity desktop width correction: 26 Oct 2026
+- Owner reported the new activity intro was wider than normal and the QR card covered it. Confirmed live: activity wrapper 600px, regular shell/nav 480px; QR starts centre +280px, causing 20px overlap. Removed only the `.sv-shell` max-width override so it inherits the standard 480px shell. No typography, controls, content or global QR changes.
+- Verified corrected page/nav are 480px with a 40px QR gap at 1100/1366/1920 widths. Added explicit shell/nav/QR collision assertions on intro and all practice screens; previous overflow-only checks had missed the collision. Production build, ML, all choices and 15 EN/HI/ML phone/landscape/desktop flow cases pass. Screenshot: ../layout-checks/safe-visual-width-fix/desktop-intro.png.
+
 ## Three visual Stay safe decisions: 26 Oct 2026
 - Owner approved exactly three interactive screens after research and overlap review: genuine Maps location permission, the cleaner advertisement with a frozen timer, and the India Post address-update message. This explicitly authorizes the addition despite the standing no-new-lessons rule. No AutoPay or new FAQ.
 - `/scams/practice`, entered through a separate What would you tap? card on Stay safe. Short spoken intro/Ready, three tappable code-native screens, kind feedback/Next, three reminders and return/repeat. English/Hindi/Malayalam throughout, matching voice registration, sentence highlighting and existing Sound help.

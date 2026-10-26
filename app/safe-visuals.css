@@ -1,7 +1,6 @@
 /* Only the three visual decisions and their entry card. No practice-player changes. */
 .ss-home .sv-entry .ic { background:#e8e0f4; color:#63408c; }
 .ss-home .sv-entry { background:#f4eff9; border-color:#d6c8e7; }
-.sv-shell { max-width:600px; }
 .sv-top { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 20px; flex-wrap:wrap; }
 .sv-top a,.sv-top button,.sv-previous { display:inline-flex; align-items:center; gap:8px; font-size:18px; font-weight:700; min-height:56px; padding:10px 0; color:#0e6659; background:none; border:0; text-decoration:none; cursor:pointer; }
 .sv-top button { border-radius:28px; background:#e1f0ea; padding:12px 16px; }
