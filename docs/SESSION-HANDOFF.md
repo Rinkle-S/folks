@@ -1,5 +1,9 @@
 # Nook: session handoff (read this first, then `CLAUDE.md`)
 
+## Lost-money entry card spacing: 26 Oct 2026
+- Owner clarified the red lost-money card, not bottom navigation. Made the shared entry card at least 152px tall with 20px padding, a top-aligned phone icon, separate question/Call 1930/supporting lines and a centred chevron. Keeps opening the same guide at step 1.
+- EN/HI/ML new question string supplied. Verified Home, reading-page help and completion placements at 320/390/538/1366 widths, all text inside the card and reachable above navigation. Build and Malayalam check pass. No navigation or practice-player changes.
+
 ## Scam help, completion and sharing: 26 Oct 2026
 - Built `/scams/help` from the supplied six-step brief and six mockups, reusing Icons, PrintBar and tracking. Home, reading-page help, reading completions and test completion open step 1. Every step has a real 1930 link, a takeaway and pinned Back/Next; final step has Print/Send/Done. All new UI in EN/HI/ML.
 - Verified official RBI/helpline/Chakshu/StopNCII sources and corrected overbroad claims. Current NCRP entry says Register a Complaint; a separate financial-fraud category label was not exposed before consent, so no unverified placeholder was used. See `docs/SCAM-HELP-REVIEW.md` for sources and acceptance results.

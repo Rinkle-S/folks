@@ -28,11 +28,16 @@
 .ss-fit .ss-meta span { white-space:normal; overflow:visible; }
 .ss-fit .ss-meta b { flex-shrink:1; }
 .ss-fit .ss-btn { min-height:56px; }
-.scam-help-entry { gap:12px; }
-.ss-fit .ss-help .scam-help-entry { min-height:56px; flex-shrink:0; }
+.ss .scam-help-entry { gap:14px; padding:20px; min-height:152px; align-items:flex-start; border-radius:20px; }
+.ss-fit .ss-help .scam-help-entry { min-height:152px; flex-shrink:0; }
+.ss .scam-help-entry .ic { width:44px; height:44px; margin-top:2px; }
+.ss .scam-help-entry > svg { flex-shrink:0; align-self:center; }
 .scam-help-entry > span:nth-child(2) { flex:1; min-width:0; }
 .scam-help-entry b,.scam-help-entry small { display:block; }
-.scam-help-entry small { font-size:18px; margin-top:4px; }
+.ss[data-l] .scam-help-entry b { font-size:21px; line-height:1.4; }
+.scam-help-entry-action { display:block; font-size:23px; line-height:1.35; font-weight:800; margin-top:8px; }
+.ss .scam-help-entry small,.ss-fit .ss-help .scam-help-entry small { display:block; font-size:18px; line-height:1.45; margin-top:10px; }
+@media(max-width:359px){ .ss .scam-help-entry { padding:18px 16px; gap:10px; } }
 .scam-help { height:100dvh; min-height:100dvh; display:flex; flex-direction:column; padding:0 20px; }
 .scam-help-top { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:6px 12px; padding:8px 0; flex-shrink:0; }
 .scam-help-top .ss-back { min-height:56px; padding:8px 0; font-size:18px; }
