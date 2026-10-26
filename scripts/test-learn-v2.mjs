@@ -76,10 +76,10 @@ try {
     assert.equal(await page.locator('.greet').textContent(),(await page.locator('.greet').textContent()).replace('🙏',''));
     assert.equal(await page.locator('.home-h').textContent(),T[lang].learnHomeTitle);
     assert.equal(await page.locator('.askbar input').getAttribute('placeholder'),T[lang].learnTypePlaceholder);
-    assert.ok((await page.locator('[data-app="gpay"] .tile-learned').textContent()).includes(T[lang].learned));
+    assert.equal(await page.locator('[data-app="gpay"] small').textContent(),T[lang].progressAllDone);assert.equal(await page.locator('[data-app="gpay"] .progress-check').count(),1);
     assert.equal(await page.locator('[data-app="whatsapp"] small').textContent(),T[lang].appDoneOf(2,3));
     assert.equal(await page.locator('[data-app="whatsapp"] [role="progressbar"]').getAttribute('aria-valuenow'),'2');
-    assert.equal(await page.locator('[data-app="uber"] small').textContent(),T[lang].appNewProgress(4));
+    assert.equal(await page.locator('[data-app="uber"] small').textContent(),T[lang].lessonsN(4));
     assert.equal(await page.locator('.resume-card').getAttribute('href'),'/lesson/video-call?resume=1');
     await audit(page,`${lang} ${width} home`);
     if(output)await page.screenshot({path:`${output}/${lang}-${width}-home.png`,fullPage:true});
@@ -120,16 +120,16 @@ try {
     }
     await page.goto(`${base}/app/whatsapp`);await page.locator('.print-open').click();await page.waitForFunction(()=>window.__printed===true);
     if(lang==='en'&&width===390){
-      // Settings remains the only place to change app order. Reordering and progress changes persist without moving other tiles.
+      // Settings and the Home CTA open the same app picker. Reordering and progress changes persist without moving other tiles.
       await page.goto(base);await page.getByRole('button',{name:T.en.settingsLabel,exact:true}).click();
-      await page.locator('.settings-row').filter({hasText:'My apps'}).getByRole('button').click();
+      await page.locator('.settings-row').filter({hasText:T.en.chooseApps}).getByRole('button').click();
       await page.locator('.order-row').nth(1).getByRole('button',{name:`Uber ${T.en.moveUp}`,exact:true}).click();
       await page.locator('.settings > .btn.primary').click();
       const reordered=['uber','whatsapp','gpay','maps','yono','phone'];
       assert.deepEqual(await page.locator('.app-tile').evaluateAll(es=>es.map(e=>e.dataset.app)),reordered);
       await page.evaluate(ids=>localStorage.setItem('folks_done',JSON.stringify(ids)),Object.keys(LESSONS));await page.reload();
       await page.locator('.app-grid').waitFor();assert.deepEqual(await page.locator('.app-tile').evaluateAll(es=>es.map(e=>e.dataset.app)),reordered);
-      assert.equal(await page.locator('.tile-learned').count(),APPS.length);
+      assert.equal(await page.locator('.app-tile .progress-check').count(),APPS.length);
       await page.goto(`${base}/app/whatsapp`);await page.locator('.app-head').waitFor();assert.equal(await page.locator('.up-next').count(),0);
       await page.evaluate(()=>localStorage.setItem('folks_done','[]'));await page.reload();await page.locator('.up-next').waitFor();assert.equal(await page.locator('.up-next').count(),1);
       await page.goto(`${base}/app/phone`);await page.locator('.app-head').waitFor();await audit(page,'Phone basics app');

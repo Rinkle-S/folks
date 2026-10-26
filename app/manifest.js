@@ -2,7 +2,7 @@ export default function manifest() {
   return {
     name: 'Nook: your cozy corner for everyday learning',
     short_name: 'Nook',
-    description: 'Practise everyday phone tasks safely, with voice guidance, in English and Hindi.',
+    description: 'Practise everyday phone tasks safely, with voice guidance, in English, Hindi and Malayalam.',
     start_url: '/',
     scope: '/',
     display: 'standalone',

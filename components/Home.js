@@ -516,15 +516,16 @@ export default function Home() {
             const d = list.filter((l) => done.includes(l.id)).length;
             return (
               <Link key={app.id} href={`/app/${app.id}`} className="app-tile" data-app={app.id}>
-                <AppIcon app={app.id} size={56} />
+                <span className="tile-icon"><AppIcon app={app.id} size={56} />{list.length > 0 && d === list.length && <span className="progress-check"><Icon name="check" size={18} stroke={3}/></span>}</span>
                 <b>{app.name}</b>
-                {list.length > 0 && d === list.length ? <small className="tile-learned"><Icon name="check" size={18} stroke={3} />{t.learned}</small> : d > 0 ? <><small>{t.appDoneOf(d, list.length)}</small><span className="tile-progress" role="progressbar" aria-label={app.name} aria-valuenow={d} aria-valuemin={0} aria-valuemax={list.length}><span style={{ width: `${d / list.length * 100}%` }} /></span></> : <small>{t.appNewProgress(list.length || gn)}</small>}
+                <span className="tile-progress" role="progressbar" aria-label={app.name} aria-valuenow={d} aria-valuemin={0} aria-valuemax={list.length || gn}><span style={{width:`${d / (list.length || gn) * 100}%`}}/></span>
+                <small>{d === list.length && list.length ? t.progressAllDone : d > 0 ? t.appDoneOf(d,list.length) : t.lessonsN(list.length || gn)}</small>
               </Link>
             );
           })}
         </div>
 
-        <p className="apps-settings-hint">{t.appsSettingsHint}</p>
+        <button className="choose-learning-apps link-btn" onClick={()=>setShowApps(true)}>{t.chooseApps}<Icon name="chevron" size={22}/></button>
 
         <section className="home-topics">
           <header className="learn-section-h"><h2>{t.pickTopic}</h2><p>{t.topicSectionSub}</p></header>

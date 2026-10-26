@@ -292,7 +292,7 @@ export function IconBoard({ done }) {
 export function IconSame({ icon = 'search', what = 'Search' }) {
   const bars = [
     ['youtube', 'YouTube'],
-    ['phonepe', 'Play Store'],
+    ['playstore', 'Play Store'],
     ['whatsapp', 'WhatsApp'],
   ];
   return (
@@ -301,13 +301,7 @@ export function IconSame({ icon = 'search', what = 'Search' }) {
       <div className="k-icons-h">The same icon, in every app</div>
       {bars.map(([a, n]) => (
         <div key={a} className="k-same-row">
-          {a === 'phonepe' ? (
-            <span className="k-play-logo">
-              <Icon name="play" size={20} />
-            </span>
-          ) : (
-            <AppIcon app={a} size={36} />
-          )}
+          {a === 'youtube' ? <span className="app-icon" style={{width:36,height:36,background:'#fff'}} aria-hidden="true"><svg viewBox="0 0 32 24" width="30" height="24"><rect x="1" y="2" width="30" height="20" rx="6" fill="#ff0033"/><path d="M13 7l9 5-9 5z" fill="white"/></svg></span> : <AppIcon app={a} size={36}/> }
           <b>{n}</b>
           <span className="k-same-ic">
             <Icon name={icon} size={26} stroke={2} />

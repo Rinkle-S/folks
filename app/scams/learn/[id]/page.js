@@ -6,7 +6,7 @@ import { useRouter, useParams } from 'next/navigation';
 import Icon from '@/components/Icons';
 import VoiceNotice from '@/components/VoiceNotice';
 import ScamHelpEntry from '@/components/ScamHelpEntry';
-import { SAFE_LESSONS, SAFE_UI, markDone } from '@/lib/safeLessons';
+import { SAFE_LESSONS, SAFE_UI, markDone, readDone, readSafePages, saveSafePage } from '@/lib/safeLessons';
 import { T } from '@/lib/i18n';
 import { useLang, speak, stopSpeaking, track, vibrate, whatsappLink } from '@/lib/client';
 
@@ -75,6 +75,9 @@ function Lesson({ id }) {
   const L = SAFE_LESSONS[idx];
   const next = SAFE_LESSONS[idx + 1];
   const [page, setPage] = useState(1); // 1 to 3 reading pages, 4 quick check, 5 up next
+  const [restored,setRestored]=useState(false);
+  useEffect(()=>{const p=readSafePages()[id];setPage(!readDone().includes(id)&&Number.isInteger(p)?Math.max(1,Math.min(4,p)):1);setRestored(true);},[id]);
+  useEffect(()=>{if(restored&&page<=4)saveSafePage(id,page);},[restored,page,id]);
   const [picked, setPicked] = useState(null);
   const [left, setLeft] = useState(AUTO_SECONDS);
   const [auto, setAuto] = useState(true);
@@ -93,11 +96,11 @@ function Lesson({ id }) {
   }
 
   useEffect(() => {
-    if (!lang || !L) return;
+    if (!lang || !L || !restored) return;
     speak(readText(), lang);
     window.scrollTo(0, 0);
     scroll.current?.scrollTo(0,0);
-  }, [page, lang]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [page, lang, restored]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => () => stopSpeaking(), []);
 

@@ -45,6 +45,12 @@ walk(GUIDES, 'GUIDES');
 walk((await load('lib/scamHelp.js')).SCAM_HELP, 'SCAM_HELP');
 walk((await load('lib/help.js')).HELP, 'HELP');
 walk((await load('lib/voiceMessages.js')).VOICE_MESSAGES, 'VOICE_MESSAGES');
+const { SAFE_PROGRESS } = await load('lib/safeLessons.js');
+for (const key of Object.keys(SAFE_PROGRESS.en)) {
+  const ml = SAFE_PROGRESS.ml[key];
+  const values = typeof ml === 'function' ? [ml(1), ml(4)] : [ml];
+  if (values.some(v => !v || DEVANAGARI.test(String(v)))) problems.push(`Missing or invalid Malayalam safety progress: ${key}`);
+}
 for (const s of ML_MISSING) problems.push(`no Malayalam translation yet: ${s.slice(0, 70)}`);
 for (const k of Object.keys(T.en)) if (!(k in ML_UI)) problems.push(`UI text missing in lib/i18nMl.js: ${k}`);
 for (const [k, v] of Object.entries(ML_UI)) if (typeof v === 'string' && DEVANAGARI.test(v)) problems.push(`Hindi letters in UI text: ${k}`);

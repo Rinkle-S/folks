@@ -77,20 +77,20 @@ try{
   assert.equal(await p.evaluate(()=>localStorage.getItem('folks_from')),null,'Entry source must not replace the caregiver name');
   await p.goto(base);await p.getByRole('button',{name:T[lang].settingsLabel,exact:true}).click();assert.equal(await p.locator('.settings').getByText(T[lang].installApp,{exact:true}).count(),0);assert.equal(await p.locator('.voice-speed select option').count(),3);await p.locator('.settings > .primary').click();
   // Completing a later reading lesson first still fills progress from the left.
-  await p.evaluate(id=>localStorage.setItem('folks_safe_done',JSON.stringify([id])),SAFE_LESSONS[1].id);await p.goto(`${base}/scams`);await p.locator('.ss-bars .on').waitFor();assert.equal(await p.locator('.ss-bars i').first().getAttribute('class'),'on');
+  await p.evaluate(id=>localStorage.setItem('folks_safe_done',JSON.stringify([id])),SAFE_LESSONS[1].id);await p.goto(`${base}/scams`);await p.waitForFunction(()=>document.querySelector('.ss-bars')?.getAttribute('aria-valuenow')==='1');assert.equal(await p.locator('.ss-total-fill').evaluate(e=>e.style.width),'33.3333%');
   // Both entry paths open the first screen, never a previous step.
-  await p.goto(`${base}/scams`);if(out&&width===390)await shot(p,`${lang}-safe-home`);await p.locator('.scam-help-entry').click();assert.equal(await p.locator('.scam-help-progress').getAttribute('aria-valuenow'),'1');
+  await p.goto(`${base}/scams`);if(out&&width===390)await shot(p,`${lang}-safe-home`);await p.locator('.scam-help-next').click();assert.equal(await p.locator('.scam-help-progress').getAttribute('aria-valuenow'),'1');
   for(const l of SAFE_LESSONS){
-   await p.goto(`${base}/scams/learn/${l.id}`);await p.locator('.ss-content').waitFor();
+   await p.evaluate(()=>localStorage.removeItem('folks_safe_pages'));await p.goto(`${base}/scams/learn/${l.id}`);await p.locator('.ss-content').waitFor();
    for(let page=1;page<=3;page++){
     await audit(p,'.ss-fit');assert.equal(await p.locator('.ss-bars .on').count(),page);assert.equal(await p.locator('.ss-bars i').first().evaluate(e=>e.getBoundingClientRect().height),8);
-    if(page===3){await p.locator('.scam-help-entry').click();assert.equal(await p.locator('.scam-help-progress').getAttribute('aria-valuenow'),'1');await p.goto(`${base}/scams/learn/${l.id}`);await p.locator('.ss-foot button').last().click();await p.locator('.ss-foot button').last().click();}
+    if(page===3){await p.locator('.scam-help-next').click();assert.equal(await p.locator('.scam-help-progress').getAttribute('aria-valuenow'),'1');await p.evaluate(()=>localStorage.removeItem('folks_safe_pages'));await p.goto(`${base}/scams/learn/${l.id}`);await p.locator('.ss-foot button').last().click();await p.locator('.ss-foot button').last().click();}
     await p.locator('.ss-foot button').last().click();
    }
    // Quick check and completion retain the filled reading progress.
    assert.equal(await p.locator('.ss-bars .on').count(),3);await p.locator('.ss-foot button').last().click();await audit(p,'.ss-fit');await p.locator('.ss-foot button').last().click();assert.equal(await p.locator('.ss-bars .on').count(),3);
    const stop=p.getByRole('button',{name:SAFE_UI[lang].stop,exact:true});if(await stop.count())await stop.click();
-   assert.equal(await p.locator('.ss-tips li').count(),3);await p.locator('.scam-help-entry').click();assert.equal(await p.locator('.scam-help-progress').getAttribute('aria-valuenow'),'1');
+   assert.equal(await p.locator('.ss-tips li').count(),3);await p.locator('.scam-help-next').click();assert.equal(await p.locator('.scam-help-progress').getAttribute('aria-valuenow'),'1');
   }
   await p.goto(`${base}/scams/test`);await p.locator('.ss-q-bars').waitFor();
   for(let i=1;i<=6;i++){assert.equal(await p.locator('.ss-q-bars .on').count(),i);await audit(p,'.ss-fit');await p.locator('.ss-foot button').first().click();await audit(p,'.ss-fit');await p.locator('.ss-foot button').click();}

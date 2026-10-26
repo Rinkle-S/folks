@@ -1,0 +1,27 @@
+/* Progress references: preserve the app order; status never changes navigation. */
+.learn-home .app-tile { padding:18px 12px; gap:12px; }
+.learn-home .app-tile b { min-height:2.5em; display:flex; align-items:center; justify-content:center; }
+.learn-home .app-tile small { font-size:18px; }
+.tile-icon,.safe-progress-icon { position:relative; }
+.progress-check { position:absolute; right:-7px; bottom:-7px; width:27px; height:27px; border:3px solid white; border-radius:50%; background:#187b49; color:white; display:grid; place-items:center; }
+.learn-home .tile-progress { margin-top:auto; width:90%; height:8px; border-radius:8px; }
+.choose-learning-apps { display:flex; align-items:center; gap:8px; min-height:56px; margin-top:12px; font-size:18px; text-align:left; }
+.ss-home > .ss-bars { display:block; height:9px; border-radius:9px; background:#dfe4df; overflow:hidden; }
+.ss-home > .ss-bars > .ss-total-fill { display:block; height:100%; background:var(--ss-green,#0e6b5c); border-radius:inherit; }
+.ss-home .ss-tile { flex-wrap:nowrap; gap:16px; padding:18px 16px; }
+.ss-home .ss-tile .tx { flex:1; min-width:0; }
+.ss-home .ss-tile > svg { flex-shrink:0; }
+.ss-home .ss-tile .safe-progress-icon { width:52px; height:52px; flex-shrink:0; background:#e0f0ea; color:#0e6b5c; overflow:visible; }
+.ss-home[data-l] .ss-tile .tx .safe-tile-progress { display:block; height:8px; background:#dfe4df; border-radius:8px; overflow:hidden; margin:10px 0 8px; }
+.safe-tile-progress > i { display:block; height:100%; background:#0e6b5c; border-radius:inherit; }
+.ss-home .ss-tile.now { border:2px solid #0e6b5c; }
+.ss-home .ss-tile .safe-continue { color:#0e6b5c; font-weight:700; }
+.ss .scam-help-entry { display:block; min-height:0; height:auto; padding:16px; margin-top:16px; border:1px solid #f0cbce; border-radius:20px; background:#fff0f0; color:#7e1821; }
+.ss-fit .ss-help .scam-help-entry { min-height:0; flex-shrink:0; }
+.ss .scam-help-entry h2 { margin:0 0 14px; font-size:22px; line-height:1.4; color:inherit; }
+.scam-help-actions { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr)); gap:12px; }
+.scam-help-actions a { display:flex; align-items:center; justify-content:center; gap:10px; min-height:56px; padding:12px; border:1px solid #ac2731; border-radius:14px; font-size:18px; font-weight:700; line-height:1.4; text-align:center; text-decoration:none; }
+.scam-help-actions a svg { flex-shrink:0; }
+.scam-help-call { background:#ac2731; color:white; }
+.scam-help-next { background:transparent; color:#8c1e27; }
+@media(max-width:419px){ .learn-home .app-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }

@@ -31,6 +31,7 @@ const P = {
   history: <><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></>,
   balance: <><rect x="1" y="4" width="22" height="16" rx="2" /><path d="M1 10h22" /></>,
   arrow: <path d="M5 12h14M12 5l7 7-7 7" />,
+  chart: <><path d="M3 18l6-6 4 4 8-11M15 5h6v6"/></>,
   backspace: <><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z" /><path d="M18 9l-6 6M12 9l6 6" /></>,
   plus: <path d="M12 5v14M5 12h14" />,
   text: <path d="M4 7V4h16v3M9 20h6M12 4v16" />,

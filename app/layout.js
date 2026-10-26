@@ -23,6 +23,7 @@ import './screens.css';
 import './kit.css';
 import './scam-help.css';
 import './yono.css';
+import './progress-v3.css';
 import PwaBoot from '@/components/PwaBoot';
 import PhoneApp from '@/components/PhoneApp';
 

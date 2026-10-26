@@ -179,7 +179,7 @@ export function AHome({ open, pull, hold, menu, holdEmpty, apps = ['gpay', 'what
           const t = open === id ? `open-${id}` : hold === id ? 'hold' : undefined;
           return (
             <div key={id} className={`ph-app ${hold === id && menu ? 'held' : ''}`} data-t={t}>
-              {sys ? (
+              {id === 'play' ? <AppIcon app="playstore" size={50}/> : sys ? (
                 <span className="ph-sys" style={{ width: 50, height: 50, background: sys.bg }}>
                   <Icon name={sys.icon} size={25} stroke={2.2} />
                 </span>

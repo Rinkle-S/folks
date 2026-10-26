@@ -86,11 +86,11 @@ export default function AppIcon({ app, size = 34 }) {
       aria-hidden="true"
     >
       {custom ? <Glyph app={app} /> : <Icon name={s.icon} size={size * 0.58} stroke={2.2} />}
-      {REAL[app] && state !== 'failed' && (
+      {(REAL[app] || app==='playstore') && state !== 'failed' && (
         <img
           ref={ref}
           className="app-img"
-          src={`${PLAY}${REAL[app]}=s${px}`}
+          src={app==='playstore'?'/icons/playstore.png':`${PLAY}${REAL[app]}=s${px}`}
           width={size}
           height={size}
           alt=""

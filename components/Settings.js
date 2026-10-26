@@ -126,9 +126,9 @@ export default function Settings({ lang, setLang, muted, toggleMute, onClose, on
         </details>
         {onApps && (
           <div className="settings-row">
-            <span>{bi('My apps', 'मेरे ऐप', 'എന്റെ ആപ്പുകൾ')}</span>
+            <span>{T[lang].chooseApps}</span>
             <button className="toggle" onClick={onApps}>
-              {appsLabel || 'Choose'}
+              {bi('Choose', 'चुनिए', 'തിരഞ്ഞെടുക്കൂ')}
             </button>
           </div>
         )}
