@@ -2,6 +2,10 @@
 
 Live: https://nook-learn.vercel.app
 
+Public landing page: https://nook-learn.vercel.app/about
+
+The landing page source is in `website/`, separate from the learning app. `npm run dev` and `npm run build` run `scripts/prepare-website.mjs`, which copies it to the generated `/about` route with its own styles, images, and narrated demo. The generated `public/about/` directory is ignored by Git. Pushing `main` triggers the existing GitHub-to-Vercel deployment for both the app and landing page.
+
 Safe, voice-guided practice for everyday phone tasks for parents aged 55+. They practise with fake money, in English, Hindi or Malayalam, and then do it for real on their own.
 
 HelloPM Buildathon, Oct 2026 · built by Rinkle Sebastian · spec in [SPEC.md](SPEC.md)

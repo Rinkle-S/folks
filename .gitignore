@@ -2,6 +2,7 @@ node_modules
 .next
 .env*.local
 .vercel
+public/about/
 
 # Owner screenshots used while building screens. Never commit them (private).
 docs/reference/

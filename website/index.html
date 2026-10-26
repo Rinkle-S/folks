@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f7f2">
+  <meta name="description" content="Nook helps adults practise everyday phone tasks, from paying at a shop to spotting a suspicious message, with guided steps and pretend screens.">
+  <meta property="og:title" content="Nook — practise the moments that matter">
+  <meta property="og:description" content="A calm place to practise everyday phone tasks before doing them for real.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="/assets/demo-poster.jpg">
+  <title>Nook — practise the moments that matter</title>
+  <link rel="icon" type="image/png" href="/assets/nook-icon.png">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <nav class="nav wrap" aria-label="Main navigation">
+      <a class="brand" href="#top" aria-label="Nook, back to top"><img src="/assets/nook-logo.svg" alt="Nook" width="122" height="40"></a>
+      <div class="nav-links"><a href="#journey">How it works</a><a href="#safe-practice">Stay safe</a><a href="#families">For families</a></div>
+      <a class="nav-cta" href="https://nook-learn.vercel.app/">Open Nook <span aria-hidden="true">↗</span></a>
+    </nav>
+  </header>
+  <main id="main">
+    <section class="hero wrap" id="top">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="eyebrow-dot"></span> A little practice. More independence.</p>
+        <h1>One wrong tap shouldn’t feel like a big risk.</h1>
+        <p class="hero-lede">At a shop, a payment screen asks what to do next. A message looks urgent. The advice to “just tap here” is harder to remember when you’re on your own.</p>
+        <p class="hero-solution">Nook lets your parent practise those moments first—on a pretend phone, at their own pace.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="https://nook-learn.vercel.app/">Try Nook for free <span aria-hidden="true">↗</span></a>
+          <a class="button button-plain" href="#demo"><span class="play-mark" aria-hidden="true">▶</span> Watch the 1-minute demo</a>
+        </div>
+        <p class="micro">Works in a browser. Practice payments use pretend money.</p>
+      </div>
+      <div class="hero-visual" aria-label="Nook practice lesson preview">
+        <div class="hero-orbit orbit-one"></div><div class="hero-orbit orbit-two"></div>
+        <div class="phone-frame hero-phone"><img src="/assets/phone-home.jpg" alt="Nook's practice phone highlighting the Google Pay icon in a lesson" loading="eager"></div>
+        <div class="hero-note note-top"><span class="note-glyph">①</span><span><b>A familiar screen</b><small>Find the next step together</small></span></div>
+        <div class="hero-note note-bottom"><span class="note-glyph">✓</span><span><b>Nothing real is spent</b><small>Learn before you act</small></span></div>
+      </div>
+    </section>
+
+    <section class="problem-band" aria-labelledby="problem-title">
+      <div class="wrap problem-grid">
+        <div><p class="section-kicker">The everyday problem</p><h2 id="problem-title">Knowing an app exists is different from knowing what to do next.</h2></div>
+        <div class="problem-body"><p>Phone tasks rarely arrive as neat instructions. You have to recognise an icon, read a name, decide whether a prompt is safe, and remember what happens after the next tap.</p><p>Nook breaks that journey into small, repeatable steps, so a parent can learn the action—not just hear an explanation once.</p></div>
+      </div>
+    </section>
+
+    <section class="journey section wrap" id="journey" aria-labelledby="journey-title">
+      <div class="section-head"><p class="section-kicker">A real Nook journey</p><h2 id="journey-title">From “What if I get it wrong?” to “I know the next step.”</h2><p>Here’s how a ₹50 payment at a vegetable shop becomes a safe learning moment.</p></div>
+      <div class="journey-layout">
+        <div class="journey-tabs" role="tablist" aria-label="Stages of a Nook lesson">
+          <button class="journey-tab active" role="tab" aria-selected="true" aria-controls="journey-panel" data-stage="0"><span class="stage-number">01</span><span><b>Start with a scene</b><small>A familiar situation, spoken simply.</small></span></button>
+          <button class="journey-tab" role="tab" aria-selected="false" aria-controls="journey-panel" data-stage="1"><span class="stage-number">02</span><span><b>Choose how to learn</b><small>Practise, watch, or read.</small></span></button>
+          <button class="journey-tab" role="tab" aria-selected="false" aria-controls="journey-panel" data-stage="2"><span class="stage-number">03</span><span><b>Follow the next tap</b><small>Highlights and hints guide the way.</small></span></button>
+          <button class="journey-tab" role="tab" aria-selected="false" aria-controls="journey-panel" data-stage="3"><span class="stage-number">04</span><span><b>Pause for safety</b><small>Check the name; practise a safe choice.</small></span></button>
+          <button class="journey-tab" role="tab" aria-selected="false" aria-controls="journey-panel" data-stage="4"><span class="stage-number">05</span><span><b>Try it for real</b><small>Take what you learned to the real app.</small></span></button>
+        </div>
+        <div class="journey-stage" id="journey-panel" role="tabpanel" tabindex="0" aria-live="polite"><div class="journey-phone phone-frame"><img id="journey-image" src="/assets/scene.jpg" alt="Scene screen for the shop payment lesson"></div><div class="journey-caption"><span id="journey-step">01 / 05</span><p id="journey-description">“You are at a vegetable shop. The shopkeeper asks for ₹50.” Nook tells you the situation before any buttons appear.</p></div></div>
+      </div>
+    </section>
+
+    <section class="demo-section section" id="demo" aria-labelledby="demo-title"><div class="wrap demo-grid"><div class="demo-intro"><p class="section-kicker">See it in motion</p><h2 id="demo-title">Watch a complete practice moment.</h2><p>The narrated demo follows a shop payment from its opening scene through the name check and safety choice. The screens are from Nook’s practice lesson.</p><div class="demo-points"><span>Voiceover + captions</span><span>Real interface</span><span>Pretend payment</span></div></div><div class="video-shell"><video id="product-video" controls playsinline preload="metadata" poster="/assets/demo-poster.jpg" aria-label="Nook product demonstration: practice paying at a shop, with English narration" width="1280" height="720"><source src="/assets/nook-demo.mp4" type="video/mp4"><track kind="captions" src="/assets/nook-demo.vtt" srclang="en" label="English">Your browser does not support video. <a href="/assets/nook-demo.mp4">Download the demo</a>.</video><p>English narration with optional captions. No real payment is made.</p></div></div></section>
+
+    <section class="section wrap modes-section" aria-labelledby="modes-title"><div class="section-head narrow"><p class="section-kicker">Learn your way</p><h2 id="modes-title">One lesson. Three ways through it.</h2><p>Someone can start with a demonstration, try the taps themselves, or keep instructions beside their real phone.</p></div><div class="mode-grid"><article class="mode-card"><span class="mode-symbol">☝</span><h3>Practise it myself</h3><p>Tap through a safe simulation. Nook points to the next control and offers a hint when needed.</p></article><article class="mode-card"><span class="mode-symbol">▶</span><h3>Watch it first</h3><p>See the same steps demonstrated before trying them yourself.</p></article><article class="mode-card"><span class="mode-symbol">≡</span><h3>Read the steps</h3><p>Follow written instructions while using the real app on your phone.</p></article></div></section>
+
+    <section class="safety-section section" id="safety" aria-labelledby="safety-title"><div class="wrap safety-grid"><div class="safety-visual"><div class="safety-card"><div class="safety-card-top"><span class="shield">✓</span> A quick safety check</div><div class="safety-card-line">Does the name on the payment screen match the shop board?</div><div class="safety-choice">✓ Yes, the name matches</div><div class="safety-reason">Check before you pay. If the name is different, ask the shopkeeper.</div></div></div><div class="safety-copy"><p class="section-kicker">Safety in context</p><h2 id="safety-title">The important pause happens inside the lesson.</h2><p>Practising a payment includes checking who receives the money. Nook also shows pretend requests so a parent can practise saying no to a PIN request for receiving money.</p><p class="safety-caveat">In practice mode, the screens and money are pretend. Nook never asks for a real payment or real PIN in a lesson.</p><a class="text-link" href="https://nook-learn.vercel.app/scams">Explore Stay safe <span aria-hidden="true">→</span></a></div></div></section>
+
+    <section class="safe-practice-section section wrap" id="safe-practice" aria-labelledby="safe-practice-title">
+      <div class="section-head"><p class="section-kicker">New in Stay safe · about 3 minutes</p><h2 id="safe-practice-title">A screen interrupts you. What would you tap?</h2><p>Some prompts are ordinary. Others push you to act quickly. Nook lets you make the choice on three pretend screens, then explains the result—without changing anything on your phone.</p></div>
+      <div class="safe-practice-grid">
+        <article class="safe-practice-card"><div class="safe-practice-shot"><img src="/assets/safe-maps.jpg" alt="Pretend Maps location permission showing choices such as While using the app and Only this time" loading="lazy"></div><div class="safe-practice-card-copy"><span>01 · A genuine permission</span><h3>Maps asks for your location</h3><p>Choose access that fits the task, or say no and enter a place yourself. A permission request is a choice, not automatically a scam.</p></div></article>
+        <article class="safe-practice-card"><div class="safe-practice-shot"><img src="/assets/safe-cleaner.jpg" alt="Pretend cleaner update ad with a countdown, Cancel, and Update now" loading="lazy"></div><div class="safe-practice-card-copy"><span>02 · A pushy ad</span><h3>A “cleaner update” counts down</h3><p>You did not ask to install a cleaner. Try closing the ad or cancelling it; a timer does not verify that an update is needed.</p></div></article>
+        <article class="safe-practice-card"><div class="safe-practice-shot"><img src="/assets/safe-parcel.jpg" alt="Pretend parcel message claiming to be India Post and asking the recipient to open an address-update link" loading="lazy"></div><div class="safe-practice-card-copy"><span>03 · An unexpected message</span><h3>A parcel text asks for your address</h3><p>Practise leaving the unverified link and checking delivery independently through the service you trust.</p></div></article>
+      </div>
+      <div class="safe-practice-bottom"><p><strong>Nothing real happens in this activity.</strong> No app installs, message sends, or phone setting changes. It is available in English, Hindi and Malayalam.</p><a class="button button-primary" href="https://nook-learn.vercel.app/scams/practice">Try “What would you tap?” <span aria-hidden="true">↗</span></a></div>
+    </section>
+
+    <section class="section wrap families-section" id="families" aria-labelledby="families-title"><div class="family-card"><div><p class="section-kicker">For the person helping</p><h2 id="families-title">Send a lesson instead of another long explanation.</h2><p>A son, daughter, friend or neighbour can share a direct lesson link. The learner opens it in a browser, repeats a step, and comes back to Nook when they need a refresher.</p><a class="button button-secondary" href="https://nook-learn.vercel.app/send">Send a lesson <span aria-hidden="true">↗</span></a></div><div class="family-note"><span class="family-note-icon">↗</span><strong>“Try the shop payment lesson.”</strong><span>One link. A clear place to start.</span></div></div></section>
+
+    <section class="final-cta"><div class="wrap"><p class="section-kicker">Start small</p><h2>The next tap can be a practice tap.</h2><p>Open Nook on a phone or laptop. Pick one task and take it one step at a time.</p><a class="button button-light" href="https://nook-learn.vercel.app/">Open Nook <span aria-hidden="true">↗</span></a></div></section>
+  </main>
+  <footer class="footer wrap"><img src="/assets/nook-logo.svg" alt="Nook" width="104" height="34"><span>Practical confidence for everyday phone life.</span><a href="https://nook-learn.vercel.app/">Go to the app ↗</a></footer>
+  <script src="/main.js" defer></script>
+</body>
+</html>

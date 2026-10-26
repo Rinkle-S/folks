@@ -3,8 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "node scripts/prepare-website.mjs && next dev",
+    "build": "node scripts/prepare-website.mjs && next build",
+    "sync:website": "node scripts/prepare-website.mjs",
     "start": "next start",
     "check:ml": "node scripts/check-ml.mjs"
   },
